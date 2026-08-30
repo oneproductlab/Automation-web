@@ -37,8 +37,7 @@ const year = new Date().getFullYear();
 
       <div>
         <p class="eyebrow mb-4">Get in touch</p>
-        <a href={`mailto:${site.email}`} class="inline-flex min-h-6 items-center text-[0.95rem] link-underline">{site.email}</a>
-
+        <a href={`mailto:${site.email}`} aria-label={`Email ${site.name} at ${site.email}`} class="inline-flex min-h-6 items-center text-[0.95rem] link-underline">{site.email}</a>
         <p class="mt-4 text-[0.9rem] text-[var(--color-ink-3)]">{site.location}</p>
       </div>
     </div>

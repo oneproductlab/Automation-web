@@ -97,7 +97,7 @@ const inputClass =
             class="mt-3 font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]"
           >
             We reply within two working days. Or email
-            <a href={`mailto:${site.email}`} class="link-underline">{site.email}</a>.
+            <a href={`mailto:${site.email}`} aria-label={`Email ${site.name} at ${site.email}`} class="link-underline">{site.email}</a>.
           </p>
         </div>
       </form>

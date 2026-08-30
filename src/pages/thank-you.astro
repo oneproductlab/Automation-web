@@ -22,7 +22,7 @@ import { site } from '../data/site';
       <a href="/pricing/" class="btn btn-ghost">What it costs</a>
     </div>
     <p class="mx-auto mt-10 font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]">
-      Need us sooner? <a href={`mailto:${site.email}`} class="link-underline">{site.email}</a>
+      Need us sooner? <a href={`mailto:${site.email}`} aria-label={`Email ${site.name} at ${site.email}`} class="link-underline">{site.email}</a>
     </p>
   </section>
 </Base>
