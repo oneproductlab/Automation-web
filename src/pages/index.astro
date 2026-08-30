@@ -1,0 +1,603 @@
+---
+import Base from '../layouts/Base.astro';
+import WorkflowCanvas from '../components/WorkflowCanvas.astro';
+import BeforeAfter from '../components/BeforeAfter.astro';
+import ConnectedSystems from '../components/ConnectedSystems.astro';
+import Faq from '../components/Faq.astro';
+import Testimonials from '../components/Testimonials.astro';
+import BookCall from '../components/BookCall.astro';
+import { Image } from 'astro:assets';
+import founderPhoto from '../assets/images/niraj.jpg';
+import { services, approach, faqs, site, founder, fitFor, pricing, foundingOffer, testimonials } from '../data/site';
+import { getWork } from '../lib/work';
+
+const work = await getWork();
+
+const schema = [
+  {
+    '@type': 'FAQPage',
+    '@id': `${site.domain}/#faq`,
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+  /*
+    Reviews attached to the organization. Deliberately no `aggregateRating` —
+    LinkedIn recommendations carry no star rating, so inventing an average out
+    of them would be fabricated structured data. Individual reviews are the
+    honest representation and are what search engines can actually corroborate
+    against the linked profiles.
+  */
+  ...testimonials.map((t) => ({
+    '@type': 'Review',
+    itemReviewed: { '@id': `${site.domain}/#organization` },
+    author: { '@type': 'Person', name: t.name, url: t.linkedin },
+    reviewBody: t.quote,
+  })),
+];
+---
+
+<Base schema={schema}>
+  <!-- Hero: a point of view, not a feature list.
+
+       No eyebrow above the headline. The category label ("workflow automation
+       studio") still carries in the <title>, the meta description and the
+       sub-line below, so search and social lose nothing — and the page now
+       opens on the claim instead of on a label. "Part of oneProductLab" was
+       also raising a question it didn't answer for anyone who hasn't heard of
+       the parent; it remains in the footer, where a curious reader looks.
+
+       Rejected headlines worth remembering. "Most companies run on copy-paste"
+       described the reader's own operation as amateurish in the first seven
+       words — and the reader is usually the person who built those processes.
+       "The work between your systems. Handled." needed decoding, and "handled"
+       is a shrug rather than a promise.
+
+       This frames the purchase as the trade a buyer is actually weighing:
+       capacity without cost. "Overhead" is deliberate — it is a line in a
+       budget, where softer words like "busywork" shrink the problem and
+       quietly argue the price down. -->
+  <!--
+    Two columns above 1024px: the claim on the left, a system visibly running on
+    the right. The board is the reason the hero changed — a studio that sells
+    invisible work has to show the work in the first screen, or it is asking the
+    reader to take the whole proposition on faith.
+  -->
+  <section class="wrap pt-10 pb-6 md:pt-14 md:pb-8">
+    <div class="grid items-center gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
+      <div>
+        <h1 class="text-[2.8rem] leading-[1.02] sm:text-[3.6rem] lg:text-[4.1rem]">
+          Grow the business.{' '}
+          <span class="text-[var(--color-signal-ink)]">Not the overhead.</span>
+        </h1>
+        <p class="mt-7 max-w-xl text-lg text-[var(--color-ink-2)]">
+          We connect the tools you already run and remove the manual steps
+          between them. You own the system outright.
+        </p>
+        <div class="mt-9 flex flex-wrap items-center gap-3">
+          <a href="/contact/" class="btn btn-primary">Let’s talk growth</a>
+          <a href="/pricing/" class="btn btn-ghost">From $8,000</a>
+        </div>
+
+        <!--
+          The founder, in the hero. A buyer is hiring a person, not software, and
+          burying the only named human on an About page costs more trust than the
+          space it saves.
+        -->
+        <div class="mt-11 flex items-center gap-4 border-t border-[var(--color-line)] pt-6">
+          <Image
+            src={founderPhoto}
+            alt=""
+            width={96}
+            height={96}
+            loading="eager"
+            class="h-11 w-11 shrink-0 rounded-full border border-[var(--color-line)] object-cover"
+          />
+          <p class="max-w-md text-[0.92rem] text-[var(--color-ink-2)]">
+            Built by <strong class="font-medium text-[var(--color-ink)]">{founder.name}</strong>, who
+            writes the code as well as the proposal. <a href="/about/" class="link-underline">About the studio</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="lg:pl-2">
+        <WorkflowCanvas />
+      </div>
+    </div>
+  </section>
+
+  <!--
+    Client proof, first thing after the hero.
+
+    This is the strongest evidence on the site: named people, dated, linked to
+    the profile that wrote the words. It used to sit behind a strip of backend
+    metrics — API latency, database load — which were credentials for a job
+    nobody here is hiring for, and which quietly argued the studio had no
+    project work to show. The case studies below now carry that weight, so the
+    metrics strip is gone entirely.
+  -->
+  <Testimonials plain />
+
+  <!--
+    The problem, drawn rather than described.
+
+    This was three labelled rows of prose making a point the diagram makes
+    instantly: point-to-point wiring costs you a person in the middle. The
+    qualification list that used to live in its own full section is folded in
+    here, because "is this my problem?" and "am I the right buyer?" are the same
+    question asked twice.
+  -->
+  <section class="wrap py-20 md:py-24">
+    <div class="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+      <div class="lg:pt-2">
+        <p class="eyebrow">The problem</p>
+        <h2 class="mt-4 max-w-md text-3xl md:text-4xl">
+          Your business shouldn’t depend on repetitive work.
+        </h2>
+        <p class="mt-5 max-w-sm text-[var(--color-ink-2)]">
+          It doesn’t scale, and it costs more every month you grow.
+        </p>
+
+        <ul class="reveal mt-9 border-t border-[var(--color-line-2)]">
+          {
+            fitFor.signals.map((s, i) => (
+              <li
+                data-stagger
+                style={`--i:${i}`}
+                class="flex gap-3 border-b border-[var(--color-line-2)] py-3.5"
+              >
+                <span class="font-[var(--font-mono)] text-sm text-[var(--color-signal-ink)]" aria-hidden="true">
+                  ✓
+                </span>
+                <span class="text-[0.95rem] text-[var(--color-ink-2)]">{s}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="mt-6 font-[var(--font-mono)] text-xs leading-relaxed text-[var(--color-ink-3)]">
+          Sound familiar? That’s the work we take out. Not a fit? We’ll say so on
+          the first call.
+        </p>
+      </div>
+
+      <div class="reveal self-start">
+        <BeforeAfter />
+      </div>
+    </div>
+  </section>
+
+  <!--
+    Your existing stack, wired in.
+
+    Previously this section also carried the full workflow diagram and its own
+    explanatory paragraph. The diagram now opens the page, so what remains is
+    the one claim this section alone makes: you don't need another tool.
+  -->
+  <section class="bg-[var(--color-paper-2)] border-y border-[var(--color-line)]">
+    <div class="wrap py-16 md:py-20">
+      <div class="grid items-center gap-12 md:grid-cols-2">
+        <div>
+          <p class="eyebrow">Your stack</p>
+          <h2 class="mt-4 max-w-sm text-3xl md:text-4xl">
+            You don’t need another app.
+          </h2>
+          <p class="mt-5 max-w-md text-[var(--color-ink-2)]">
+            You need the tools you already pay for to talk to each other, in the
+            right order, without a person in the middle.
+          </p>
+
+          <!--
+            The exclusions, kept. They used to sit in a section of their own,
+            which gave two lines of disqualification the same weight as the
+            pricing table. Here they do the same job at the right volume.
+          -->
+          <ul class="mt-8 border-t border-[var(--color-line-2)]">
+            {
+              fitFor.notFor.map((s) => (
+                <li class="flex gap-3 border-b border-[var(--color-line-2)] py-3">
+                  <span class="font-[var(--font-mono)] text-sm text-[var(--color-ink-3)]" aria-hidden="true">
+                    ✕
+                  </span>
+                  <span class="text-[0.9rem] text-[var(--color-ink-3)]">{s}</span>
+                </li>
+              ))
+            }
+          </ul>
+
+          <a href="/services/integrations/" class="btn btn-ghost mt-8">How integrations work</a>
+        </div>
+        <div class="reveal">
+          <ConnectedSystems />
+          <p class="mt-7 font-[var(--font-mono)] text-[0.72rem] uppercase tracking-[0.1em] text-[var(--color-ink-3)]">
+            Stacks we work in
+          </p>
+          <ul class="mt-3 flex flex-wrap gap-x-4 gap-y-2">
+            {
+              fitFor.stacks.map((s) => (
+                <li class="font-[var(--font-mono)] text-[0.82rem] text-[var(--color-ink-2)]">{s}</li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What we build -->
+  <section class="wrap py-16 md:py-20">
+    <div class="flex items-end justify-between gap-6 flex-wrap">
+      <div>
+        <p class="eyebrow">What we build</p>
+        <h2 class="mt-4 text-3xl md:text-4xl">Where we usually remove manual work.</h2>
+      </div>
+      <a href="/services/" class="btn btn-ghost">All services</a>
+    </div>
+    <!--
+      A two-column matrix rather than six full-width rows. This section is a
+      directory — every item leads somewhere else — so it earns scanning speed,
+      not scrolling. Full-width rows gave each of six short lines the same
+      vertical weight as a real content section, and pushed the proof and
+      pricing below it further down the page.
+
+      `gap-px` over a line-coloured background draws the dividers, so the grid
+      keeps hairline rules in both axes without per-cell border bookkeeping.
+    -->
+    <ul class="reveal mt-10 grid gap-px border-y border-[var(--color-line)] bg-[var(--color-line)] md:grid-cols-2">
+      {
+        services.map((s, i) => (
+          <li data-stagger style={`--i:${i}`} class="bg-[var(--color-paper)]">
+            <a
+              href={`/services/${s.slug}/`}
+              class="disclose-host group flex h-full gap-4 py-5 pr-4 transition-colors md:px-6 hover:bg-[var(--color-paper-2)]"
+            >
+              <span class="mt-1 font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]">{s.index}</span>
+              <div class="min-w-0">
+                <h3 class="font-[var(--font-display)] text-lg transition-colors group-hover:text-[var(--color-signal-ink)]">
+                  {s.title}
+                  {/*
+                    Travels with the last word instead of being pinned to the
+                    far right, where a full-width row left it stranded metres
+                    from the label it belongs to.
+                  */}
+                  <span
+                    class="ml-1 inline-block font-[var(--font-mono)] text-sm text-[var(--color-ink-3)] transition-transform group-hover:translate-x-1 group-hover:text-[var(--color-signal-ink)]"
+                    aria-hidden="true"
+                    >→</span
+                  >
+                </h3>
+                <div class="disclose">
+                  <div>
+                    <p class="mt-1 text-[0.92rem] leading-relaxed text-[var(--color-ink-2)]">{s.brief}</p>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <!--
+      Says out loud that the list is a sample, not a menu. Without this a
+      reader whose problem isn't one of the six assumes we don't do it and
+      leaves — the exact opposite of what a services list is for.
+    -->
+    <p class="mt-6 max-w-xl font-[var(--font-mono)] text-xs leading-relaxed text-[var(--color-ink-3)]">
+      Not a menu — if your bottleneck isn’t listed, it’s still worth a call.
+    </p>
+  </section>
+
+  <!-- Proof -->
+  <section class="bg-[var(--color-slate)] text-[var(--color-paper)]">
+    <div class="wrap py-16 md:py-20">
+      <div class="flex items-end justify-between gap-6 flex-wrap">
+        <div>
+          <p class="eyebrow text-[var(--color-inverse-ink-3)]">Selected work</p>
+          <h2 class="mt-4 text-3xl md:text-4xl">Systems we’ve built, in the open.</h2>
+        </div>
+        <a
+          href="/work/"
+          class="btn border-[var(--color-inverse-line)] text-[var(--color-inverse-ink)] transition-colors hover:bg-[var(--color-inverse-ink)] hover:text-[var(--color-slate)]"
+          >All work</a
+        >
+      </div>
+      <!--
+        Structured proof cards.
+
+        These replaced a plain title-and-summary row, and they absorbed the job
+        the deleted metrics strip used to do. The reader now gets the outcome
+        figures from actual projects rather than backend statistics from a
+        previous job: index, honest kind badge, sector, title, summary, then the
+        sourced result metrics from the case study itself.
+      -->
+      <ul class="reveal mt-10 grid gap-px bg-[var(--color-slate-2)] md:grid-cols-3">
+        {
+          work.slice(0, 3).map((item, i) => (
+            <li data-stagger style={`--i:${i}`} class="bg-[var(--color-slate)]">
+              <a
+                href={`/work/${item.id}/`}
+                class="group flex h-full flex-col p-7 transition-colors hover:bg-[var(--color-slate-2)]"
+              >
+                <div class="flex items-center justify-between gap-3">
+                  <span class="font-[var(--font-mono)] text-xs tracking-[0.14em] text-[var(--color-inverse-ink-4)]">
+                    CASE // {String(i + 1).padStart(2, '0')}
+                  </span>
+                  {/*
+                    The honest label, given badge treatment rather than being
+                    hidden in a run of muted text. A reader who spots "concept"
+                    for themselves trusts the two marked "client" more.
+                  */}
+                  <span
+                    class={`font-[var(--font-mono)] text-[0.62rem] uppercase tracking-[0.12em] border px-2 py-0.5 ${
+                      item.data.kind === 'client'
+                        ? 'border-[var(--color-signal-bright)] text-[var(--color-signal-bright)]'
+                        : 'border-[var(--color-inverse-line)] text-[var(--color-inverse-ink-3)]'
+                    }`}
+                  >
+                    {item.data.kind.replace('-', ' ')}
+                  </span>
+                </div>
+
+                <p class="mt-5 border-t border-[var(--color-inverse-line)] pt-5 font-[var(--font-mono)] text-[0.7rem] uppercase tracking-[0.12em] text-[var(--color-inverse-ink-3)]">
+                  {item.data.sector}
+                </p>
+                <h3 class="mt-2 font-[var(--font-display)] text-xl transition-colors group-hover:text-[var(--color-signal-bright)]">
+                  {item.data.title}
+                </h3>
+                <p class="mt-3 text-[0.92rem] leading-relaxed text-[var(--color-inverse-ink-2)]">
+                  {item.data.summary}
+                </p>
+
+                {/*
+                  `flex-1` on the list is what keeps "Read the build" pinned to
+                  the bottom of every card regardless of how much the summaries
+                  above it differ in length.
+                */}
+                <ul class="mt-6 flex-1 space-y-2 border-t border-[var(--color-inverse-line)] pt-5">
+                  {item.data.result.slice(0, 3).map((r) => (
+                    <li class="flex gap-2.5 text-[0.85rem] leading-relaxed text-[var(--color-inverse-ink-2)]">
+                      <span class="font-[var(--font-mono)] text-[var(--color-signal-bright)]" aria-hidden="true">
+                        —
+                      </span>
+                      <span>
+                        <strong class="font-[var(--font-mono)] font-medium text-[var(--color-inverse-ink)]">
+                          {r.metric}
+                        </strong>{' '}
+                        {r.label}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                <span class="mt-6 inline-flex items-center gap-2 border-t border-[var(--color-inverse-line)] pt-5 font-[var(--font-mono)] text-sm text-[var(--color-signal-bright)]">
+                  Read the build
+                  <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">
+                    →
+                  </span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="mt-6 font-[var(--font-mono)] text-xs text-[var(--color-inverse-ink-4)]">
+        Every figure above is sourced on the case study it comes from.
+      </p>
+    </div>
+  </section>
+
+  <!-- How we work -->
+  <section class="wrap py-16 md:py-20">
+    <div class="max-w-xl">
+      <p class="eyebrow">How we work</p>
+      <!--
+        No count in the heading, for the same reason the services section
+        dropped "Six places": a number in the copy has to be kept in sync with
+        the array by hand, and goes stale the moment a step is added.
+      -->
+      <h2 class="mt-4 text-3xl md:text-4xl">You own what’s left behind.</h2>
+      <p class="mt-5 text-[var(--color-ink-2)]">
+        Every engagement runs the same way, and you can see where you are in it
+        at any point.
+      </p>
+    </div>
+    <!--
+      Two rows of three rather than one long row. Six across would set the
+      measure far too narrow to read; this keeps a comfortable line length and
+      still reads left-to-right as a sequence.
+    -->
+    <ol class="reveal mt-12 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        approach.map((a, i) => (
+          <li
+            data-stagger
+            style={`--i:${i}`}
+            tabindex="0"
+            class="disclose-host group border-t-2 border-[var(--color-line-2)] pt-5 transition-colors hover:border-[var(--color-ink)] focus-visible:border-[var(--color-ink)]"
+          >
+            <p class="font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]">
+              STEP {String(i + 1).padStart(2, '0')}
+            </p>
+            <h3 class="mt-2 font-[var(--font-display)] text-2xl transition-colors group-hover:text-[var(--color-signal-ink)]">
+              {a.step}
+            </h3>
+            {/*
+              Collapsed at rest. Six steps × a 20-word blurb was 120 words of
+              body copy sitting under a heading that already told the reader
+              what the step was.
+            */}
+            <div class="disclose">
+              <div>
+                <p class="mt-3 max-w-[34ch] text-[0.95rem] leading-relaxed text-[var(--color-ink-2)]">
+                  {a.short}
+                </p>
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <a href="/approach/" class="btn btn-ghost mt-10">How an engagement runs</a>
+  </section>
+
+  <!--
+    Pricing and risk reversal, on the homepage. These are the strongest arguments
+    the studio has and they were previously a click away, which meant most
+    visitors never met them.
+  -->
+  <section class="border-y border-[var(--color-line)] bg-[var(--color-paper-2)]">
+    <div class="wrap py-16 md:py-20">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p class="eyebrow">What it costs</p>
+          <h2 class="mt-4 max-w-md text-3xl md:text-4xl">Published prices. Fixed scope.</h2>
+        </div>
+        <a href="/pricing/" class="btn btn-ghost">Full pricing</a>
+      </div>
+
+      <ul class="reveal mt-10 grid gap-px border-y border-[var(--color-line)] bg-[var(--color-line)] lg:grid-cols-3">
+        {
+          pricing.map((tier, i) => (
+            <li data-stagger style={`--i:${i}`} class="bg-[var(--color-paper-2)] px-6 py-6">
+              <p class="font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]">{tier.duration}</p>
+              <h3 class="mt-2 font-[var(--font-display)] text-lg">{tier.name}</h3>
+              <p class="price mt-3 text-[var(--color-ink)]">{tier.price}</p>
+              <p class="mt-3 max-w-[34ch] text-[0.9rem] leading-relaxed text-[var(--color-ink-2)]">
+                {tier.summary}
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <ul class="mt-10 grid gap-6 sm:grid-cols-3">
+        <li class="border-t border-[var(--color-line-2)] pt-4">
+          <p class="font-[var(--font-mono)] text-xs uppercase tracking-[0.1em] text-[var(--color-signal-ink)]">
+            The number doesn’t move
+          </p>
+          <p class="mt-2 text-[0.92rem] text-[var(--color-ink-2)]">
+            Scope fixed in writing. Overruns are ours to absorb.
+          </p>
+        </li>
+        <li class="border-t border-[var(--color-line-2)] pt-4">
+          <p class="font-[var(--font-mono)] text-xs uppercase tracking-[0.1em] text-[var(--color-signal-ink)]">
+            You own everything
+          </p>
+          <p class="mt-2 text-[0.92rem] text-[var(--color-ink-2)]">
+            Code and accounts in your name from day one. No lock-in.
+          </p>
+        </li>
+        <li class="border-t border-[var(--color-line-2)] pt-4">
+          <p class="font-[var(--font-mono)] text-xs uppercase tracking-[0.1em] text-[var(--color-signal-ink)]">
+            We’ll talk you out of it
+          </p>
+          <p class="mt-2 text-[0.92rem] text-[var(--color-ink-2)]">
+            If it isn’t worth automating yet, we say so before you spend.
+          </p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!--
+    The founding-client offer, placed immediately after the price.
+
+    A visitor works out that the studio is new the moment they read "concept"
+    on the case studies. Left unsaid, that reads as something being hidden and
+    quietly undermines the honest labelling everywhere else. Said plainly, and
+    said right after the number, it converts the objection into a reason to
+    move now.
+  -->
+  <section class="wrap py-16 md:py-20">
+    <div class="grid gap-12 md:grid-cols-[0.9fr_1.1fr]">
+      <div>
+        <p class="eyebrow">{foundingOffer.eyebrow}</p>
+        <h2 class="mt-4 max-w-sm text-3xl md:text-4xl">{foundingOffer.headline}</h2>
+        <p class="mt-5 max-w-sm text-[var(--color-ink-2)]">{foundingOffer.body}</p>
+      </div>
+      <div>
+        <ul class="reveal border-t border-[var(--color-line-2)]">
+          {
+            foundingOffer.terms.map((t, i) => (
+              <li
+                data-stagger
+                style={`--i:${i}`}
+                class="border-b border-[var(--color-line-2)] py-4"
+              >
+                <p class="font-[var(--font-mono)] text-xs uppercase tracking-[0.1em] text-[var(--color-signal-ink)]">
+                  {t.title}
+                </p>
+                <p class="mt-2 text-[0.95rem] text-[var(--color-ink-2)]">{t.detail}</p>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="mt-6 max-w-md font-[var(--font-mono)] text-xs leading-relaxed text-[var(--color-ink-3)]">
+          {foundingOffer.caveat}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Faq items={faqs} />
+
+  <!--
+    Closing statement on the dark surface. Using it twice — once for proof, once
+    here — turns a one-off into a deliberate rhythm, and the oversized type gives
+    the page a single moment of real scale contrast.
+  -->
+  <section class="bg-[var(--color-slate)] text-[var(--color-inverse-ink)]">
+    <div class="wrap py-24 md:py-28">
+      <!--
+        A heading, not a paragraph. This is the page's closing statement and it
+        was the one major line with no place in the document outline.
+        `text-balance` handles the line break, so the phrase stays evenly split
+        at any width instead of relying on a hardcoded <br>.
+      -->
+      <h2 class="display max-w-3xl text-balance">Tell us what’s still done by hand.</h2>
+      <div class="mt-12 flex flex-col gap-8 border-t border-[var(--color-inverse-line)] pt-10 md:flex-row md:items-center md:justify-between">
+        <p class="max-w-md text-lg text-[var(--color-inverse-ink-2)]">
+          One workflow, honestly described. We’ll map it and tell you whether it’s
+          worth automating.
+        </p>
+        <div class="flex flex-col items-start gap-3 md:items-end">
+          <div class="flex flex-wrap items-center gap-3">
+            <a
+              href="/contact/"
+              class="btn border-[var(--color-inverse-ink)] bg-[var(--color-inverse-ink)] text-[var(--color-slate)] transition-colors hover:border-[var(--color-signal-bright)] hover:bg-[var(--color-signal-bright)] hover:text-[var(--color-inverse-ink)]"
+              >Let’s talk growth</a
+            >
+            {
+              /*
+                Only rendered once a real event type exists. A "Book a call"
+                button that silently falls back to the same form the primary
+                CTA already points at is worse than no button — it promises a
+                calendar and delivers a text field.
+              */
+              site.calendly && (
+                <BookCall
+                  label="Book a 30-min call"
+                  class="[&>a]:border-[var(--color-inverse-line)] [&>a]:text-[var(--color-inverse-ink)] [&>button]:border-[var(--color-inverse-line)] [&>button]:text-[var(--color-inverse-ink)]"
+                />
+              )
+            }
+            <a
+              href={`mailto:${site.email}`}
+              class="btn border-[var(--color-inverse-line)] text-[var(--color-inverse-ink)] transition-colors hover:bg-[var(--color-slate-2)]"
+              >Email us</a
+            >
+          </div>
+          <!--
+            Sits with the buttons rather than orphaned below them. This answers
+            "will I be ignored?" at the exact moment that doubt arrives, so it
+            was the wrong line to render at the dimmest tone on the page.
+          -->
+          <p class="font-[var(--font-mono)] text-xs text-[var(--color-inverse-ink-3)]">
+            A real person replies within two working days.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

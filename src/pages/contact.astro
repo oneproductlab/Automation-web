@@ -1,0 +1,186 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import BookCall from '../components/BookCall.astro';
+import { site } from '../data/site';
+
+const inputClass =
+  'w-full border border-[var(--color-line)] bg-[var(--color-paper)] px-3.5 py-2.5 transition-colors focus:border-[var(--color-ink)] focus:outline-2 focus:outline-offset-2 focus:outline-[var(--color-signal)]';
+
+---
+
+<Base
+  title="Contact — map an automation"
+  description="Tell us about one workflow that costs your team time. We map it and tell you honestly whether it is worth automating."
+
+  ogRoute="contact"
+>
+  <section class="wrap pt-10 pb-12 md:pt-14">
+    <Breadcrumbs trail={[]} current="Contact" />
+    <p class="eyebrow mt-8">Contact</p>
+    <h1 class="mt-5 max-w-3xl text-[2.4rem] leading-[1.05] md:text-[3.4rem]">
+      Tell us what's still done by hand.
+    </h1>
+    <p class="mt-7 max-w-xl text-lg text-[var(--color-ink-2)]">
+      One workflow, honestly described. We'll tell you whether it's worth
+      automating — even if the answer is "not yet".
+    </p>
+  </section>
+
+  <section class="wrap pb-24">
+    <div class="grid gap-12 md:grid-cols-[1.3fr_0.9fr]">
+      <form id="contact-form" action="/api/contact" method="post" class="grid gap-6" novalidate>
+        <div class="grid gap-2">
+          <label for="name" class="font-[var(--font-mono)] text-sm">Name</label>
+          <input id="name" name="name" type="text" autocomplete="name" required class={inputClass} />
+        </div>
+
+        <div class="grid gap-2">
+          <label for="email" class="font-[var(--font-mono)] text-sm">Work email</label>
+          <input
+            id="email"
+            name="email"
+
+            type="email"
+            autocomplete="email"
+            spellcheck="false"
+            required
+            class={inputClass}
+          />
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="grid gap-2">
+            <label for="company" class="font-[var(--font-mono)] text-sm">Company</label>
+            <input id="company" name="company" type="text" autocomplete="organization" class={inputClass} />
+
+          </div>
+          <div class="grid gap-2">
+            <label for="team" class="font-[var(--font-mono)] text-sm">Team size</label>
+            <select id="team" name="team" class={inputClass}>
+              <option>1–10</option>
+              <option>11–50</option>
+              <option>51–200</option>
+              <option>200+</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid gap-2">
+          <label for="workflow" class="font-[var(--font-mono)] text-sm">
+            The workflow that costs you time
+          </label>
+          <textarea
+            id="workflow"
+            name="workflow"
+
+            rows="5"
+            required
+            placeholder="e.g. A lead fills our form, then someone copies it into the CRM, emails sales, and updates a spreadsheet..."
+
+            class={inputClass}></textarea>
+        </div>
+
+        <!-- Honeypot: hidden from people, irresistible to bots. -->
+        <div class="absolute -left-[9999px]" aria-hidden="true">
+          <label for="company_website">Company website</label>
+          <input id="company_website" name="company_website" type="text" tabindex="-1" autocomplete="off" />
+
+        </div>
+
+        <div>
+          <button type="submit" class="btn btn-primary" data-submit>Send it over</button>
+          <p
+            id="form-status"
+            role="status"
+            aria-live="polite"
+            class="mt-3 font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]"
+          >
+            We reply within two working days. Or email
+            <a href={`mailto:${site.email}`} class="link-underline">{site.email}</a>.
+          </p>
+        </div>
+      </form>
+
+      <aside class="border-t border-[var(--color-line)] pt-6 md:border-l md:border-t-0 md:pl-8">
+        <p class="eyebrow">What happens next</p>
+        <ol class="mt-5 space-y-5">
+          <li>
+            <p class="font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]">01</p>
+
+            <p class="mt-1 text-[0.98rem] text-[var(--color-ink-2)]">We read it and reply within two working days — a person, not an autoresponder.</p>
+
+          </li>
+          <li>
+            <p class="font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]">02</p>
+            <p class="mt-1 text-[0.98rem] text-[var(--color-ink-2)]">A short call to map the workflow together and find where the time actually goes.</p>
+
+          </li>
+          <li>
+            <p class="font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]">03</p>
+            <p class="mt-1 text-[0.98rem] text-[var(--color-ink-2)]">An honest recommendation — including "this isn't worth automating yet" if that's true.</p>
+
+          </li>
+        </ol>
+        {
+          site.calendly && (
+            <>
+              <hr class="rule my-8" />
+              <p class="eyebrow">Rather talk it through?</p>
+              <p class="mt-3 text-[0.95rem] text-[var(--color-ink-2)]">
+                Thirty minutes, one workflow. No deck, no pitch.
+              </p>
+              <BookCall class="mt-5" label="Book a call" />
+            </>
+          )
+        }
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Progressive enhancement only: with JS off, the form still posts and the
+  // endpoint redirects to /thank-you/.
+  const form = document.querySelector('#contact-form') as HTMLFormElement | null;
+  const status = document.querySelector('#form-status') as HTMLElement | null;
+  const button = document.querySelector('[data-submit]') as HTMLButtonElement | null;
+
+  form?.addEventListener('submit', async (event) => {
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      form.reportValidity();
+      return;
+    }
+    event.preventDefault();
+
+    if (!button || !status) return;
+    button.disabled = true;
+    const original = button.textContent;
+    button.textContent = 'Sending...';
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: new FormData(form),
+      });
+
+      if (response.ok) {
+        window.location.href = '/thank-you/';
+        return;
+      }
+
+      const data = await response.json().catch(() => ({}));
+      status.textContent = data.error ?? 'Something went wrong. Please email us directly.';
+
+      status.style.color = 'var(--color-signal-ink)';
+    } catch {
+      status.textContent = 'Network error. Please email us directly.';
+      status.style.color = 'var(--color-signal-ink)';
+    } finally {
+      button.disabled = false;
+      button.textContent = original;
+    }
+  });
+</script>

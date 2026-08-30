@@ -1,0 +1,254 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Analytics from '../components/Analytics.astro';
+import { ClientRouter } from 'astro:transitions';
+import { site, founder } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Path-only canonical, e.g. "/work/". Defaults to current path. */
+  path?: string;
+  ogType?: string;
+  /** Which generated share card to use, e.g. "work/lead-intake-agency". */
+  ogRoute?: string;
+  /** Extra JSON-LD nodes merged into the page graph (FAQ, Service, Article...). */
+  schema?: Record<string, unknown>[];
+  /** Keep a page out of the index without removing it from the site. */
+  noindex?: boolean;
+  /** Set on pages that embed a cookie-setting third party (e.g. a scheduler). */
+  needsConsent?: boolean;
+}
+
+const {
+  title,
+  description = 'Flowzora is a workflow automation studio. We connect the tools you already use, remove the manual steps between them, and hand over systems your team owns.',
+
+  path,
+  ogType = 'website',
+  ogRoute = 'default',
+
+  schema = [],
+  noindex = false,
+  needsConsent = false,
+} = Astro.props;
+
+const fullTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.tagline}`;
+
+// Canonicals must match the URLs that actually serve. The build emits directory
+// output, so every path ends in a slash — normalize rather than trusting pathname.
+const rawPath = path ?? Astro.url.pathname;
+const normalizedPath = rawPath.endsWith('/') ? rawPath : `${rawPath}/`;
+const canonical = new URL(normalizedPath, site.domain).href;
+const ogImage = new URL(`/og/${ogRoute}.png`, site.domain).href;
+
+const orgId = `${site.domain}/#organization`;
+const founderId = `${site.domain}/#founder`;
+
+// One connected graph rather than several orphaned blobs: search and generative
+// engines resolve the studio, the person and the site as a single entity.
+const graph = [
+  {
+    '@type': ['Organization', 'ProfessionalService'],
+    '@id': orgId,
+    name: site.name,
+    description,
+    url: site.domain,
+    email: site.email,
+    slogan: site.tagline,
+    parentOrganization: {
+      '@type': 'Organization',
+      name: site.parent,
+      url: site.parentUrl,
+
+    },
+    founder: { '@id': founderId },
+    employee: { '@id': founderId },
+    sameAs: [site.linkedin, founder.linkedin],
+    // schema.org accepts a plain string here. Naming specific countries would
+    // tell search engines we don't serve anywhere else.
+    areaServed: site.areaServed,
+    knowsAbout: [
+      'Workflow automation',
+      'Business process automation',
+      'Systems integration',
+      'CRM automation',
+      'AI agents',
+      'Revenue operations',
+    ],
+  },
+  {
+    '@type': 'Person',
+    '@id': founderId,
+    name: founder.name,
+    jobTitle: founder.role,
+    description: founder.bio,
+    url: `${site.domain}/about/`,
+    // A portrait on the Person node is a real entity-recognition signal: it
+    // gives search and generative engines something to bind the name to.
+    image: new URL(founder.photo.src, site.domain).href,
+    sameAs: [founder.linkedin],
+    worksFor: { '@id': orgId },
+    alumniOf: {
+      '@type': 'CollegeOrUniversity',
+      name: 'National Institute of Technology, Kurukshetra',
+    },
+
+    knowsAbout: founder.stack,
+  },
+  {
+    '@type': 'WebSite',
+    '@id': `${site.domain}/#website`,
+    url: site.domain,
+    name: site.name,
+    publisher: { '@id': orgId },
+    inLanguage: site.locale,
+  },
+  ...schema,
+];
+
+const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
+---
+
+<!doctype html>
+<html lang={site.locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content="en_US" />
+
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name} — ${site.tagline}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {/* Matches mobile browser chrome to the page surface in both schemes. */}
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f1ea" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#17150f" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} — Writing`} href="/rss.xml" />
+
+    {/*
+      Cross-document view transitions. The site is deliberately multi-page for
+      SEO — six service URLs rank where six anchors cannot — but hard reloads
+      made that structure *feel* disjointed. This keeps the URLs and the
+      continuity of a single-page app.
+    */}
+    <ClientRouter />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+  </head>
+  <body>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-[var(--color-ink)] focus:px-4 focus:py-2 focus:text-[var(--color-paper)]"
+
+      >Skip to content</a
+
+    >
+    <Header transition:persist />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <Analytics needsConsent={needsConsent} />
+
+    <script is:inline>
+      /*
+        Scroll-driven motion, rebound on every navigation.
+
+        With view transitions the document is never re-parsed, so anything wired
+        up on first load has to be re-wired after each swap or the second page a
+        visitor sees is silently static.
+      */
+      function initMotion() {
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const revealEls = document.querySelectorAll('.reveal');
+        const countEls = document.querySelectorAll('[data-count]');
+
+        if (reduce || !('IntersectionObserver' in window)) {
+          revealEls.forEach((el) => el.classList.add('is-in'));
+          return;
+        }
+
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add('is-in');
+              io.unobserve(entry.target);
+
+            });
+          },
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.1 }
+        );
+        revealEls.forEach((el) => io.observe(el));
+
+        /*
+          Metrics count up when they scroll into view. The numbers are the payload
+          on a proof section, so they are worth letting land rather than having
+          them simply appear. Non-numeric values are left alone.
+        */
+        const counter = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              const el = entry.target;
+              counter.unobserve(el);
+
+              const raw = el.dataset.count;
+              const match = raw.match(/^([^\d]*)([\d.,]+)(.*)$/);
+              if (!match) return;
+              const [, prefix, digits, suffix] = match;
+              const target = parseFloat(digits.replace(/,/g, ''));
+              if (!isFinite(target)) return;
+
+              const hasComma = digits.includes(',');
+              const decimals = (digits.split('.')[1] || '').length;
+              const started = performance.now();
+              const duration = 900;
+
+              const tick = (now) => {
+                const p = Math.min((now - started) / duration, 1);
+
+                // Ease-out cubic: fast start, settles rather than stops.
+                const eased = 1 - Math.pow(1 - p, 3);
+                const value = target * eased;
+                const shown = decimals
+                  ? value.toFixed(decimals)
+                  : hasComma
+                    ? Math.round(value).toLocaleString('en-US')
+                    : String(Math.round(value));
+                el.textContent = prefix + shown + suffix;
+                if (p < 1) requestAnimationFrame(tick);
+              };
+              requestAnimationFrame(tick);
+            });
+          },
+          { threshold: 0.5 }
+        );
+        countEls.forEach((el) => counter.observe(el));
+      }
+
+      initMotion();
+      document.addEventListener('astro:page-load', initMotion);
+    </script>
+  </body>
+</html>

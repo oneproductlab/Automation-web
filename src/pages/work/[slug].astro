@@ -1,0 +1,164 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getCollection, render } from 'astro:content';
+import { getWork } from '../../lib/work';
+import { site } from '../../data/site';
+
+export async function getStaticPaths() {
+  const work = await getWork();
+  return work.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+
+const kindLabel: Record<string, string> = {
+  client: 'Client project',
+  'internal-build': 'Internal build',
+  concept: 'Concept teardown',
+};
+
+const schema = [
+  {
+    '@type': 'Article',
+    '@id': `${site.domain}/work/${entry.id}/#article`,
+    headline: d.title,
+    description: d.summary,
+    about: d.sector,
+    author: { '@id': `${site.domain}/#founder` },
+    publisher: { '@id': `${site.domain}/#organization` },
+    image: `${site.domain}/og/work/${entry.id}.png`,
+    mainEntityOfPage: `${site.domain}/work/${entry.id}/`,
+    // Concept and internal builds are labeled in the markup as well as the UI,
+    // so nothing can read as a client engagement that was not one.
+    creativeWorkStatus: kindLabel[d.kind],
+  },
+];
+
+---
+
+<Base
+  title={d.title}
+  description={d.summary}
+  ogType="article"
+  ogRoute={`work/${entry.id}`}
+  schema={schema}
+>
+  <article>
+    <header class="wrap pt-10 pb-10 md:pt-14">
+      <Breadcrumbs trail={[{ label: 'Work', href: '/work/' }]} current={d.title} />
+      <div class="mt-8 inline-flex items-center gap-2 border border-[var(--color-line)] px-3 py-1">
+        <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-signal)]"></span>
+        <span class="font-[var(--font-mono)] text-xs uppercase tracking-[0.1em] text-[var(--color-ink-2)]">
+
+          {kindLabel[d.kind]} · {d.sector}
+        </span>
+      </div>
+      <h1 class="mt-6 max-w-4xl text-[2.4rem] leading-[1.05] md:text-[3.4rem]">{d.title}</h1>
+      <p class="mt-6 max-w-2xl text-lg text-[var(--color-ink-2)]">{d.summary}</p>
+    </header>
+
+    <!-- Result strip -->
+    <section class="border-y border-[var(--color-line)] bg-[var(--color-paper-2)]">
+      <div class="wrap reveal grid gap-px py-2 sm:grid-cols-3">
+        {
+          d.result.map((r, i) => (
+            <div data-stagger style={`--i:${i}`} class="py-6 sm:px-6">
+              <p class="metric text-[var(--color-ink)]" data-count={r.metric}>{r.metric}</p>
+              <p class="mt-1 text-[0.95rem] text-[var(--color-ink-2)]">{r.label}</p>
+              <p class="mt-2 font-[var(--font-mono)] text-[0.68rem] leading-relaxed text-[var(--color-ink-3)]">
+
+                {r.source}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <div class="wrap grid gap-12 py-14 md:grid-cols-[1.3fr_0.7fr] md:py-20">
+      <div class="max-w-2xl">
+        <section>
+          <h2 class="eyebrow">Problem</h2>
+          <p class="mt-3 text-lg text-[var(--color-ink-2)]">{d.problem}</p>
+        </section>
+
+        <section class="mt-12">
+          <h2 class="eyebrow">Before — the manual workflow</h2>
+          <ol class="mt-4 space-y-0 border-l-2 border-[var(--color-line)]">
+            {
+              d.before.map((b, i) => (
+                <li class="relative pl-6 pb-5">
+                  <span class="absolute -left-[7px] top-1.5 h-3 w-3 rounded-full border-2 border-[var(--color-line)] bg-[var(--color-paper)]"></span>
+
+                  <span class="font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]">{String(i + 1).padStart(2, '0')}</span>
+
+                  <p class="text-[var(--color-ink-2)]">{b}</p>
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+
+        <section class="mt-12">
+
+          <h2 class="eyebrow">Intervention</h2>
+          <p class="mt-3 text-lg text-[var(--color-ink-2)]">{d.intervention}</p>
+        </section>
+
+        <section class="mt-12 prose-notes">
+          <Content />
+        </section>
+      </div>
+
+      <aside class="md:sticky md:top-24 md:self-start">
+        <div class="border border-[var(--color-line)] p-6">
+          <h2 class="eyebrow">Stack</h2>
+          <ul class="mt-4 space-y-2">
+            {d.stack.map((s) => <li class="font-[var(--font-mono)] text-sm text-[var(--color-ink-2)]">{s}</li>)}
+
+          </ul>
+          <hr class="rule my-6" />
+          <h2 class="eyebrow">Human impact</h2>
+          <p class="mt-3 text-[0.95rem] text-[var(--color-ink-2)]">{d.humanImpact}</p>
+        </div>
+      </aside>
+    </div>
+
+    <section class="border-t border-[var(--color-line)]">
+      <div class="wrap py-20 text-center md:py-24">
+        <h2 class="mx-auto max-w-2xl text-3xl md:text-4xl">Have a workflow like this?</h2>
+        <a href="/contact/" class="btn btn-primary mt-8">Map a workflow like this</a>
+      </div>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .prose-notes :global(h2) {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  .prose-notes :global(p) {
+    color: var(--color-ink-2);
+    margin-bottom: 1rem;
+  }
+  .prose-notes :global(blockquote) {
+    border-left: 3px solid var(--color-signal);
+    padding-left: 1rem;
+    font-style: italic;
+    color: var(--color-ink-3);
+    margin: 1.25rem 0;
+  }
+  .prose-notes :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--color-paper-2);
+    padding: 0.1em 0.35em;
+    border-radius: 2px;
+  }
+</style>

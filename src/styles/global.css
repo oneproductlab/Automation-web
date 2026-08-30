@@ -1,0 +1,523 @@
+@import 'tailwindcss';
+
+/*
+  Self-hosted variable fonts.
+
+  Bundled rather than linked from a font CDN so text paints on the first
+  connection instead of waiting on a third-party round trip. The display serif
+  is the LCP element on nearly every page, so this is the single largest
+  perceived-performance win available here.
+*/
+@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/ibm-plex-sans';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+
+/*
+  Metric-matched fallbacks.
+
+  Fontsource ships `font-display: swap`, so the fallback face renders first and
+  is then replaced. Without adjusted metrics that swap shifts every line of text
+  and costs real CLS on the very headings that are the LCP element. These
+  overrides size the system fallback to match the webfont so the swap is close
+  to invisible.
+*/
+@font-face {
+  font-family: 'Fraunces Fallback';
+  src: local('Georgia'), local('Times New Roman'), local('serif');
+  size-adjust: 103%;
+  ascent-override: 92%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Plex Sans Fallback';
+  src: local('Helvetica Neue'), local('Arial'), local('sans-serif');
+  size-adjust: 104%;
+  ascent-override: 95%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+
+/*
+  Flowzora design system
+  -------------------------
+  Editorial, ink-on-paper. No gradients, no glow, no glassmorphism.
+  Type: Fraunces (display serif) + IBM Plex Sans (body grotesque) + IBM Plex Mono (system labels).
+  One restrained accent used sparingly for interaction and diagram highlights.
+*/
+
+@theme {
+  /* Paper / ink neutrals (warm) */
+  --color-paper: #f4f1ea;
+  --color-paper-2: #ece7dc;
+  /*
+    A third surface step. Two tones forced every section to alternate between the
+    same two backgrounds, which is what made long pages read as monotonous; a
+    third lets the rhythm vary without introducing a new hue.
+  */
+  --color-paper-3: #e2dccd;
+  --color-ink: #17150f;
+  --color-ink-2: #3d3a31;
+  /*
+    Muted text. Darkened from #6b675b so it still clears 4.5:1 against the
+    third surface tone, which is the lowest-contrast background on the site.
+  */
+  --color-ink-3: #605c51;
+  --color-line: #d8d2c4;
+  --color-line-2: #c7c0b0;
+
+  /* Single utilitarian accent: signal rust */
+  --color-signal: #b6431f;
+  --color-signal-ink: #8a3417;
+
+  /* Dark section (used sparingly, not navy, not glowing) */
+  --color-slate: #201d16;
+  --color-slate-2: #2b2820;
+
+  /*
+    Inverted surface scale. A dark band needs the same range of ink levels the
+    light one has. Without these, every dark section carries one-off hex values
+    in the markup and the palette quietly drifts out of the design system.
+  */
+  --color-inverse-ink: #f4f1ea;
+  --color-inverse-ink-2: #cbc6b8;
+  --color-inverse-ink-3: #a8a291;
+  --color-inverse-ink-4: #8a8574;
+  --color-inverse-line: #4a463a;
+  --color-signal-bright: #e0662f;
+
+  --font-display: 'Fraunces Variable', 'Fraunces Fallback', Georgia, 'Times New Roman', serif;
+  --font-sans: 'IBM Plex Sans Variable', 'Plex Sans Fallback', ui-sans-serif, system-ui,
+    -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --radius: 3px;
+}
+
+/*
+  Dark mode.
+
+  The palette is redefined rather than filtered: the same warm ink-on-paper
+  relationship, inverted, so the site reads as the same object at night rather
+  than as a washed-out negative. The accent is lifted because rust at #b6431f
+  does not carry enough contrast against a dark surface.
+
+  Deliberately unlayered. Tailwind emits `@theme` tokens into the `theme` cascade
+  layer, and unlayered rules beat layered ones regardless of order — so this
+  override cannot be silently defeated by a change in layer sequence.
+
+  System preference only, no toggle: honoring the setting a visitor already
+  chose is the expected behavior, and a toggle adds persisted state for no gain.
+*/
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --color-paper: #17150f;
+    --color-paper-2: #1e1b14;
+    --color-paper-3: #262219;
+    --color-ink: #f2efe6;
+    --color-ink-2: #c8c3b4;
+    --color-ink-3: #918b7c;
+    --color-line: #353128;
+    --color-line-2: #423d32;
+
+    --color-signal: #e0662f;
+    --color-signal-ink: #ef8a55;
+
+    /* The inverted band drops darker so it still separates from the page. */
+    --color-slate: #0b0a07;
+    --color-slate-2: #141209;
+    --color-inverse-ink: #f2efe6;
+    --color-inverse-ink-2: #c8c3b4;
+    --color-inverse-ink-3: #918b7c;
+    --color-inverse-ink-4: #6f6a5d;
+    --color-inverse-line: #35312a;
+    --color-signal-bright: #f08b52;
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /*
+    One global reduced-motion policy, enforced here so individual components do
+    not each have to remember to opt out. Components still scope their own
+    animations to `prefers-reduced-motion: no-preference` where the static state
+    needs to differ, but this is the backstop.
+  */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 460;
+    letter-spacing: -0.015em;
+    line-height: 1.05;
+    text-wrap: balance;
+    scroll-margin-top: 5rem;
+  }
+
+  ::selection {
+    background: var(--color-signal);
+    color: var(--color-paper);
+  }
+
+  a {
+    color: inherit;
+    text-underline-offset: 3px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  /* Form controls inherit type by default in almost no browser. */
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 8rem;
+  }
+
+  ::placeholder {
+    color: var(--color-ink-3);
+    opacity: 1;
+  }
+}
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 76rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .wrap {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  /* Small uppercase mono label — the engineering signature */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+
+  .rule {
+    border: 0;
+    border-top: 1px solid var(--color-line);
+  }
+
+  /*
+    The one oversized typographic moment per page. Editorial layouts earn
+    attention through scale contrast, and without a step well above the heading
+    scale every section ends up shouting at the same volume.
+  */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 460;
+    font-size: clamp(2.6rem, 7.5vw, 5.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  /* Large figures used for proof. Tabular so digits do not jitter while counting. */
+  .metric {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /*
+    Prices, deliberately smaller than `.metric`. A range like "$8,000 – $18,000"
+    wraps to two lines at the proof scale, which makes one card taller than its
+    neighbours and inflates the whole row. This size keeps every tier on one
+    line, so the cards stay level and the section stops shouting.
+  */
+  .price {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 2.6vw, 2.15rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    text-wrap: nowrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.02em;
+    padding: 0.7rem 1.15rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-ink);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease,
+      transform 0.08s ease;
+  }
+  /* A small press response — the only physical feedback the interface gives. */
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .btn:disabled:active {
+    transform: none;
+  }
+
+  .btn-primary {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .btn-primary:hover {
+    background: var(--color-signal);
+    border-color: var(--color-signal);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-ink);
+  }
+  .btn-ghost:hover {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  /*
+    An underline that draws in on hover rather than switching color. Uses a
+    background gradient instead of text-decoration so the line can be animated
+    at all, and sits below the baseline where a real rule would.
+  */
+  .link-underline {
+    text-decoration: none;
+    background-image: linear-gradient(var(--color-signal), var(--color-signal));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1px;
+    padding-bottom: 2px;
+    box-shadow: inset 0 -1px 0 0 var(--color-line-2);
+    transition: background-size 0.28s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s ease;
+  }
+  .link-underline:hover {
+    background-size: 100% 1px;
+    color: var(--color-signal-ink);
+  }
+
+  /*
+    Progressive disclosure
+    ----------------------
+    The fix for a page that reads as a wall of text. Every list on this site was
+    rendering a label *and* its explanation at rest, which meant a six-item list
+    was really twelve pieces of copy competing for the same glance.
+
+    The description stays in the DOM — crawlers, screen readers and no-JS
+    visitors get the full text — but it is collapsed until the row is hovered,
+    focused or tapped. Text volume halves; content does not.
+
+    Collapsed with grid-template-rows rather than max-height, so the open state
+    is the content's real height instead of a guessed number that clips the
+    moment a sentence runs long.
+  */
+  .disclose {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition: grid-template-rows 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.24s ease;
+  }
+  .disclose > * {
+    overflow: hidden;
+    min-height: 0;
+  }
+  .disclose-host:hover .disclose,
+  .disclose-host:focus-visible .disclose,
+  .disclose-host:focus-within .disclose,
+  .disclose-host.is-open .disclose {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+
+  /*
+    Touch and narrow screens have no hover, and a tap that only reveals text is
+    a broken-feeling interaction. Below the breakpoint everything is simply
+    shown — the crowding this solves is a desktop-density problem.
+  */
+  @media (max-width: 767px), (hover: none) {
+    .disclose {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      transition: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .disclose {
+      transition: none;
+    }
+  }
+}
+
+/* Reveal-on-scroll: opt-in, and disabled under reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /*
+    Staggered children.
+
+    The delay is driven by an index custom property set in markup rather than by
+    nth-child rules, so a list of any length staggers correctly without the CSS
+    needing to know how many items exist. Capped at 6 steps: past that the last
+    item arrives so late it reads as a bug rather than as choreography.
+  */
+  .reveal.is-in > [data-stagger],
+  .reveal.is-in [data-stagger] {
+    animation: fz-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(min(var(--i, 0), 6) * 70ms);
+  }
+}
+
+/*
+  View transitions
+  ----------------
+  A short cross-fade with a small lift. Long enough to register as one continuous
+  surface, short enough that it never delays a click.
+*/
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: fz-vt-out 0.18s cubic-bezier(0.4, 0, 1, 1) both;
+  }
+  ::view-transition-new(root) {
+    animation: fz-vt-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+@keyframes fz-vt-out {
+  to { opacity: 0; }
+}
+@keyframes fz-vt-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+/*
+  Motion primitives
+  -----------------
+  The site should feel like automation quietly *running* — not decorated.
+  Every animation below is ambient, low-amplitude, and fully disabled under
+  prefers-reduced-motion. No parallax hijack, no scroll-jacking.
+*/
+
+/* A small live-status dot: something is running */
+.fz-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+.fz-live__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-signal);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-signal) 60%, transparent);
+}
+
+@keyframes fz-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fz-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+@keyframes fz-ping {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-signal) 55%, transparent); }
+  70% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-signal) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-signal) 0%, transparent); }
+}
+@keyframes fz-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes fz-dash {
+  to { stroke-dashoffset: -1000; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fz-live__dot { animation: fz-ping 2.4s ease-out infinite; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; }
+}

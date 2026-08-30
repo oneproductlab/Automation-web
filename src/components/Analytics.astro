@@ -1,0 +1,132 @@
+---
+/*
+  Analytics
+  ---------
+  Vercel Analytics and Speed Insights are cookieless and do not fingerprint, so
+  they run without consent under GDPR/ePrivacy.
+
+  The consent gate is therefore *not* shown by default. Nothing on the site
+  currently sets a cookie, and a banner that asks permission for nothing is pure
+  friction on the pages that matter most. It renders only on pages that opt in
+  via `needsConsent`, which is what an embedded scheduler or similar third-party
+  widget would do.
+*/
+interface Props {
+  /** Set on pages that embed a cookie-setting third party. */
+  needsConsent?: boolean;
+}
+
+const { needsConsent = false } = Astro.props;
+---
+
+<script>
+  import { inject } from '@vercel/analytics';
+  import { injectSpeedInsights } from '@vercel/speed-insights';
+
+  inject();
+  injectSpeedInsights();
+
+  // Conversion signal: a submitted inquiry is the only event worth tracking.
+  if (window.location.pathname.startsWith('/thank-you')) {
+    import('@vercel/analytics').then(({ track }) => track('contact_submitted'));
+  }
+</script>
+
+{
+  needsConsent && (
+    <div id="consent" class="consent" role="region" aria-label="Cookie preferences" hidden>
+      <p class="consent__text">
+        This page embeds a scheduling tool that sets cookies. Our own analytics are
+        cookieless either way.
+      </p>
+      <div class="consent__actions">
+        <button type="button" class="btn btn-ghost consent__btn" data-consent="declined">
+          Essential only
+        </button>
+        <button type="button" class="btn btn-primary consent__btn" data-consent="granted">
+          Allow
+        </button>
+      </div>
+    </div>
+
+  )
+}
+
+<script>
+  const KEY = 'fz-consent';
+  const banner = document.querySelector('#consent') as HTMLElement | null;
+
+  if (banner && !localStorage.getItem(KEY)) {
+    // Deferred so it never competes with the largest contentful paint.
+    window.setTimeout(() => {
+      banner.hidden = false;
+      banner.classList.add('is-in');
+    }, 1200);
+  }
+
+  banner?.querySelectorAll('[data-consent]').forEach((button) => {
+    button.addEventListener('click', () => {
+      localStorage.setItem(KEY, (button as HTMLElement).dataset.consent ?? 'declined');
+      banner.classList.remove('is-in');
+      window.setTimeout(() => (banner.hidden = true), 200);
+    });
+  });
+</script>
+
+<style>
+  .consent {
+    position: fixed;
+    inset-inline: 1rem;
+    bottom: 1rem;
+    z-index: 60;
+    margin-inline: auto;
+    max-width: 34rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1rem 1.15rem;
+    background: var(--color-paper);
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 30px -12px rgb(23 21 15 / 0.35);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .consent.is-in {
+    opacity: 1;
+    transform: none;
+  }
+  .consent__text {
+    font-size: 0.9rem;
+    color: var(--color-ink-2);
+    margin: 0;
+  }
+  .consent__actions {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .consent__btn {
+    flex: 1;
+    justify-content: center;
+  }
+  @media (min-width: 640px) {
+    .consent {
+
+      align-items: center;
+      max-width: 44rem;
+    }
+    .consent__actions {
+      flex-shrink: 0;
+    }
+    .consent__btn {
+      flex: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .consent {
+      transition: none;
+    }
+  }
+</style>

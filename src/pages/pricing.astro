@@ -1,0 +1,217 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Faq from '../components/Faq.astro';
+import Testimonials from '../components/Testimonials.astro';
+import { pricing, site } from '../data/site';
+
+const description =
+  'Workflow automation pricing: a $2,500 two-week Automation Map, first systems built for $8,000–$18,000 fixed scope, and ongoing partnerships from $6,000 per month.';
+
+
+const schema = [
+  {
+    '@type': 'OfferCatalog',
+    '@id': `${site.domain}/pricing/#catalog`,
+    name: 'Workflow automation engagements',
+    provider: { '@id': `${site.domain}/#organization` },
+    itemListElement: pricing.map((tier) => ({
+      '@type': 'Offer',
+      name: tier.name,
+      description: tier.summary,
+      priceCurrency: 'USD',
+      price: tier.priceValue,
+      priceSpecification: {
+        '@type': 'PriceSpecification',
+        priceCurrency: 'USD',
+        minPrice: tier.priceValue,
+        valueAddedTaxIncluded: false,
+      },
+      itemOffered: { '@type': 'Service', name: tier.name, description: tier.summary },
+    })),
+  },
+  {
+    '@type': 'FAQPage',
+    '@id': `${site.domain}/pricing/#faq`,
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'How much does workflow automation cost?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Most first projects land between $8,000 and $18,000 for a single workflow built, documented and handed over. A two-week Automation Map that scopes the work costs $2,500 and is credited against the build. Ongoing partnerships start at $6,000 per month.',
+
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Why do you publish your prices?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Because hiding them wastes everyone\u2019s time. Published ranges let you decide whether we are worth a conversation before you sit through one, and they hold us to a number rather than pricing off how badly you appear to need help.',
+
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What happens if the project takes longer than expected?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'The price does not move. Scope is fixed in writing after the Automation Map, so overruns are our problem to absorb, not yours to pay for. If you want to add scope mid-build we quote it separately rather than quietly extending the invoice.',
+
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Do you charge for the first conversation?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'No. The first call is free and ends with an honest answer about whether the workflow is worth automating yet. Only the Automation Map, which produces documented deliverables, is paid.',
+
+        },
+      },
+    ],
+  },
+];
+
+const faqs = [
+  {
+    q: 'Why do you publish your prices?',
+    a: 'Because hiding them wastes everyone\u2019s time. Published ranges let you decide whether we\u2019re worth a conversation before you sit through one, and they hold us to a number rather than pricing off how badly you appear to need help.',
+
+  },
+  {
+    q: 'What happens if the project takes longer than expected?',
+    a: 'The price does not move. Scope is fixed in writing after the Automation Map, so overruns are our problem to absorb, not yours to pay for. If you want to add scope mid-build, we quote it separately rather than quietly extending the invoice.',
+
+  },
+  {
+    q: 'Do you charge for the first conversation?',
+    a: 'No. The first call is free and ends with an honest answer about whether the workflow is worth automating yet. Only the Automation Map, which produces documented deliverables, is paid.',
+
+  },
+  {
+    q: 'What if you decide our workflow is not worth automating?',
+    a: 'We tell you, and we say why. Talking a company out of a build we could have sold is cheaper for us than delivering something that quietly fails to earn its cost.',
+
+  },
+  {
+    q: 'Who owns the code and the accounts?',
+    a: 'You do, from the first day. Credentials, repositories and infrastructure are in your name, and handover includes runbooks and diagrams so another engineer could pick the system up without us.',
+
+  },
+];
+---
+
+<Base title="Pricing" description={description} ogRoute="pricing" schema={schema}>
+  <section class="wrap pt-10 pb-14 md:pt-14">
+    <Breadcrumbs trail={[]} current="Pricing" />
+
+    <p class="eyebrow mt-8">Pricing</p>
+    <h1 class="mt-5 max-w-3xl text-[2.4rem] leading-[1.05] md:text-[3.4rem]">
+      What this costs, before you ask.
+    </h1>
+    <p class="mt-7 max-w-2xl text-lg text-[var(--color-ink-2)]">
+      Fixed scope, fixed price, written down before we start. Most first projects
+      land between <strong class="font-medium text-[var(--color-ink)]">$8,000 and $18,000</strong>.
+    </p>
+  </section>
+
+  <section class="wrap pb-8">
+    <div class="reveal grid gap-px border-y border-[var(--color-line)] bg-[var(--color-line)] lg:grid-cols-3">
+
+      {
+        pricing.map((tier, i) => (
+          <article data-stagger style={`--i:${i}`} class="flex flex-col bg-[var(--color-paper)] p-7 md:p-9">
+
+            <p class="font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]">
+              {String(i + 1).padStart(2, '0')} · {tier.duration}
+            </p>
+            <h2 class="mt-4 font-[var(--font-display)] text-2xl">{tier.name}</h2>
+            <p class="price mt-5">{tier.price}</p>
+            <p class="mt-2 font-[var(--font-mono)] text-xs uppercase tracking-[0.1em] text-[var(--color-ink-3)]">
+
+              {tier.unit}
+            </p>
+            <p class="mt-5 text-[0.95rem] text-[var(--color-ink-2)]">{tier.summary}</p>
+            <ul class="mt-6 space-y-2.5 border-t border-[var(--color-line)] pt-5">
+              {tier.includes.map((item) => (
+                <li class="flex gap-3 text-[0.92rem] text-[var(--color-ink-2)]">
+                  <span class="font-[var(--font-mono)] text-[var(--color-signal)]" aria-hidden="true">
+                    —
+
+                  </span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <a
+              href="/contact/"
+              class={`btn mt-7 justify-center ${i === 0 ? 'btn-primary' : 'btn-ghost'}`}
+            >
+              {i === 0 ? 'Start with a Map' : 'Talk it through'}
+            </a>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Risk reversal: for a young studio this does the work a testimonial would. -->
+  <section class="border-y border-[var(--color-line)] bg-[var(--color-paper-2)]">
+    <div class="wrap py-14 md:py-18">
+      <div class="grid gap-10 md:grid-cols-[0.8fr_1.2fr]">
+        <div>
+          <p class="eyebrow">How we keep it fair</p>
+          <h2 class="mt-4 text-3xl md:text-4xl">The number doesn't move.</h2>
+        </div>
+        <div class="grid gap-8 sm:grid-cols-2">
+          <div class="border-t border-[var(--color-line)] pt-4">
+            <h3 class="font-[var(--font-display)] text-xl">Scope is fixed in writing</h3>
+            <p class="mt-2 text-[0.95rem] text-[var(--color-ink-2)]">
+              Agreed after the Map, before any building. Overruns are ours to absorb.
+            </p>
+          </div>
+
+          <div class="border-t border-[var(--color-line)] pt-4">
+            <h3 class="font-[var(--font-display)] text-xl">The Map is credited</h3>
+            <p class="mt-2 text-[0.95rem] text-[var(--color-ink-2)]">
+              If you go ahead with the build, the $2,500 comes off the project fee.
+            </p>
+          </div>
+          <div class="border-t border-[var(--color-line)] pt-4">
+            <h3 class="font-[var(--font-display)] text-xl">You own everything</h3>
+            <p class="mt-2 text-[0.95rem] text-[var(--color-ink-2)]">
+              Code, accounts and documentation in your name from day one. No lock-in.
+            </p>
+          </div>
+          <div class="border-t border-[var(--color-line)] pt-4">
+            <h3 class="font-[var(--font-display)] text-xl">We'll talk you out of it</h3>
+            <p class="mt-2 text-[0.95rem] text-[var(--color-ink-2)]">
+              If a workflow isn't worth automating yet, we say so before you spend.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!--
+    Proof directly after the numbers. Price is the moment doubt peaks, and a
+    named client who paid and would say so publicly answers it better than any
+    further explanation of what the tiers include.
+  -->
+  <Testimonials eyebrow="Worth it, per the people who paid" heading="Signed, and checkable." />
+
+  <Faq items={faqs} title="Questions about cost" />
+
+  <section class="border-t border-[var(--color-line)]">
+    <div class="wrap py-20 text-center md:py-24">
+      <h2 class="mx-auto max-w-2xl text-3xl md:text-4xl">Start with one workflow.</h2>
+      <p class="mx-auto mt-5 max-w-xl text-[var(--color-ink-2)]">
+        The first conversation is free and ends with an honest answer.
+      </p>
+      <a href="/contact/" class="btn btn-primary mt-8">Map my workflow</a>
+    </div>
+  </section>
+</Base>

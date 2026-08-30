@@ -1,0 +1,39 @@
+---
+/*
+  AuthorCard
+  ----------
+  A named, verifiable human at the end of every article. This is the strongest
+  E-E-A-T signal available to a young studio: search and generative engines both
+  weight authorship, and an anonymous post is far harder to cite than one
+  attributed to a person whose background can be checked.
+*/
+import { Image } from 'astro:assets';
+import founderPhoto from '../assets/images/niraj.jpg';
+import { founder } from '../data/site';
+---
+
+<aside class="mt-14 border-t border-[var(--color-line)] pt-7">
+  <p class="eyebrow">Written by</p>
+  <div class="mt-4 flex flex-wrap items-start justify-between gap-6">
+    <div class="flex max-w-xl gap-5">
+      <Image
+        src={founderPhoto}
+        alt=""
+        width={128}
+        height={128}
+        loading="lazy"
+        class="h-16 w-16 shrink-0 rounded-full border border-[var(--color-line)] object-cover"
+      />
+      <div>
+        <p class="font-[var(--font-display)] text-xl">{founder.name}</p>
+        <p class="font-[var(--font-mono)] text-xs uppercase tracking-[0.1em] text-[var(--color-ink-3)]">
+          {founder.role}
+        </p>
+        <p class="mt-3 text-[0.95rem] text-[var(--color-ink-2)]">{founder.bio}</p>
+      </div>
+    </div>
+    <a href={founder.linkedin} rel="noopener" target="_blank" class="btn btn-ghost shrink-0">
+      LinkedIn ↗
+    </a>
+  </div>
+</aside>

@@ -1,0 +1,138 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import WorkflowSystem from '../components/WorkflowSystem.astro';
+import { approach, site, pricing } from '../data/site';
+
+// A three-step engagement is genuinely a HowTo, and this is the shape answer
+// engines use to render step-by-step results for "how does X work" queries.
+const schema = [
+  {
+    '@type': 'HowTo',
+    '@id': `${site.domain}/approach/#howto`,
+    name: 'How a workflow automation engagement runs',
+    description:
+      'A Flowzora engagement runs in three steps: we map the workflow as it actually happens, build it in visible weekly increments, then hand over documentation and ownership.',
+    totalTime: 'P5W',
+    estimatedCost: {
+      '@type': 'MonetaryAmount',
+      currency: 'USD',
+      value: pricing[1].priceValue,
+    },
+    step: approach.map((a, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: a.step,
+      text: a.blurb,
+      url: `${site.domain}/approach/#step-${i + 1}`,
+    })),
+  },
+];
+---
+
+<Base
+  title="Approach"
+  description="How a Flowzora engagement runs, from mapping the current process to handing over a system you own — fixed scope, documented as it ships."
+  ogRoute="approach"
+  schema={schema}
+>
+  <section class="wrap pt-10 pb-14 md:pt-14">
+    <Breadcrumbs trail={[]} current="Approach" />
+    <p class="eyebrow mt-8">Approach</p>
+    <h1 class="mt-5 max-w-3xl text-[2.4rem] leading-[1.05] md:text-[3.4rem]">
+      Working software early. A system you own at the end.
+    </h1>
+    <p class="mt-7 max-w-xl text-lg text-[var(--color-ink-2)]">
+      No three-month discovery, no black box. You see automation working within
+      weeks.
+    </p>
+
+    {/*
+      What the six steps below are building toward, shown once at the top. The
+      page otherwise asks the reader to hold an abstract process in their head
+      for six sections before anything is made concrete.
+    */}
+    <div class="reveal mt-12">
+      <WorkflowSystem />
+    </div>
+  </section>
+
+  <section class="wrap pb-8">
+    {
+      approach.map((a, i) => (
+        <div id={`step-${i + 1}`} class="grid scroll-mt-24 gap-8 border-t border-[var(--color-line)] py-12 md:grid-cols-[6rem_1fr] md:py-16">
+          <div>
+            <p class="font-[var(--font-mono)] text-sm text-[var(--color-ink-3)]">STEP {String(i + 1).padStart(2, '0')}</p>
+            <h2 class="mt-2 text-3xl">{a.step}</h2>
+          </div>
+          <p class="max-w-2xl text-lg text-[var(--color-ink-2)]">{a.blurb}</p>
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="bg-[var(--color-paper-2)] border-y border-[var(--color-line)]">
+    <div class="wrap py-16 md:py-20">
+      <p class="eyebrow">What you get</p>
+      <div class="mt-8 grid gap-8 md:grid-cols-3">
+        <div>
+          <h3 class="font-[var(--font-display)] text-xl">A map before a build</h3>
+          <p class="mt-2 text-[0.98rem] text-[var(--color-ink-2)]">
+            A clear diagram of your current process and where it leaks time —
+            useful even if you never build a thing with us.
+          </p>
+        </div>
+        <div>
+          <h3 class="font-[var(--font-display)] text-xl">Systems, documented</h3>
+          <p class="mt-2 text-[0.98rem] text-[var(--color-ink-2)]">
+            Runbooks and architecture diagrams, written as we go, so the
+            automation isn’t trapped in one person’s memory.
+          </p>
+        </div>
+        <div>
+          <h3 class="font-[var(--font-display)] text-xl">A clean hand-over</h3>
+          <p class="mt-2 text-[0.98rem] text-[var(--color-ink-2)]">
+            A walkthrough and ownership of everything we build. Run it, change
+            it, or bring us back — your choice, not a lock-in.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap py-16 md:py-24">
+    <div class="grid gap-10 md:grid-cols-2">
+      <div>
+        <p class="eyebrow">Why a studio, not…</p>
+        <h2 class="mt-4 text-3xl md:text-4xl">Where we fit.</h2>
+      </div>
+      <div class="space-y-6">
+        <div class="border-t border-[var(--color-line)] pt-4">
+          <h3 class="font-[var(--font-mono)] text-sm uppercase tracking-[0.08em]">vs. a freelancer</h3>
+          <p class="mt-2 text-[var(--color-ink-2)]">
+            Continuity and documentation. Systems that survive one person moving on.
+          </p>
+        </div>
+        <div class="border-t border-[var(--color-line)] pt-4">
+          <h3 class="font-[var(--font-mono)] text-sm uppercase tracking-[0.08em]">vs. a large consultancy</h3>
+          <p class="mt-2 text-[var(--color-ink-2)]">
+            Senior people do the building. Weeks, not quarters. No slide decks.
+          </p>
+        </div>
+        <div class="border-t border-[var(--color-line)] pt-4">
+          <h3 class="font-[var(--font-mono)] text-sm uppercase tracking-[0.08em]">vs. a generic AI agency</h3>
+          <p class="mt-2 text-[var(--color-ink-2)]">
+            We start from the problem, not from “let’s add an agent.”
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-[var(--color-line)]">
+    <div class="wrap py-20 text-center md:py-24">
+      <h2 class="mx-auto max-w-2xl text-3xl md:text-4xl">Start with one workflow.</h2>
+      <a href="/contact/" class="btn btn-primary mt-8">Start with step one</a>
+    </div>
+  </section>
+</Base>

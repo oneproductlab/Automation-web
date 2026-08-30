@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Flowzora">
+  <!--
+    Favicon cut of the mark: the node is scaled up and the core enlarged relative
+    to the lockup version, because at 16px a core sized to the header proportions
+    disappears entirely. The channel is kept — it is what makes this a flow mark
+    rather than a generic diamond.
+
+    The plate stays dark in both schemes so the icon reads as one consistent
+    object against light and dark browser chrome alike.
+  -->
+  <rect width="32" height="32" fill="#17150f" />
+  <path d="M0 16 L6 16 M26 16 L32 16" stroke="#f4f1ea" stroke-width="2.6" />
+  <path d="M16 6 L26 16 L16 26 L6 16 Z" stroke="#f4f1ea" stroke-width="2.6" fill="none" />
+  <circle cx="16" cy="16" r="4" fill="#b6431f" />
+</svg>

@@ -1,0 +1,376 @@
+---
+/*
+  BeforeAfter
+  -----------
+  The problem and the fix, argued as one diagram instead of three paragraphs.
+
+  This is the honest shape of most engagements: four tools wired point to point,
+  with a person in the middle acting as the integration layer, replaced by four
+  tools wired once into a system that runs itself. Six tangled edges become
+  four clean ones, and the person stops being load-bearing.
+
+  It replaced a prose section making the same point in three labelled rows. A
+  reader who sees the tangle understands it before they have finished reading
+  the heading, which is the entire argument for showing rather than telling.
+
+  The transition runs once when the section is reached, and can be replayed —
+  the "before" state is the reader's current reality and they should be able to
+  look at it for as long as they want.
+*/
+interface Props {
+  class?: string;
+}
+const { class: className = '' } = Astro.props;
+
+const tools = [
+  { id: 't1', label: 'Forms', x: 100, y: 74 },
+  { id: 't2', label: 'Inbox', x: 100, y: 306 },
+  { id: 't3', label: 'CRM', x: 620, y: 74 },
+  { id: 't4', label: 'Finance', x: 620, y: 306 },
+];
+
+/* Every pair — the cost of point-to-point wiring, drawn to scale. */
+const tangled = [
+  'M100,74 L100,306',
+  'M100,74 L620,74',
+  'M100,74 L620,306',
+  'M100,306 L620,74',
+  'M100,306 L620,306',
+  'M620,74 L620,306',
+];
+
+/* The same four tools, wired once into one system. */
+const clean = [
+  'M100,74 C240,74 260,190 300,190',
+  'M100,306 C240,306 260,190 300,190',
+  'M620,74 C480,74 460,190 420,190',
+  'M620,306 C480,306 460,190 420,190',
+];
+
+/*
+  Portrait variant for phones. Same four tools and the same argument, laid out
+  vertically so the labels can stay at a legible size instead of being scaled
+  into illegibility by a landscape viewBox.
+*/
+const toolsTall = [
+  { id: 'm1', label: 'Forms', x: 90, y: 46 },
+  { id: 'm2', label: 'Inbox', x: 270, y: 46 },
+  { id: 'm3', label: 'CRM', x: 90, y: 414 },
+  { id: 'm4', label: 'Finance', x: 270, y: 414 },
+];
+const tangledTall = [
+  'M90,46 L270,46',
+  'M90,46 L90,414',
+  'M90,46 L270,414',
+  'M270,46 L90,414',
+  'M270,46 L270,414',
+  'M90,414 L270,414',
+];
+const cleanTall = [
+  'M90,70 C90,150 130,180 150,200',
+  'M270,70 C270,150 230,180 210,200',
+  'M90,390 C90,310 130,280 150,260',
+  'M270,390 C270,310 230,280 210,260',
+];
+---
+
+<div class={`fz-ba ${className}`} data-ba>
+  <div class="fz-ba__bar">
+    <div class="fz-ba__states" role="tablist" aria-label="Compare before and after">
+      <button type="button" class="fz-ba__tab is-on" data-state="before" role="tab" aria-selected="true">
+        Today
+      </button>
+      <button type="button" class="fz-ba__tab" data-state="after" role="tab" aria-selected="false">
+        With a system
+      </button>
+    </div>
+    <p class="fz-ba__count" data-count-label aria-live="polite">6 connections, kept in sync by hand</p>
+  </div>
+
+  <div class="fz-ba__stage">
+    <svg viewBox="0 0 720 380" class="fz-ba__svg fz-ba__svg--wide" aria-hidden="true" focusable="false">
+      <g class="fz-ba__tangled">
+        {tangled.map((d) => <path d={d} pathLength="100" />)}
+      </g>
+      <g class="fz-ba__clean">
+        {clean.map((d) => <path d={d} pathLength="100" />)}
+      </g>
+
+      <!-- The middle. A person, then a system. -->
+      <g class="fz-ba__hub">
+        <rect class="fz-ba__hub-box" x="300" y="160" width="120" height="60" rx="4" />
+        <text class="fz-ba__hub-text" x="360" y="195" text-anchor="middle">Someone</text>
+      </g>
+      <g class="fz-ba__hub fz-ba__hub--after">
+        <rect class="fz-ba__hub-box" x="300" y="160" width="120" height="60" rx="4" />
+        <text class="fz-ba__hub-text" x="360" y="195" text-anchor="middle">One system</text>
+      </g>
+
+      {
+        tools.map((t) => (
+          <g class="fz-ba__tool">
+            <rect x={t.x - 58} y={t.y - 22} width="116" height="44" rx="4" />
+            <text x={t.x} y={t.y + 5} text-anchor="middle">{t.label}</text>
+          </g>
+        ))
+      }
+    </svg>
+
+    <svg viewBox="0 0 360 460" class="fz-ba__svg fz-ba__svg--tall" aria-hidden="true" focusable="false">
+      <g class="fz-ba__tangled">
+        {tangledTall.map((d) => <path d={d} pathLength="100" />)}
+      </g>
+      <g class="fz-ba__clean">
+        {cleanTall.map((d) => <path d={d} pathLength="100" />)}
+      </g>
+
+      <g class="fz-ba__hub">
+        <rect class="fz-ba__hub-box" x="150" y="200" width="60" height="60" rx="4" />
+        <text class="fz-ba__hub-text" x="180" y="235" text-anchor="middle">You</text>
+      </g>
+      <g class="fz-ba__hub fz-ba__hub--after">
+        <rect class="fz-ba__hub-box" x="130" y="200" width="100" height="60" rx="4" />
+        <text class="fz-ba__hub-text" x="180" y="235" text-anchor="middle">System</text>
+      </g>
+
+      {
+        toolsTall.map((t) => (
+          <g class="fz-ba__tool">
+            <rect x={t.x - 56} y={t.y - 24} width="112" height="48" rx="4" />
+            <text x={t.x} y={t.y + 6} text-anchor="middle">{t.label}</text>
+          </g>
+        ))
+      }
+    </svg>
+  </div>
+
+  <p class="fz-ba__note" data-note>
+    Every tool wired to every other tool, with a person holding it together. Miss
+    a step and the records quietly disagree.
+  </p>
+</div>
+
+<style>
+  .fz-ba {
+    border: 1px solid var(--color-line);
+    border-radius: calc(var(--radius) * 3);
+    background: var(--color-paper);
+    overflow: hidden;
+  }
+
+  .fz-ba__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-paper-2);
+  }
+
+  .fz-ba__states {
+    display: inline-flex;
+    padding: 2px;
+    border: 1px solid var(--color-line-2);
+    border-radius: var(--radius);
+    background: var(--color-paper);
+  }
+  .fz-ba__tab {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    padding: 0.35rem 0.75rem;
+    border: 0;
+    border-radius: 2px;
+    background: transparent;
+    color: var(--color-ink-3);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  .fz-ba__tab.is-on {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  .fz-ba__count {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-ink-3);
+  }
+
+  .fz-ba__stage {
+    padding: 0.5rem;
+    background-image: radial-gradient(var(--color-line-2) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .fz-ba__svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /*
+    Two shapes, one diagram.
+
+    The landscape board squeezed to 324px on a phone, which scaled its 15px
+    labels to under 7px — present, but unreadable, which is worse than absent.
+    Below 640px the same four tools are stacked into a portrait board where the
+    type stays at a real reading size.
+  */
+  .fz-ba__svg--wide { display: none; }
+  @media (min-width: 640px) {
+    .fz-ba__svg--wide { display: block; }
+    .fz-ba__svg--tall { display: none; }
+  }
+
+  /* Edges */
+  .fz-ba__tangled path,
+  .fz-ba__clean path {
+    fill: none;
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+    transition: opacity 0.5s ease, stroke-dashoffset 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .fz-ba__tangled path {
+    stroke: var(--color-ink-3);
+    stroke-dasharray: 5 4;
+    opacity: 1;
+  }
+  .fz-ba__clean path {
+    stroke: var(--color-signal);
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    opacity: 0;
+  }
+
+  .fz-ba.is-after .fz-ba__tangled path {
+    opacity: 0;
+  }
+  .fz-ba.is-after .fz-ba__clean path {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  /* Staggered so the four routes read as being wired one at a time. */
+  .fz-ba.is-after .fz-ba__clean path:nth-child(1) { transition-delay: 0.05s; }
+  .fz-ba.is-after .fz-ba__clean path:nth-child(2) { transition-delay: 0.15s; }
+  .fz-ba.is-after .fz-ba__clean path:nth-child(3) { transition-delay: 0.25s; }
+  .fz-ba.is-after .fz-ba__clean path:nth-child(4) { transition-delay: 0.35s; }
+
+  /* Tools */
+  .fz-ba__tool rect {
+    fill: var(--color-paper);
+    stroke: var(--color-line-2);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+  .fz-ba__tool text {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    fill: var(--color-ink-2);
+  }
+
+  /* Hub */
+  .fz-ba__hub {
+    transition: opacity 0.45s ease;
+  }
+  .fz-ba__hub-box {
+    fill: var(--color-paper);
+    stroke: var(--color-ink);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 4;
+    vector-effect: non-scaling-stroke;
+  }
+  .fz-ba__hub-text {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    fill: var(--color-ink);
+  }
+  .fz-ba__hub--after {
+    opacity: 0;
+  }
+  .fz-ba__hub--after .fz-ba__hub-box {
+    stroke: var(--color-signal);
+    stroke-dasharray: none;
+  }
+  .fz-ba__hub--after .fz-ba__hub-text {
+    fill: var(--color-signal-ink);
+  }
+  .fz-ba.is-after .fz-ba__hub { opacity: 0; }
+  .fz-ba.is-after .fz-ba__hub--after { opacity: 1; }
+
+  .fz-ba__note {
+    margin: 0;
+    padding: 0.85rem 1rem;
+    border-top: 1px solid var(--color-line);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--color-ink-2);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fz-ba__tangled path,
+    .fz-ba__clean path,
+    .fz-ba__hub {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const BEFORE_NOTE =
+    'Every tool wired to every other tool, with a person holding it together. Miss a step and the records quietly disagree.';
+  const AFTER_NOTE =
+    'Wired once, through one system. The same four tools, four connections, and nobody in the middle re-typing.';
+
+  document.querySelectorAll<HTMLElement>('[data-ba]').forEach((root) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('.fz-ba__tab'));
+    const note = root.querySelector<HTMLElement>('[data-note]');
+    const count = root.querySelector<HTMLElement>('[data-count-label]');
+
+    const set = (state: string) => {
+      const after = state === 'after';
+      root.classList.toggle('is-after', after);
+      tabs.forEach((t) => {
+        const on = t.dataset.state === state;
+        t.classList.toggle('is-on', on);
+        t.setAttribute('aria-selected', String(on));
+      });
+      if (note) note.textContent = after ? AFTER_NOTE : BEFORE_NOTE;
+      if (count) {
+        count.textContent = after
+          ? '4 connections, kept in sync by the system'
+          : '6 connections, kept in sync by hand';
+      }
+    };
+
+    tabs.forEach((t) => t.addEventListener('click', () => set(t.dataset.state ?? 'before')));
+
+    /*
+      Resolve to "after" once, shortly after the diagram is reached. The reader
+      gets to see the tangle they recognise first, then watch it resolve — the
+      order matters, because the tangle is the part they came in believing is
+      normal.
+    */
+    if (
+      'IntersectionObserver' in window &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      let played = false;
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !played) {
+              played = true;
+              window.setTimeout(() => set('after'), 1100);
+              io.disconnect();
+            }
+          });
+        },
+        { threshold: 0.45 }
+      );
+      io.observe(root);
+    }
+  });
+</script>

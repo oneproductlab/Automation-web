@@ -1,0 +1,242 @@
+---
+/*
+  Testimonials
+  ------------
+  Named, dated, linked. The design does one job: make it obvious these are real
+  and checkable in one click.
+
+  Every choice here is about verifiability rather than decoration. The name is
+  a link to the profile that wrote the words, and the role and company are the
+  person's own. A reader who doubts a quote can be on the profile that wrote it
+  in one click, which is worth more than any amount of styling.
+
+  No carousel. Auto-rotating quotes hide two thirds of the evidence and take
+  control away from someone who is reading carefully — which is exactly the
+  person about to spend money.
+*/
+import { testimonials } from '../data/site';
+
+interface Props {
+  /** Render on the dark surface, for use between light sections. */
+  dark?: boolean;
+  /**
+   * Sit on the base paper rather than the tinted surface. Needed wherever the
+   * neighbouring section is already `paper-2`, or the two run together into
+   * one undifferentiated block.
+   */
+  plain?: boolean;
+  heading?: string;
+  eyebrow?: string;
+  /**
+   * Which quote is given the large treatment. Index, not a flag on the data,
+   * so the running order can be changed for a given placement without editing
+   * the source of truth.
+   */
+  featured?: number;
+}
+const {
+  dark = false,
+  plain = false,
+  eyebrow = 'What clients say',
+  heading = 'Verified, and signed.',
+  featured = 0,
+} = Astro.props;
+
+/*
+  One large, two small.
+
+  Three equal columns gave the weakest quote the same authority as the
+  strongest and forced the reader to choose an entry point. A featured quote
+  states which one to read first, and the two beside it become corroboration —
+  which is the job they were always doing.
+*/
+const lead = testimonials[featured];
+const rest = testimonials.filter((_, i) => i !== featured);
+---
+
+<section
+  class={
+    dark
+      ? 'bg-[var(--color-slate)] text-[var(--color-inverse-ink)]'
+      : plain
+        ? 'border-b border-[var(--color-line)]'
+        : 'border-y border-[var(--color-line)] bg-[var(--color-paper-2)]'
+  }
+>
+  <div class="wrap py-16 md:py-20">
+    <div class="max-w-xl">
+      <p class={`eyebrow ${dark ? 'text-[var(--color-inverse-ink-3)]' : ''}`}>{eyebrow}</p>
+      <h2 class="mt-4 text-3xl md:text-4xl">{heading}</h2>
+      <p
+        class={`mt-5 text-[0.95rem] ${dark ? 'text-[var(--color-inverse-ink-2)]' : 'text-[var(--color-ink-2)]'}`}
+      >
+        Every quote below is a public LinkedIn recommendation. Click any name to
+        read it on their profile.
+      </p>
+    </div>
+
+    <div class="reveal mt-12 grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
+      <!-- The lead quote. Full text, never truncated. -->
+      <figure
+        data-stagger
+        style="--i:0"
+        class={`flex flex-col border-t-2 pt-6 ${
+          dark ? 'border-[var(--color-signal-bright)]' : 'border-[var(--color-signal)]'
+        }`}
+      >
+        <p class="font-[var(--font-display)] text-2xl leading-snug md:text-[1.75rem]">
+          {lead.pullQuote}
+        </p>
+        <blockquote
+          class={`mt-5 flex-1 leading-relaxed ${
+            dark ? 'text-[var(--color-inverse-ink-2)]' : 'text-[var(--color-ink-2)]'
+          }`}
+        >
+          {lead.quote}
+        </blockquote>
+        <figcaption class="mt-6">
+          <a
+            href={lead.linkedin}
+            rel="noopener nofollow"
+            target="_blank"
+            class="link-underline font-medium"
+          >
+            {lead.name}
+          </a>
+          <p
+            class={`mt-1 text-[0.85rem] ${
+              dark ? 'text-[var(--color-inverse-ink-3)]' : 'text-[var(--color-ink-3)]'
+            }`}
+          >
+            {lead.role}
+            {lead.company ? ` · ${lead.company}` : ''}
+          </p>
+        </figcaption>
+      </figure>
+
+      <!-- The corroborating pair, stacked and clamped. -->
+      <ul class="grid content-start gap-8">
+        {
+          rest.map((t, i) => (
+            <li
+              data-stagger
+              style={`--i:${i + 1}`}
+              class={`fz-quote flex flex-col border-t pt-5 ${
+                dark ? 'border-[var(--color-inverse-line)]' : 'border-[var(--color-line-2)]'
+              }`}
+            >
+              <p class="font-[var(--font-display)] text-lg leading-snug">{t.pullQuote}</p>
+
+              {/*
+                Clamped to three lines. The class is added by script, so with
+                JavaScript unavailable the full quote renders and the toggle
+                stays hidden — the evidence is never dependent on JS.
+              */}
+              <blockquote
+                data-quote
+                class={`fz-quote__body mt-3 text-[0.9rem] leading-relaxed ${
+                  dark ? 'text-[var(--color-inverse-ink-2)]' : 'text-[var(--color-ink-2)]'
+                }`}
+              >
+                {t.quote}
+              </blockquote>
+
+              <button
+                type="button"
+                data-more
+                hidden
+                aria-expanded="false"
+                class={`fz-quote__more mt-2 self-start font-[var(--font-mono)] text-xs ${
+                  dark ? 'text-[var(--color-signal-bright)]' : 'text-[var(--color-signal-ink)]'
+                }`}
+              >
+                Read the full quote
+              </button>
+
+              <footer class="mt-4">
+                <a
+                  href={t.linkedin}
+                  rel="noopener nofollow"
+                  target="_blank"
+                  class="link-underline text-[0.95rem] font-medium"
+                >
+                  {t.name}
+                </a>
+                <p
+                  class={`mt-1 text-[0.82rem] ${
+                    dark ? 'text-[var(--color-inverse-ink-3)]' : 'text-[var(--color-ink-3)]'
+                  }`}
+                >
+                  {t.role}
+                  {t.company ? ` · ${t.company}` : ''}
+                </p>
+              </footer>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  /*
+    Truncation is applied via a class rather than by default, so the markup
+    that ships without JavaScript is the complete, readable quote.
+  */
+  .fz-quote__body.is-clamped {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+  }
+
+  .fz-quote__more {
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 1px;
+    cursor: pointer;
+  }
+  .fz-quote__more:hover {
+    opacity: 0.75;
+  }
+</style>
+
+<script>
+  /*
+    Only clamp quotes that are actually long enough to need it. Adding a "read
+    more" control to a quote that already fits is a small lie about how much
+    text is hidden, and it makes two visually identical cards behave
+    differently for no reason.
+  */
+  function initQuotes() {
+    document.querySelectorAll<HTMLElement>('.fz-quote').forEach((card) => {
+      const body = card.querySelector<HTMLElement>('[data-quote]');
+      const btn = card.querySelector<HTMLButtonElement>('[data-more]');
+      if (!body || !btn) return;
+
+      const full = body.scrollHeight;
+      body.classList.add('is-clamped');
+      // `scrollHeight` still reports the full content under -webkit-line-clamp,
+      // so the visible height is `clientHeight` and the comparison must use it.
+      if (body.clientHeight >= full - 2) {
+        // Nothing was actually cut off.
+        body.classList.remove('is-clamped');
+        return;
+      }
+
+      btn.hidden = false;
+      btn.addEventListener('click', () => {
+        const open = body.classList.toggle('is-clamped') === false;
+        btn.setAttribute('aria-expanded', String(open));
+        btn.textContent = open ? 'Show less' : 'Read the full quote';
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initQuotes);
+  } else {
+    initQuotes();
+  }
+</script>

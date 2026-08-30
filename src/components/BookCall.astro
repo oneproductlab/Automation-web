@@ -1,0 +1,85 @@
+---
+/*
+  BookCall
+  --------
+  Calendly, loaded only on interaction.
+
+  Embedding the widget directly would pull ~150KB of third-party JavaScript and
+  set cookies on every visit to the page, whether or not anyone intends to book.
+  Loading it on click keeps the page fast and keeps the cookie question honest:
+  nothing third-party runs until the visitor asks for it.
+
+  Set `url` in src/data/site.ts once the dedicated event type exists.
+*/
+import { site } from '../data/site';
+
+interface Props {
+  class?: string;
+  label?: string;
+}
+const { class: className = '', label = 'Book a call' } = Astro.props;
+---
+
+{
+  site.calendly ? (
+    <div class={className}>
+      <button type="button" class="btn btn-ghost" data-calendly={site.calendly}>
+        {label}
+      </button>
+      <div id="calendly-embed" class="calendly" hidden />
+    </div>
+  ) : (
+    <a href="/contact/" class={`btn btn-ghost ${className}`}>
+      {label}
+    </a>
+
+  )
+}
+
+<script>
+  // Third-party script is fetched on first click, never on page load.
+  const trigger = document.querySelector('[data-calendly]') as HTMLButtonElement | null;
+  const target = document.querySelector('#calendly-embed') as HTMLElement | null;
+  let loaded = false;
+
+  trigger?.addEventListener('click', () => {
+    if (loaded || !target) return;
+    loaded = true;
+    trigger.disabled = true;
+    trigger.textContent = 'Loading...';
+
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'https://assets.calendly.com/assets/external/widget.css';
+    document.head.appendChild(css);
+
+    const script = document.createElement('script');
+    script.src = 'https://assets.calendly.com/assets/external/widget.js';
+    script.async = true;
+    script.onload = () => {
+      target.hidden = false;
+      // @ts-expect-error — injected by the Calendly widget script.
+      window.Calendly?.initInlineWidget({
+        url: trigger.dataset.calendly,
+        parentElement: target,
+      });
+      trigger.hidden = true;
+    };
+
+    script.onerror = () => {
+      trigger.disabled = false;
+      trigger.textContent = 'Booking unavailable — email us instead';
+    };
+    document.body.appendChild(script);
+  });
+</script>
+
+<style>
+  .calendly {
+    min-height: 42rem;
+    margin-top: 1.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+</style>

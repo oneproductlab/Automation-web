@@ -1,0 +1,30 @@
+name: CI
+
+# Nothing broken should reach production. This runs the same checks locally
+# available via `npm run check`, on every push and pull request.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Type and content-schema check
+        run: npx astro check
+
+      - name: Unit tests
+        run: npx vitest run
+
+      - name: Production build
+        run: npm run build

@@ -1,0 +1,75 @@
+---
+/*
+  Flowzora mark
+  -------------
+  A routing node sitting on a channel: data enters from the left, passes through
+  the system, and leaves on the right. The rust core is the record being handled
+  — the same "signal" language the diagrams use, where rust always means the live
+  thing moving through.
+
+  It is a real flowchart primitive rather than a decorative shape, drawn on the
+  same geometry as WorkflowSystem and ConnectedSystems: 2px strokes, hard
+  corners, no curves. Chosen over a lettermark because the proposition is flow
+  through a system, not the initial of a name.
+*/
+import { site } from '../data/site';
+
+interface Props {
+  class?: string;
+  /** Render the mark alone, without the wordmark beside it. */
+  markOnly?: boolean;
+}
+const { class: className = '', markOnly = false } = Astro.props;
+---
+
+<span class={`fz-logo inline-flex items-center gap-2.5 ${className}`} aria-label={site.name}>
+  <svg
+    class="fz-logo__mark shrink-0"
+    width="22"
+    height="22"
+    viewBox="0 0 24 24"
+    fill="none"
+
+    aria-hidden="true"
+  >
+    <!-- The channel: in on the left, out on the right -->
+    <path class="fz-logo__in" d="M0 12 L5 12" stroke="currentColor" stroke-width="2" />
+    <path class="fz-logo__out" d="M19 12 L24 12" stroke="currentColor" stroke-width="2" />
+    <!-- The node: where the work happens -->
+    <path d="M12 5 L19 12 L12 19 L5 12 Z" stroke="currentColor" stroke-width="2" />
+    <!-- The record in transit -->
+    <circle class="fz-logo__core" cx="12" cy="12" r="2.5" fill="var(--color-signal)" />
+  </svg>
+
+  {
+    !markOnly && (
+      <span class="fz-logo__word font-[var(--font-mono)] text-[0.95rem] font-medium uppercase tracking-[0.08em]">
+
+        {site.name}
+      </span>
+    )
+  }
+</span>
+
+<style>
+  .fz-logo__core {
+    transform-origin: 12px 12px;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /*
+    On hover the core advances a fraction along the channel — the same "something
+    is running" idea the diagrams use, at the smallest amplitude that still
+    registers. Anything larger would be decoration in a nav bar.
+  */
+  a:hover .fz-logo__core,
+
+  .fz-logo:hover .fz-logo__core {
+    transform: translateX(2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fz-logo__core {
+      transition: none;
+    }
+  }
+</style>

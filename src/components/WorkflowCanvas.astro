@@ -1,0 +1,472 @@
+---
+/*
+  WorkflowCanvas
+  --------------
+  The hero asset: a workflow board that visibly *runs*.
+
+  This exists because the site sells invisible work. Describing automation in a
+  paragraph asks the reader to imagine it; showing a node light up, a value move
+  along an edge and a run report "complete" demonstrates it in about four
+  seconds. It is the argument, not an illustration of an argument made above it.
+
+  Two layouts, one DOM. Above 760px the nodes are absolutely positioned on a
+  dotted board and joined by SVG curves, exactly like the tools our buyers
+  already use. Below it the same nodes stack into a labeled sequence and the
+  curves are dropped — a five-node canvas at 360px wide is unreadable, and
+  shrinking the type to force it is how diagrams become decoration.
+
+  Motion is informational: nothing moves that is not carrying state. Under
+  `prefers-reduced-motion` the whole run resolves to its finished state, which
+  is the honest still frame of what the animation says.
+*/
+interface Props {
+  /** Rendered as the accessible description of the whole board. */
+  caption?: string;
+}
+
+const { caption = 'An enquiry, handled end to end' } = Astro.props;
+
+/*
+  `step` is the beat of the run each node belongs to, not its index — the two
+  approval branches share beat 2 because they genuinely happen at once. Driving
+  the animation from the data means the sequence cannot drift out of sync with
+  the diagram when a node is added.
+*/
+const nodes = [
+  { id: 'n1', label: 'New enquiry', meta: 'form · email · chat', kind: 'input', step: 0, x: 12, y: 50 },
+  { id: 'n2', label: 'Read & classify', meta: 'model + rules', kind: 'logic', step: 1, x: 37, y: 50 },
+  { id: 'n3', label: 'Approve', meta: 'human in the loop', kind: 'human', step: 2, x: 62, y: 23.1 },
+  { id: 'n4', label: 'CRM updated', meta: 'record created', kind: 'system', step: 2, x: 62, y: 76.9 },
+  { id: 'n5', label: 'Team notified', meta: 'Slack · email', kind: 'output', step: 3, x: 88, y: 50 },
+];
+
+/*
+  Edge paths are authored in the SVG's own coordinate space (1000×520) so the
+  curves stay glued to the node anchors at every width, rather than being
+  recomputed in JavaScript on resize.
+*/
+const edges = [
+  { d: 'M225,260 L265,260', step: 0 },
+  { d: 'M475,260 C495,260 495,120 515,120', step: 1 },
+  { d: 'M475,260 C495,260 495,400 515,400', step: 1 },
+  { d: 'M725,120 C745,120 755,260 775,260', step: 2 },
+  { d: 'M725,400 C745,400 755,260 775,260', step: 2 },
+];
+
+const totalSteps = 4;
+---
+
+<figure class="fz-canvas" data-steps={totalSteps}>
+  <div class="fz-canvas__bar">
+    <span class="fz-canvas__title">
+      <span class="fz-canvas__dot" aria-hidden="true"></span>
+      Enquiry intake
+    </span>
+    <span class="fz-canvas__status" data-status aria-hidden="true">Running</span>
+  </div>
+
+  <div class="fz-canvas__board" role="img" aria-label={`${caption}: ${nodes.map((n) => n.label).join(', then ')}. Runs without anyone touching a keyboard.`}>
+    <svg class="fz-canvas__wires" viewBox="0 0 1000 520" aria-hidden="true" focusable="false">
+      {
+        edges.map((e) => (
+          <g class="fz-wire" data-step={e.step}>
+            <path class="fz-wire__base" d={e.d} pathLength="100" />
+            <path class="fz-wire__draw" d={e.d} pathLength="100" />
+            <path class="fz-wire__pulse" d={e.d} pathLength="100" />
+          </g>
+        ))
+      }
+    </svg>
+
+    <ul class="fz-canvas__nodes">
+      {
+        nodes.map((n) => (
+          <li
+            class={`fz-cn fz-cn--${n.kind}`}
+            data-step={n.step}
+            style={`--x:${n.x}%;--y:${n.y}%`}
+          >
+            <span class="fz-cn__kind">{n.kind === 'human' ? 'Human' : n.kind === 'logic' ? 'Logic' : n.kind === 'input' ? 'Trigger' : n.kind === 'output' ? 'Output' : 'System'}</span>
+            <span class="fz-cn__label">{n.label}</span>
+            <span class="fz-cn__meta">{n.meta}</span>
+            <span class="fz-cn__tick" aria-hidden="true">✓</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <figcaption class="fz-canvas__caption">{caption} — no hands on a keyboard.</figcaption>
+</figure>
+
+<style>
+  .fz-canvas {
+    margin: 0;
+    border: 1px solid var(--color-line);
+    border-radius: calc(var(--radius) * 3);
+    background: var(--color-paper);
+    overflow: hidden;
+  }
+
+  /* Window chrome. Signals "this is a system", not "this is an illustration". */
+  .fz-canvas__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-paper-2);
+  }
+  .fz-canvas__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: var(--color-ink-2);
+  }
+  .fz-canvas__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-signal);
+  }
+  .fz-canvas__status {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+    transition: color 0.3s ease;
+  }
+  .fz-canvas.is-complete .fz-canvas__status {
+    color: var(--color-signal-ink);
+  }
+
+  .fz-canvas__board {
+    position: relative;
+    padding: 1.25rem;
+    /* The dotted board. Two dot layers would be noise; one is enough to read. */
+    background-image: radial-gradient(var(--color-line-2) 1px, transparent 1px);
+    background-size: 22px 22px;
+    background-position: -1px -1px;
+  }
+
+  .fz-canvas__wires {
+    display: none;
+  }
+
+  .fz-canvas__nodes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .fz-cn {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    padding: 0.7rem 2rem 0.7rem 0.85rem;
+    border: 1px solid var(--color-line-2);
+    border-left-width: 3px;
+    border-radius: var(--radius);
+    background: var(--color-paper);
+    /*
+      Nodes start dimmed and resolve as the run reaches them. Opacity and
+      transform only — a permanently looping animation has no business
+      triggering layout.
+    */
+    opacity: 0.45;
+    transition: opacity 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease,
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .fz-cn--input { border-left-color: var(--color-ink); }
+  .fz-cn--logic { border-left-color: var(--color-signal); }
+  .fz-cn--system { border-left-color: var(--color-ink-3); }
+  .fz-cn--human { border-left-color: var(--color-ink); border-left-style: dashed; }
+  .fz-cn--output { border-left-color: var(--color-ink); }
+
+  .fz-cn.is-active {
+    opacity: 1;
+    border-color: var(--color-signal);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-signal) 14%, transparent);
+    transform: translateY(-1px);
+  }
+  .fz-cn.is-done {
+    opacity: 1;
+    box-shadow: none;
+  }
+
+  .fz-cn__kind {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+  .fz-cn__label {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    line-height: 1.15;
+    color: var(--color-ink);
+  }
+  .fz-cn__meta {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-ink-3);
+  }
+  .fz-cn__tick {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-signal-ink);
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .fz-cn.is-done .fz-cn__tick {
+    opacity: 1;
+    transform: none;
+  }
+
+  .fz-canvas__caption {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--color-ink-3);
+    padding: 0.8rem 1rem;
+    border-top: 1px solid var(--color-line);
+  }
+
+  /*
+    Board layout. Only above 760px, where five cards and their curves have the
+    room to be read rather than merely seen.
+  */
+  @media (min-width: 760px) {
+    .fz-canvas__board {
+      aspect-ratio: 1000 / 520;
+      padding: 0;
+    }
+    .fz-canvas__wires {
+      display: block;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    .fz-canvas__nodes {
+      display: block;
+      position: absolute;
+      inset: 0;
+    }
+    .fz-cn {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      /*
+        21%, not 19%. At the narrower width every label wrapped to two lines,
+        because the padding reserved for the tick was consuming 40% of the card.
+        The edge anchors in `edges` are derived from this number — change one and
+        the curves detach from the nodes.
+      */
+      width: 21%;
+      padding: 0.6rem 1.35rem 0.6rem 0.7rem;
+      transform: translate(-50%, -50%);
+      background: var(--color-paper);
+    }
+    .fz-cn__label {
+      font-size: 0.95rem;
+    }
+    .fz-cn__tick {
+      top: 0.55rem;
+      right: 0.5rem;
+      font-size: 0.72rem;
+    }
+    .fz-cn.is-active {
+      transform: translate(-50%, -50%) translateY(-2px);
+    }
+
+    .fz-wire__base,
+    .fz-wire__draw,
+    .fz-wire__pulse {
+      fill: none;
+      stroke-linecap: round;
+      vector-effect: non-scaling-stroke;
+    }
+    /* The dormant edge: present, so the shape of the system is always legible. */
+    .fz-wire__base {
+      stroke: var(--color-line-2);
+      stroke-width: 1.5;
+      stroke-dasharray: 4 4;
+    }
+    /* The edge as it is traversed, drawn on. */
+    .fz-wire__draw {
+      stroke: var(--color-signal);
+      stroke-width: 1.5;
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+      transition: stroke-dashoffset 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .fz-wire.is-live .fz-wire__draw,
+    .fz-wire.is-done .fz-wire__draw {
+      stroke-dashoffset: 0;
+    }
+    /* The value in transit. */
+    .fz-wire__pulse {
+      stroke: var(--color-signal);
+      stroke-width: 5;
+      stroke-dasharray: 3 100;
+      stroke-dashoffset: 103;
+      opacity: 0;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .fz-wire.is-live .fz-wire__pulse {
+        opacity: 1;
+        animation: fz-wire-pulse 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+    }
+  }
+
+  @keyframes fz-wire-pulse {
+    from { stroke-dashoffset: 103; }
+    to { stroke-dashoffset: 0; }
+  }
+
+  /*
+    Reduced motion: no run, no loop. Everything resolves to the completed state,
+    which is what the animation was going to say anyway.
+  */
+  @media (prefers-reduced-motion: reduce) {
+    .fz-cn {
+      opacity: 1;
+      transform: none;
+    }
+    @media (min-width: 760px) {
+      .fz-cn { transform: translate(-50%, -50%); }
+    }
+    .fz-cn__tick { opacity: 1; transform: none; }
+    .fz-wire__draw { stroke-dashoffset: 0; }
+    .fz-wire__pulse { display: none; }
+  }
+</style>
+
+<script>
+  /*
+    The run loop.
+
+    Driven from `data-step` in the markup rather than from a list duplicated
+    here, so the choreography follows the diagram automatically. Runs only while
+    the board is on screen and only when motion is welcome — an animation
+    looping in a background tab is a battery cost with no reader.
+  */
+  type Runner = { stop: () => void };
+
+  const canvases = document.querySelectorAll<HTMLElement>('.fz-canvas');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function runCanvas(root: HTMLElement): Runner {
+    const steps = Number(root.dataset.steps ?? 4);
+    const nodes = Array.from(root.querySelectorAll<HTMLElement>('.fz-cn'));
+    const wires = Array.from(root.querySelectorAll<HTMLElement>('.fz-wire'));
+    const status = root.querySelector<HTMLElement>('[data-status]');
+
+    let timer: number | undefined;
+    let stopped = false;
+
+    const clear = () => {
+      nodes.forEach((n) => n.classList.remove('is-active', 'is-done'));
+      wires.forEach((w) => w.classList.remove('is-live', 'is-done'));
+      root.classList.remove('is-complete');
+      if (status) status.textContent = 'Running';
+    };
+
+    const at = (step: number) => {
+      // Everything already passed settles into its resolved state.
+      nodes.forEach((n) => {
+        const s = Number(n.dataset.step);
+        n.classList.toggle('is-active', s === step);
+        n.classList.toggle('is-done', s < step);
+      });
+      wires.forEach((w) => {
+        const s = Number(w.dataset.step);
+        w.classList.toggle('is-live', s === step);
+        w.classList.toggle('is-done', s < step);
+      });
+    };
+
+    const loop = (step: number) => {
+      if (stopped) return;
+      if (step >= steps) {
+        nodes.forEach((n) => {
+          n.classList.remove('is-active');
+          n.classList.add('is-done');
+        });
+        wires.forEach((w) => {
+          w.classList.remove('is-live');
+          w.classList.add('is-done');
+        });
+        root.classList.add('is-complete');
+        if (status) status.textContent = 'Run complete';
+        // Hold the finished state long enough to be read, then start over.
+        timer = window.setTimeout(() => {
+          clear();
+          loop(0);
+        }, 2600);
+        return;
+      }
+      at(step);
+      timer = window.setTimeout(() => loop(step + 1), 900);
+    };
+
+    loop(0);
+
+    return {
+      stop() {
+        stopped = true;
+        if (timer) window.clearTimeout(timer);
+      },
+    };
+  }
+
+  canvases.forEach((root) => {
+    if (reduced) {
+      // Static, finished, honest.
+      root.querySelectorAll('.fz-cn').forEach((n) => n.classList.add('is-done'));
+      root.querySelectorAll('.fz-wire').forEach((w) => w.classList.add('is-done'));
+      root.classList.add('is-complete');
+      const status = root.querySelector('[data-status]');
+      if (status) status.textContent = 'Run complete';
+      return;
+    }
+
+    let runner: Runner | null = null;
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !runner) {
+              runner = runCanvas(root);
+            } else if (!entry.isIntersecting && runner) {
+              runner.stop();
+              runner = null;
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+      io.observe(root);
+    } else {
+      runner = runCanvas(root);
+    }
+  });
+</script>

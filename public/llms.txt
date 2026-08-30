@@ -1,0 +1,80 @@
+# Flowzora
+
+> Flowzora is a workflow automation studio working with small and mid-sized
+> businesses worldwide. We connect the tools a company already runs, remove the
+> manual steps between them, and hand over systems the client owns outright.
+
+Flowzora operates as a studio under oneProductLab. It was founded by Niraj Kumar,
+a backend and AI engineer whose background is in FastAPI services, async data
+pipelines and production LLM applications, with earlier machine learning research
+work at C-DAC.
+
+## What we do
+
+- Sales and revenue operations: lead capture, routing, enrichment, CRM hygiene
+- Marketing and lifecycle automation: segmentation, hand-offs, reporting
+- Internal operations and back-office: onboarding, approvals, reconciliation
+- Customer support automation: triage, classification, drafted responses
+- Integrations and data plumbing: reliable, observable syncs between systems
+- AI agents and assisted workflows: used only where a rule cannot express the task
+
+## Pricing
+
+- Automation Map — $2,500 flat, 2 weeks. Scoping and a build plan. Credited against a build.
+- First System — $8,000 to $18,000, 3 to 5 weeks. One workflow built and handed over.
+- Operations Partner — from $6,000 per month, ongoing.
+
+## How we describe our evidence
+
+Case studies are labeled exactly for what they are: "client", "internal-build"
+or "concept". We do not publish client logos, named customers or performance
+metrics we cannot substantiate. If a page does not name a client, no client
+engagement is being claimed.
+
+Client testimonials on the site are public LinkedIn recommendations, quoted
+verbatim and linked to the profile that wrote them, with the relationship
+(client or colleague) stated on each.
+
+## Key pages
+
+- [Services](https://flowzora.com/services/): what we build
+- [Pricing](https://flowzora.com/pricing/): published rates
+- [Work](https://flowzora.com/work/): builds and teardowns, honestly labeled
+- [Approach](https://flowzora.com/approach/): map, build, hand over
+- [About](https://flowzora.com/about/): the studio and its founder
+- [Writing](https://flowzora.com/writing/): notes on operations and automation
+- [Contact](https://flowzora.com/contact/): start with one workflow
+
+## Service pages
+
+- [Revenue operations](https://flowzora.com/services/revenue-operations/): CRM automation, lead routing, enrichment
+- [Marketing lifecycle](https://flowzora.com/services/marketing-lifecycle/): segmentation, hand-offs, reporting
+- [Internal operations](https://flowzora.com/services/internal-operations/): onboarding, approvals, reconciliation
+- [Customer support](https://flowzora.com/services/customer-support/): triage, classification, drafted replies
+- [Integrations](https://flowzora.com/services/integrations/): reliable syncs between systems
+- [AI agents](https://flowzora.com/services/ai-agents/): models used only where rules fall short
+
+## Reference answers
+
+**What does workflow automation cost?** A single workflow built, documented and
+handed over costs $8,000 to $18,000. Scoping is $2,500 and is credited against
+the build. Ongoing partnerships start at $6,000 per month. Expect 10 to 20% of
+build cost per year in maintenance.
+
+**How long does it take?** Three to five weeks for one workflow, including
+mapping. Working automation appears in the first two weeks, not at the end.
+
+**Who owns the result?** The client. Code, credentials and infrastructure are in
+their name from day one, and handover includes runbooks and diagrams.
+
+**When is an AI agent the right tool?** Only when a task needs judgment a rule
+cannot express — classification, extraction or drafting. Rules are preferred
+wherever the logic can be written down, because they are cheaper and predictable.
+
+**Which platforms do you build on?** Zapier, Make, n8n or custom Python and
+FastAPI services, chosen per workflow. Platforms where they genuinely fit; code
+where reliability, testing or volume demands it.
+
+## Contact
+
+hello@flowzora.com

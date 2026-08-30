@@ -1,0 +1,101 @@
+---
+/*
+  Breadcrumbs
+  -----------
+  Visible navigation and the BreadcrumbList schema that Google uses to render
+  the URL line in search results. The JSON-LD is emitted here so a page cannot
+  show a trail without also describing it to crawlers.
+*/
+import { site } from '../data/site';
+
+interface Crumb {
+  label: string;
+
+  href: string;
+}
+interface Props {
+  trail: Crumb[];
+  /** Current page name — rendered as plain text, not a link. */
+  current: string;
+}
+
+const { trail, current } = Astro.props;
+
+const itemListElement = [
+  { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.domain}/` },
+  ...trail.map((crumb, i) => ({
+    '@type': 'ListItem',
+    position: i + 2,
+    name: crumb.label,
+    item: new URL(crumb.href, site.domain).href,
+  })),
+  { '@type': 'ListItem', position: trail.length + 2, name: current },
+];
+---
+
+<nav aria-label="Breadcrumb" class="crumbs">
+  <ol>
+    <li><a href="/">Home</a></li>
+    {
+      trail.map((crumb) => (
+        <li>
+          <a href={crumb.href}>{crumb.label}</a>
+        </li>
+      ))
+    }
+
+    <li aria-current="page">{current}</li>
+  </ol>
+</nav>
+
+<script
+  type="application/ld+json"
+  set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement,
+  })}
+  is:inline
+/>
+
+<style>
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    color: var(--color-ink-3);
+  }
+  /*
+    The alt-text syntax `content: '/' / ''` gives the separator an empty
+    accessible name, so screen readers announce "Home, Services, About" rather
+    than "Home slash Services slash About".
+
+  */
+  .crumbs li + li::before {
+    content: '/' / '';
+    margin-right: 0.5rem;
+    color: var(--color-line-2);
+  }
+  .crumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    text-decoration: none;
+    transition: color 0.18s ease;
+  }
+  .crumbs a:hover {
+    color: var(--color-signal-ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .crumbs [aria-current='page'] {
+    color: var(--color-ink-2);
+  }
+</style>

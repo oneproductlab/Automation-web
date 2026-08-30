@@ -1,0 +1,283 @@
+---
+/*
+  WorkflowSystem
+  --------------
+  The signature asset: makes an invisible automation tangible.
+  A real, labeled flow — not decoration. Motion only advances the flow,
+  and is fully disabled under prefers-reduced-motion.
+*/
+interface Node {
+  label: string;
+  meta: string;
+  kind?: 'input' | 'logic' | 'system' | 'human' | 'output';
+}
+interface Props {
+  nodes?: Node[];
+  caption?: string;
+}
+
+const defaultNodes: Node[] = [
+  { label: 'Request', meta: 'email · form · chat', kind: 'input' },
+  { label: 'Classify', meta: 'model + rules', kind: 'logic' },
+
+  { label: 'CRM', meta: 'record created', kind: 'system' },
+  { label: 'Business rules', meta: 'route · enrich', kind: 'logic' },
+  { label: 'Act', meta: 'Slack · email · ERP', kind: 'system' },
+  { label: 'Approve', meta: 'human in the loop', kind: 'human' },
+  { label: 'Analytics', meta: 'logged · measured', kind: 'output' },
+];
+
+const { nodes = defaultNodes, caption = 'A support request, handled end to end' } = Astro.props;
+
+const kindClass: Record<string, string> = {
+  input: 'fz-node--input',
+  logic: 'fz-node--logic',
+  system: 'fz-node--system',
+  human: 'fz-node--human',
+  output: 'fz-node--output',
+};
+---
+
+<figure class="fz-flow">
+  <div class="fz-flow__head">
+    <span class="fz-live" aria-hidden="true">
+      <span class="fz-live__dot"></span>System · running
+    </span>
+    <span class="fz-flow__meta" aria-hidden="true">no hands on keyboard</span>
+  </div>
+  <div class="fz-flow__track" role="img" aria-label={`Automated workflow: ${nodes.map((n) => n.label).join(', then ')}.`}>
+
+    {
+      nodes.map((node, i) => (
+        <>
+          <div class={`fz-node ${kindClass[node.kind ?? 'system']}`}>
+            <span class="fz-node__idx">{String(i + 1).padStart(2, '0')}</span>
+
+            <span class="fz-node__label">{node.label}</span>
+            <span class="fz-node__meta">{node.meta}</span>
+          </div>
+          {i < nodes.length - 1 && (
+            <div class="fz-edge" aria-hidden="true">
+              <span class="fz-edge__line" />
+              <span class="fz-edge__pulse" style={`animation-delay:${i * 0.45}s`} />
+              <span class="fz-edge__pulse fz-edge__pulse--2" style={`animation-delay:${i * 0.45 + 1.3}s`} />
+
+            </div>
+          )}
+        </>
+      ))
+    }
+  </div>
+  <figcaption class="eyebrow mt-5">{caption}</figcaption>
+</figure>
+
+<script>
+  // Run the flow only while it is on screen. The diagram is meant to feel like a
+  // system quietly running, not to burn cycles three viewports away.
+  const flows = document.querySelectorAll('.fz-flow');
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            entry.target.classList.toggle('is-live', entry.isIntersecting);
+          });
+        },
+        { threshold: 0.15 }
+      );
+
+      flows.forEach((flow) => io.observe(flow));
+    } else {
+      flows.forEach((flow) => flow.classList.add('is-live'));
+    }
+  }
+</script>
+
+<style>
+  .fz-flow {
+    margin: 0;
+  }
+  .fz-flow__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .fz-flow__meta {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+  .fz-flow__track {
+    display: grid;
+    gap: 0.5rem;
+    grid-auto-flow: row;
+  }
+
+  .fz-node {
+    position: relative;
+    border: 1px solid var(--color-line);
+    background: var(--color-paper);
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    border-left-width: 3px;
+  }
+  .fz-node--input { border-left-color: var(--color-ink); }
+  .fz-node--logic { border-left-color: var(--color-signal); }
+  .fz-node--system { border-left-color: var(--color-ink-3); }
+  .fz-node--human { border-left-color: var(--color-ink); border-left-style: dashed; }
+  .fz-node--output { border-left-color: var(--color-ink); }
+
+  .fz-node__idx {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    color: var(--color-ink-3);
+  }
+  .fz-node__label {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    line-height: 1.1;
+  }
+  .fz-node__meta {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-ink-3);
+
+  }
+
+  .fz-edge {
+    position: relative;
+    height: 1.4rem;
+    --fz-edge-length: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .fz-edge__line {
+    width: 1px;
+    height: 100%;
+    background-image: linear-gradient(to bottom, var(--color-line-2) 50%, transparent 50%);
+    background-size: 1px 8px;
+    background-repeat: repeat-y;
+  }
+  .fz-edge__pulse {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-signal);
+    /*
+      Positioned once, then moved with transform only. Animating `top`/`left`
+      would force layout on every frame of a permanently running animation,
+      which is the last thing the largest-contentful-paint screen needs.
+    */
+    top: 0;
+    left: 50%;
+    margin-left: -3px;
+    margin-top: -3px;
+
+    opacity: 0;
+  }
+
+  /* Horizontal layout on wider screens */
+  @media (min-width: 900px) {
+    .fz-flow__track {
+      grid-auto-flow: column;
+      align-items: stretch;
+      gap: 0;
+    }
+    .fz-node {
+      flex: 1;
+      min-width: 0;
+    }
+    .fz-edge {
+      height: auto;
+      width: 1.75rem;
+      --fz-edge-length: 1.75rem;
+      align-self: center;
+    }
+    .fz-edge__line {
+      width: 100%;
+      height: 1px;
+      background-image: linear-gradient(to right, var(--color-line-2) 50%, transparent 50%);
+      background-size: 8px 1px;
+      background-repeat: repeat-x;
+    }
+    .fz-edge__pulse {
+      top: 50%;
+      left: 0;
+      margin-left: -3px;
+      margin-top: -3px;
+
+    }
+  }
+
+  /*
+    The trailing pulse reads as a fainter echo of the first. Opacity is animated,
+    so the difference has to live in the color rather than in an opacity rule
+    the keyframes would immediately overwrite.
+  */
+  .fz-edge__pulse--2 {
+    background: color-mix(in srgb, var(--color-signal) 45%, transparent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .fz-edge__line {
+      animation: fz-flow-v 0.9s linear infinite;
+    }
+    .fz-edge__pulse {
+      animation: fz-pulse-v 2.6s ease-in-out infinite;
+    }
+    @media (min-width: 900px) {
+      .fz-edge__line {
+        animation: fz-flow-h 0.9s linear infinite;
+      }
+      .fz-edge__pulse {
+        animation: fz-pulse-h 2.6s ease-in-out infinite;
+      }
+    }
+
+    /*
+      A permanently running animation on an off-screen element is wasted battery.
+      Paused by default and resumed only while the diagram is actually in view.
+    */
+
+    .fz-flow:not(.is-live) .fz-edge__line,
+    .fz-flow:not(.is-live) .fz-edge__pulse {
+      animation-play-state: paused;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fz-edge__pulse { display: none; }
+  }
+
+  @keyframes fz-flow-v {
+    to { background-position-y: 8px; }
+  }
+  @keyframes fz-flow-h {
+    to { background-position-x: 8px; }
+  }
+
+  /* Compositor-only: transform and opacity, never layout properties. */
+  @keyframes fz-pulse-v {
+    0% { transform: translateY(0); opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { transform: translateY(var(--fz-edge-length, 1.4rem)); opacity: 0; }
+  }
+  @keyframes fz-pulse-h {
+    0% { transform: translateX(0); opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { transform: translateX(var(--fz-edge-length, 1.75rem)); opacity: 0; }
+  }
+</style>

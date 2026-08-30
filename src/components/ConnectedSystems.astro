@@ -1,0 +1,358 @@
+---
+/*
+  ConnectedSystems
+  ----------------
+  Hub and spoke: the systems a business already runs on, wired into a single
+  automated core. Signals travel inward along each spoke and outward again.
+
+  Geometry notes, because an earlier version of this diagram read as visibly
+  lopsided:
+
+  - The stage is a square. The previous version placed nodes on an *ellipse*
+    inside a 4:3 box, which distorted the angular spacing.
+  - Spokes are plain rotated `div`s, not SVG lines. The old SVG used
+    `preserveAspectRatio="none"`, so a stretched viewBox gave every spoke a
+    different dash length depending on its angle. Rotating a horizontal dashed
+    line preserves dash geometry exactly.
+  - Every node box is the same fixed width. Boxes sized to their labels can
+    never sit symmetrically on a circle, because "Warehouse" and "CRM" put their
+    visual edges in completely different places.
+*/
+import { site } from '../data/site';
+
+interface Spoke {
+  label: string;
+  meta: string;
+}
+interface Props {
+  spokes?: Spoke[];
+  caption?: string;
+}
+
+const defaultSpokes: Spoke[] = [
+  { label: 'CRM', meta: 'records' },
+  { label: 'Email', meta: 'inbound' },
+  { label: 'Slack', meta: 'alerts' },
+  { label: 'Sheets', meta: 'ledgers' },
+  { label: 'Billing', meta: 'invoices' },
+  { label: 'Calendar', meta: 'scheduling' },
+  { label: 'Webhooks', meta: 'events' },
+
+  { label: 'Warehouse', meta: 'analytics' },
+];
+
+const {
+  spokes = defaultSpokes,
+  caption = 'Your existing stack, wired into one operation',
+} = Astro.props;
+
+const n = spokes.length;
+
+/*
+  Node centres sit on a true circle at `--ring` from the middle. Angles start at
+  -90deg so the first node is at twelve o'clock, and every subsequent node is an
+  exact equal division of the circle.
+*/
+const points = spokes.map((s, i) => {
+  const deg = (i / n) * 360 - 90;
+  const rad = (deg * Math.PI) / 180;
+  return {
+    ...s,
+    deg,
+    x: +(50 + 38 * Math.cos(rad)).toFixed(3),
+    y: +(50 + 38 * Math.sin(rad)).toFixed(3),
+  };
+});
+
+const describe = spokes.map((s) => s.label).join(', ');
+---
+
+<figure class="fz-hub" aria-label={`One automated core connected to: ${describe}.`}>
+  <div class="fz-hub__stage">
+    {/* Spokes are drawn first so the opaque node boxes occlude their outer ends. */}
+
+    {
+      points.map((p) => (
+        <span class="fz-spoke" style={`--a:${p.deg}deg`} aria-hidden="true">
+          <span class="fz-spoke__line" />
+          {/*
+            No per-spoke delay. The whole ring breathes on one clock: every dot
+            travels out to its system and back at the same moment, which is the
+            point being made — one core, one cycle.
+          */}
+          <span class="fz-spoke__pulse" />
+        </span>
+      ))
+    }
+
+    <div class="fz-hub__core">
+      <span class="fz-hub__core-label">{site.name}</span>
+      <span class="fz-hub__core-meta">one system</span>
+    </div>
+
+    {
+      points.map((p) => (
+        <div class="fz-node" style={`left:${p.x}%;top:${p.y}%`}>
+          <span class="fz-node__dot" aria-hidden="true" />
+          <span class="fz-node__label">{p.label}</span>
+          <span class="fz-node__meta">{p.meta}</span>
+        </div>
+      ))
+    }
+  </div>
+
+  <figcaption class="eyebrow mt-5">{caption}</figcaption>
+</figure>
+
+<style>
+  .fz-hub {
+    margin: 0;
+    width: 100%;
+  }
+
+  /*
+    Square by construction. Any other ratio distorts the ring, which is what
+    made the previous version look lopsided.
+
+    Sized to sit inside a half-width column rather than a full-bleed section.
+    Neighbouring nodes are 2 * r * sin(22.5deg) apart, so at the 0.38 ring
+    radius used above a stage of S gives a 0.29 * S gap — comfortably clear of
+    the node width at every size below.
+  */
+  .fz-hub__stage {
+    position: relative;
+    width: 100%;
+    max-width: 24rem;
+    aspect-ratio: 1 / 1;
+    margin-inline: auto;
+    --node-w: 6rem;
+  }
+  @media (min-width: 64rem) {
+    .fz-hub .fz-hub__stage {
+      max-width: 29rem;
+      --node-w: 6.6rem;
+    }
+  }
+
+  /*
+
+    Below roughly a phone width the ring can't hold eight boxes without them
+    colliding — the gap between neighbours is 0.765x the radius, and the radius
+    has nowhere left to grow. Stack instead of shrinking the type to fit.
+
+    These are deliberately over-specified. The CSS minifier hoists media blocks
+    above the rules they're meant to override, so a bare `.fz-node` here loses
+    to the bare `.fz-node` below on source order alone.
+  */
+  @media (max-width: 34rem) {
+    .fz-hub .fz-hub__stage {
+      aspect-ratio: auto;
+      max-width: 26rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+    .fz-hub__stage .fz-spoke {
+      display: none;
+    }
+    .fz-hub__stage .fz-hub__core {
+      position: static;
+      transform: none;
+      grid-column: 1 / -1;
+      margin-bottom: 0.4rem;
+    }
+    .fz-hub__stage .fz-node {
+      position: static;
+      transform: none;
+      width: auto;
+    }
+  }
+
+  /*
+    Each spoke is a zero-height track pinned at the centre and rotated into
+    place. Its length is half the stage, so positions along it are simple
+    percentages of the ring radius.
+  */
+  .fz-spoke {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 50%;
+    height: 0;
+    transform-origin: 0 50%;
+    transform: rotate(var(--a));
+    pointer-events: none;
+  }
+
+  /* Runs from just outside the core to just under the node box. */
+  .fz-spoke__line {
+    position: absolute;
+    top: 0;
+    left: 30%;
+    right: 16%;
+    height: 1px;
+    background-image: linear-gradient(to right, var(--color-line-2) 55%, transparent 55%);
+    background-size: 7px 1px;
+    background-repeat: repeat-x;
+  }
+
+  .fz-spoke__pulse {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 0;
+    opacity: 0;
+  }
+  /* The travelling dot itself, drawn at the left edge of its moving track. */
+  .fz-spoke__pulse::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 5px;
+    margin-top: -2.5px;
+    margin-left: -2.5px;
+    border-radius: 50%;
+    background: var(--color-signal);
+    /* Keeps the dot upright rather than orbiting with the rotated track. */
+    transform: rotate(calc(-1 * var(--a)));
+  }
+
+  .fz-hub__core {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    background: var(--color-ink);
+    color: var(--color-inverse-ink);
+
+    padding: 1rem 1.35rem;
+    border-radius: var(--radius);
+    text-align: center;
+  }
+  .fz-hub__core-label {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+  .fz-hub__core-meta {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-inverse-ink-3);
+  }
+
+  /*
+    Fixed width for every node. This is what actually makes the ring read as
+    symmetric — boxes sized to their own labels never can.
+  */
+  .fz-node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: var(--node-w);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+
+    border-radius: var(--radius);
+    padding: 0.5rem 0.4rem;
+    text-align: center;
+  }
+  .fz-node__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-signal);
+    margin-bottom: 0.15rem;
+  }
+  .fz-node__label {
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    line-height: 1.05;
+  }
+  .fz-node__meta {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .fz-spoke__pulse {
+      animation: fz-pulse 4s ease-in-out infinite;
+    }
+    /*
+      The node lights up as the dot arrives, on the same 4s clock, so the ring
+      flashes in unison instead of rippling.
+    */
+
+    .fz-node__dot {
+      animation: fz-blink 4s ease-in-out infinite;
+    }
+    /* A permanently looping diagram off screen is wasted battery. */
+    .fz-hub:not(.is-live) .fz-spoke__pulse,
+    .fz-hub:not(.is-live) .fz-node__dot {
+      animation-play-state: paused;
+    }
+  }
+
+  /*
+    One dot per spoke, out to the system and back to the core, identical timing
+    everywhere. Percentages resolve against the track width, which is the ring
+    radius, so the travel distance is the same on every spoke regardless of
+    angle. Compositor-only — transform and opacity, no layout.
+  */
+  @keyframes fz-pulse {
+    0% { transform: translateX(30%); opacity: 0; }
+    8% { opacity: 1; }
+    42% { transform: translateX(76%); opacity: 1; }
+    50% { transform: translateX(76%); opacity: 1; }
+    92% { transform: translateX(30%); opacity: 1; }
+    100% { transform: translateX(30%); opacity: 0; }
+  }
+  @keyframes fz-blink {
+    0%, 100% { opacity: 0.3; }
+    /* Peaks at the moment the dot reaches the node. */
+    42%, 50% { opacity: 1; }
+    75% { opacity: 0.3; }
+  }
+</style>
+
+<script>
+  // Run the flow only while the diagram is on screen, and rebind after each
+  // client-side navigation since the document is never re-parsed.
+  function initHub() {
+    const hubs = document.querySelectorAll('.fz-hub');
+    if (!hubs.length) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    if (!('IntersectionObserver' in window)) {
+      hubs.forEach((h) => h.classList.add('is-live'));
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => entry.target.classList.toggle('is-live', entry.isIntersecting));
+      },
+      { threshold: 0.15 }
+    );
+    hubs.forEach((h) => io.observe(h));
+  }
+
+  initHub();
+  document.addEventListener('astro:page-load', initHub);
+</script>

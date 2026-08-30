@@ -1,0 +1,77 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+
+import { getWork } from '../../lib/work';
+
+const work = await getWork();
+---
+
+<Base
+  title="Work"
+  description="Selected systems Flowzora has built — client work, internal builds and concept teardowns, each labeled honestly."
+
+  ogRoute="work"
+>
+  <section class="wrap pt-10 pb-12 md:pt-14">
+    <Breadcrumbs trail={[]} current="Work" />
+    <p class="eyebrow mt-8">Work</p>
+    <h1 class="mt-5 max-w-3xl text-[2.4rem] leading-[1.05] md:text-[3.4rem]">
+      Systems we've built, in the open.
+    </h1>
+    <p class="mt-7 max-w-xl text-lg text-[var(--color-ink-2)]">
+      Each one labeled for exactly what it is. We don't borrow credibility we
+      haven't earned.
+    </p>
+  </section>
+
+  <section class="wrap pb-16">
+    <ul class="reveal border-t border-[var(--color-line)]">
+      {
+        work.map((item, i) => (
+          <li data-stagger style={`--i:${i}`} class="border-b border-[var(--color-line)]">
+            <a
+              href={`/work/${item.id}/`}
+              class="group grid gap-4 py-9 md:grid-cols-[1fr_1.4fr] md:gap-10"
+            >
+
+              <div>
+                <p class="font-[var(--font-mono)] text-xs uppercase tracking-[0.12em] text-[var(--color-ink-3)]">
+
+                  {item.data.kind.replace('-', ' ')} · {item.data.sector}
+                </p>
+                <h2 class="mt-3 font-[var(--font-display)] text-2xl transition-colors md:text-3xl group-hover:text-[var(--color-signal-ink)]">
+
+                  {item.data.title}
+                </h2>
+              </div>
+              <div>
+                <p class="text-[var(--color-ink-2)]">{item.data.summary}</p>
+                <span class="mt-4 inline-flex items-center gap-2 font-[var(--font-mono)] text-sm text-[var(--color-signal-ink)]">
+
+                  Read the build
+                  <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">
+                    →
+                  </span>
+                </span>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="mt-8 max-w-xl font-[var(--font-mono)] text-xs leading-relaxed text-[var(--color-ink-3)]">
+
+      Every entry is labeled for what it is. Concept and internal builds are
+      stated as such, and any figure says where it came from.
+    </p>
+  </section>
+
+  <section class="border-t border-[var(--color-line)]">
+    <div class="wrap py-20 text-center md:py-24">
+
+      <h2 class="mx-auto max-w-2xl text-3xl md:text-4xl">Have a workflow like these?</h2>
+      <a href="/contact/" class="btn btn-primary mt-8">Show us yours</a>
+    </div>
+  </section>
+</Base>

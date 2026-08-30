@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+---
+
+<Base
+  title="Thanks — we have your workflow"
+  description="Your message reached us. We reply within two working days."
+  noindex={true}
+>
+  <section class="wrap flex min-h-[60vh] flex-col justify-center py-24 text-center">
+    <p class="eyebrow mx-auto">Received</p>
+    <h1 class="mx-auto mt-6 max-w-2xl text-[2.4rem] leading-[1.05] md:text-[3.2rem]">
+      Got it. We'll read it properly.
+    </h1>
+    <p class="mx-auto mt-7 max-w-xl text-lg text-[var(--color-ink-2)]">
+      A real person replies within two working days — usually with a question or
+      two before we suggest anything.
+    </p>
+    <div class="mx-auto mt-10 flex flex-wrap items-center justify-center gap-3">
+      <a href="/work/" class="btn btn-primary">See how we build</a>
+      <a href="/pricing/" class="btn btn-ghost">What it costs</a>
+    </div>
+    <p class="mx-auto mt-10 font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]">
+      Need us sooner? <a href={`mailto:${site.email}`} class="link-underline">{site.email}</a>
+    </p>
+  </section>
+</Base>

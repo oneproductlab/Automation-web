@@ -1,0 +1,151 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import AuthorCard from '../../components/AuthorCard.astro';
+import { getCollection, render } from 'astro:content';
+import { site, founder } from '../../data/site';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('writing', ({ data }) => !data.draft);
+  return posts.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const fmt = (dt: Date) =>
+  dt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+// Related reading keeps an article from being a dead end, which is what most
+// blog posts are. Newest first, excluding the current post.
+const related = (await getCollection('writing', ({ data }) => !data.draft))
+  .filter((p) => p.id !== entry.id)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 2);
+
+// Attributed to a real person rather than the organization: generative engines
+// and search both weight a named, verifiable author.
+const schema = [
+  {
+    '@type': 'Article',
+    '@id': `${site.domain}/writing/${entry.id}/#article`,
+    headline: d.title,
+    description: d.description,
+    datePublished: d.pubDate.toISOString(),
+    dateModified: d.pubDate.toISOString(),
+    keywords: d.tags.join(', '),
+    image: `${site.domain}/og/writing/${entry.id}.png`,
+    mainEntityOfPage: `${site.domain}/writing/${entry.id}/`,
+    author: { '@id': `${site.domain}/#founder` },
+    publisher: { '@id': `${site.domain}/#organization` },
+    isPartOf: { '@id': `${site.domain}/#website` },
+  },
+];
+
+---
+
+<Base
+  title={d.title}
+  description={d.description}
+  ogType="article"
+  ogRoute={`writing/${entry.id}`}
+  schema={schema}
+>
+  <article class="wrap pt-10 pb-16 md:pt-14">
+    <Breadcrumbs trail={[{ label: 'Writing', href: '/writing/' }]} current={d.title} />
+    <p class="mt-8 font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]">
+      <time datetime={d.pubDate.toISOString()}>{fmt(d.pubDate)}</time>
+
+      <span aria-hidden="true"> · </span>
+      <span>{founder.name}</span>
+    </p>
+    <h1 class="mt-3 max-w-3xl text-[2.3rem] leading-[1.06] md:text-[3.2rem]">{d.title}</h1>
+    <p class="mt-6 max-w-2xl text-lg text-[var(--color-ink-2)]">{d.description}</p>
+    <hr class="rule mt-10" />
+    <div class="post-body mt-10 max-w-2xl">
+      <Content />
+    </div>
+    <div class="max-w-2xl">
+      <AuthorCard />
+    </div>
+  </article>
+
+  {
+    related.length > 0 && (
+      <section class="wrap border-t border-[var(--color-line)] py-14 md:py-16">
+        <p class="eyebrow">Related reading</p>
+        <ul class="mt-6 grid gap-px border-y border-[var(--color-line)] bg-[var(--color-line)] md:grid-cols-2">
+
+          {related.map((post) => (
+            <li class="bg-[var(--color-paper)]">
+              <a
+                href={`/writing/${post.id}/`}
+                class="group block h-full p-6 transition-colors hover:bg-[var(--color-paper-2)]"
+              >
+                <h2 class="font-[var(--font-display)] text-xl transition-colors group-hover:text-[var(--color-signal-ink)]">
+
+                  {post.data.title}
+                </h2>
+                <p class="mt-2 text-[0.95rem] text-[var(--color-ink-2)]">{post.data.description}</p>
+              </a>
+            </li>
+
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <section class="border-t border-[var(--color-line)]">
+    <div class="wrap py-16 text-center md:py-20">
+      <h2 class="mx-auto max-w-2xl text-2xl md:text-3xl">Want this thinking applied to your operation?</h2>
+
+      <a href="/contact/" class="btn btn-primary mt-7">Have us build it</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .post-body :global(h2) {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    margin-top: 2.25rem;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+  .post-body :global(h3) {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    margin-top: 1.75rem;
+    margin-bottom: 0.4rem;
+  }
+  .post-body :global(p) {
+    color: var(--color-ink-2);
+    margin-bottom: 1.1rem;
+
+    font-size: 1.075rem;
+    line-height: 1.7;
+  }
+  .post-body :global(ul) {
+    margin: 1rem 0 1.4rem;
+    padding-left: 1.1rem;
+    list-style: none;
+  }
+  .post-body :global(li) {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-ink-2);
+  }
+  .post-body :global(li)::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--color-signal);
+    font-family: var(--font-mono);
+  }
+  .post-body :global(strong) {
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+</style>
