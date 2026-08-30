@@ -6,8 +6,7 @@ sector: Marketing operations
 order: -2
 summary: >-
   A live n8n automation estate of more than ten workflows, tuned for efficiency,
-  extended with new features, and dropped into custom code wherever the
-  no-code path ran out.
+  extended with new features, and dropped into custom code where no-code ran out.
 problem: >-
   An agency running its operations on n8n had grown past the point where a
   visual builder alone was enough. Workflows had multiplied, they depended on
@@ -16,7 +15,6 @@ problem: >-
 before:
   - More than ten workflows running, each added as a separate need arose
   - Dependencies between them held in the builder rather than designed
-
   - Efficiency limited by what the visual layer could express
   - Anything beyond the no-code path blocked until someone could write code
 intervention: >-

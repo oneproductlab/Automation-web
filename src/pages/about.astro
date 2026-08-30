@@ -11,23 +11,18 @@ const principles = [
   {
     title: 'The simplest mechanism that works',
     body: 'A rule beats a model when a rule will do. We use the least clever thing that reliably does the job, because operations reward boring reliability.',
-
   },
   {
     title: 'Legible by default',
-    body: 'If a system can\'t be drawn, explained and handed over, it isn\'t finished. Documentation is part of the build, not an afterthought.',
-
+    body: 'If a system can’t be drawn, explained and handed over, it isn’t finished. Documentation is part of the build, not an afterthought.',
   },
-
   {
     title: 'Honest about evidence',
-    body: 'We label concept and internal builds as exactly that. We\'d rather show real, modest results than borrowed credibility.',
-
+    body: 'We label concept and internal builds as exactly that. We’d rather show real, modest results than borrowed credibility.',
   },
   {
     title: 'Built to be left',
-    body: 'Success is the automation running quietly long after we\'ve gone — owned and understood by your team, not dependent on us.',
-
+    body: 'Success is the automation running quietly long after we’ve gone — owned and understood by your team, not dependent on us.',
   },
 ];
 
@@ -37,22 +32,19 @@ const faqs = [
   {
     q: 'How big is the team?',
     a: 'Small on purpose. Engagements are led by the founder and delivered with a handful of engineers, which means the person who scopes your system is the person who builds it. We take on fewer projects than a larger agency and stay closer to each one.',
-
   },
   {
     q: 'How new is Flowzora?',
     a: 'New, and we say so rather than implying a decade of history we do not have. The engineering behind it is not new: the founder has spent his career building production backend and machine learning systems, and everything published on this site is labeled honestly for what it is.',
-
   },
   {
     q: 'What is oneProductLab?',
     a: 'oneProductLab is the parent organization Flowzora operates under. Flowzora is the studio focused specifically on operations and workflow automation.',
-
   },
 ];
 ---
 
-<Base title="About" description={description} ogRoute="about">
+<Base title="About the studio and its founder" description={description} ogRoute="about">
   <section class="wrap pt-10 pb-12 md:pt-14">
     <Breadcrumbs trail={[]} current="About" />
 
@@ -62,7 +54,7 @@ const faqs = [
     </h1>
     <p class="mt-7 max-w-2xl text-lg text-[var(--color-ink-2)]">
       {site.name} is a workflow automation studio under {site.parent}. We work with
-      startups, SMBs and growing teams who've outgrown manual process but don't
+      startups, SMBs and growing teams who’ve outgrown manual process but don’t
       want another rigid platform to fight against.
     </p>
   </section>
@@ -71,7 +63,7 @@ const faqs = [
        credible to buyers and citable by search and answer engines. -->
   <section class="border-y border-[var(--color-line)] bg-[var(--color-paper-2)]">
     <div class="wrap py-14 md:py-20">
-      <p class="eyebrow">Who you'll work with</p>
+      <p class="eyebrow">Who you’ll work with</p>
       <div class="mt-8 grid gap-10 md:grid-cols-[0.85fr_1.15fr] md:items-start">
         <div>
           {/* Processed at build time: WebP with a JPEG fallback, sized to the slot. */}
@@ -82,12 +74,9 @@ const faqs = [
             sizes="(min-width: 768px) 20rem, 100vw"
             loading="lazy"
             class="aspect-[4/5] w-full max-w-xs border border-[var(--color-line)] bg-[var(--color-paper-2)] object-cover"
-
           />
-
           <p class="mt-4 font-[var(--font-display)] text-xl">{founder.name}</p>
           <p class="font-[var(--font-mono)] text-xs uppercase tracking-[0.1em] text-[var(--color-ink-3)]">
-
             {founder.role}
           </p>
           <a
@@ -105,7 +94,7 @@ const faqs = [
           <p class="mt-5 max-w-2xl text-[var(--color-ink-2)]">{founder.bio}</p>
           <p class="mt-4 max-w-2xl text-[var(--color-ink-2)]">
             Engagements are led and built by the same person who scopes them.
-            That's the whole reason a studio this size can promise systems you'll
+            That’s the whole reason a studio this size can promise systems you’ll
             actually be able to maintain.
           </p>
 
@@ -114,17 +103,14 @@ const faqs = [
               <p class="eyebrow">Sectors worked in</p>
               <ul class="mt-3 space-y-1.5">
                 {founder.sectors.map((s) => <li class="text-[0.95rem] text-[var(--color-ink-2)]">{s}</li>)}
-
               </ul>
             </div>
             <div>
-
               <p class="eyebrow">Built with</p>
               <ul class="mt-3 flex flex-wrap gap-x-3 gap-y-1.5">
                 {
                   founder.stack.map((s) => (
                     <li class="font-[var(--font-mono)] text-[0.82rem] text-[var(--color-ink-2)]">{s}</li>
-
                   ))
                 }
               </ul>
@@ -173,7 +159,6 @@ const faqs = [
       <div>
         <p class="eyebrow">Contact</p>
         <a href={`mailto:${site.email}`} class="mt-2 inline-block link-underline text-[var(--color-ink-2)]">
-
           {site.email}
         </a>
       </div>
@@ -185,11 +170,11 @@ const faqs = [
     buyer opens when they are deciding whether to trust the person, and third
     parties vouching is worth more here than any amount of self-description.
   -->
-  <Testimonials heading="People who've worked with Niraj." eyebrow="References" />
+  <Testimonials heading="People who’ve worked with Niraj." eyebrow="References" />
 
   <section class="border-t border-[var(--color-line)]">
     <div class="wrap py-20 text-center md:py-24">
-      <h2 class="mx-auto max-w-2xl text-3xl md:text-4xl">Tell us what's still done by hand.</h2>
+      <h2 class="mx-auto max-w-2xl text-3xl md:text-4xl">Tell us what’s still done by hand.</h2>
       <a href="/contact/" class="btn btn-primary mt-8">Talk to Niraj</a>
     </div>
   </section>

@@ -6,8 +6,7 @@ import Testimonials from '../components/Testimonials.astro';
 import { pricing, site } from '../data/site';
 
 const description =
-  'Workflow automation pricing: a $2,500 two-week Automation Map, first systems built for $8,000–$18,000 fixed scope, and ongoing partnerships from $6,000 per month.';
-
+  'Workflow automation pricing: a $2,500 two-week Automation Map, first systems at $8,000–$18,000 fixed scope, and ongoing partnerships from $6,000 a month.';
 
 const schema = [
   {
@@ -40,7 +39,6 @@ const schema = [
         acceptedAnswer: {
           '@type': 'Answer',
           text: 'Most first projects land between $8,000 and $18,000 for a single workflow built, documented and handed over. A two-week Automation Map that scopes the work costs $2,500 and is credited against the build. Ongoing partnerships start at $6,000 per month.',
-
         },
       },
       {
@@ -49,7 +47,6 @@ const schema = [
         acceptedAnswer: {
           '@type': 'Answer',
           text: 'Because hiding them wastes everyone\u2019s time. Published ranges let you decide whether we are worth a conversation before you sit through one, and they hold us to a number rather than pricing off how badly you appear to need help.',
-
         },
       },
       {
@@ -58,7 +55,6 @@ const schema = [
         acceptedAnswer: {
           '@type': 'Answer',
           text: 'The price does not move. Scope is fixed in writing after the Automation Map, so overruns are our problem to absorb, not yours to pay for. If you want to add scope mid-build we quote it separately rather than quietly extending the invoice.',
-
         },
       },
       {
@@ -67,7 +63,6 @@ const schema = [
         acceptedAnswer: {
           '@type': 'Answer',
           text: 'No. The first call is free and ends with an honest answer about whether the workflow is worth automating yet. Only the Automation Map, which produces documented deliverables, is paid.',
-
         },
       },
     ],
@@ -77,33 +72,28 @@ const schema = [
 const faqs = [
   {
     q: 'Why do you publish your prices?',
-    a: 'Because hiding them wastes everyone\u2019s time. Published ranges let you decide whether we\u2019re worth a conversation before you sit through one, and they hold us to a number rather than pricing off how badly you appear to need help.',
-
+    a: 'Because hiding them wastes everyone’s time. Published ranges let you decide whether we’re worth a conversation before you sit through one, and they hold us to a number rather than pricing off how badly you appear to need help.',
   },
   {
     q: 'What happens if the project takes longer than expected?',
     a: 'The price does not move. Scope is fixed in writing after the Automation Map, so overruns are our problem to absorb, not yours to pay for. If you want to add scope mid-build, we quote it separately rather than quietly extending the invoice.',
-
   },
   {
     q: 'Do you charge for the first conversation?',
     a: 'No. The first call is free and ends with an honest answer about whether the workflow is worth automating yet. Only the Automation Map, which produces documented deliverables, is paid.',
-
   },
   {
     q: 'What if you decide our workflow is not worth automating?',
     a: 'We tell you, and we say why. Talking a company out of a build we could have sold is cheaper for us than delivering something that quietly fails to earn its cost.',
-
   },
   {
     q: 'Who owns the code and the accounts?',
     a: 'You do, from the first day. Credentials, repositories and infrastructure are in your name, and handover includes runbooks and diagrams so another engineer could pick the system up without us.',
-
   },
 ];
 ---
 
-<Base title="Pricing" description={description} ogRoute="pricing" schema={schema}>
+<Base title="Workflow automation pricing" description={description} ogRoute="pricing" schema={schema}>
   <section class="wrap pt-10 pb-14 md:pt-14">
     <Breadcrumbs trail={[]} current="Pricing" />
 
@@ -119,18 +109,15 @@ const faqs = [
 
   <section class="wrap pb-8">
     <div class="reveal grid gap-px border-y border-[var(--color-line)] bg-[var(--color-line)] lg:grid-cols-3">
-
       {
         pricing.map((tier, i) => (
           <article data-stagger style={`--i:${i}`} class="flex flex-col bg-[var(--color-paper)] p-7 md:p-9">
-
             <p class="font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]">
               {String(i + 1).padStart(2, '0')} · {tier.duration}
             </p>
             <h2 class="mt-4 font-[var(--font-display)] text-2xl">{tier.name}</h2>
             <p class="price mt-5">{tier.price}</p>
             <p class="mt-2 font-[var(--font-mono)] text-xs uppercase tracking-[0.1em] text-[var(--color-ink-3)]">
-
               {tier.unit}
             </p>
             <p class="mt-5 text-[0.95rem] text-[var(--color-ink-2)]">{tier.summary}</p>
@@ -139,7 +126,6 @@ const faqs = [
                 <li class="flex gap-3 text-[0.92rem] text-[var(--color-ink-2)]">
                   <span class="font-[var(--font-mono)] text-[var(--color-signal)]" aria-hidden="true">
                     —
-
                   </span>
                   <span>{item}</span>
                 </li>
@@ -163,7 +149,7 @@ const faqs = [
       <div class="grid gap-10 md:grid-cols-[0.8fr_1.2fr]">
         <div>
           <p class="eyebrow">How we keep it fair</p>
-          <h2 class="mt-4 text-3xl md:text-4xl">The number doesn't move.</h2>
+          <h2 class="mt-4 text-3xl md:text-4xl">The number doesn’t move.</h2>
         </div>
         <div class="grid gap-8 sm:grid-cols-2">
           <div class="border-t border-[var(--color-line)] pt-4">
@@ -172,7 +158,6 @@ const faqs = [
               Agreed after the Map, before any building. Overruns are ours to absorb.
             </p>
           </div>
-
           <div class="border-t border-[var(--color-line)] pt-4">
             <h3 class="font-[var(--font-display)] text-xl">The Map is credited</h3>
             <p class="mt-2 text-[0.95rem] text-[var(--color-ink-2)]">
@@ -186,9 +171,9 @@ const faqs = [
             </p>
           </div>
           <div class="border-t border-[var(--color-line)] pt-4">
-            <h3 class="font-[var(--font-display)] text-xl">We'll talk you out of it</h3>
+            <h3 class="font-[var(--font-display)] text-xl">We’ll talk you out of it</h3>
             <p class="mt-2 text-[0.95rem] text-[var(--color-ink-2)]">
-              If a workflow isn't worth automating yet, we say so before you spend.
+              If a workflow isn’t worth automating yet, we say so before you spend.
             </p>
           </div>
         </div>

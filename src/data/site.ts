@@ -68,6 +68,12 @@ export const founder = {
  *
  * Quotes are lightly trimmed for length only — never reworded, and never cut
  * in a way that changes what was said.
+ *
+ * `isClient` is not rendered. It exists so the `Review` structured data on the
+ * homepage can be restricted to people who actually paid for work: a review
+ * node asserts a customer relationship, and Akhil was a colleague rather than
+ * a client. The distinction was dropped from the visible card, so the schema
+ * is now the only place it is enforced — which makes it load-bearing.
  */
 export const testimonials = [
   {
@@ -77,6 +83,7 @@ export const testimonials = [
     role: 'AI Engineer / Founder',
     company: 'Granite Marketing',
     linkedin: 'https://www.linkedin.com/in/stephenanindo/',
+    isClient: true,
     // The line a prospect scanning at speed should still catch.
     pullQuote: 'Over 10 workflows working in sync.',
   },
@@ -87,6 +94,7 @@ export const testimonials = [
     role: 'Graduate Operations Software Engineer',
     company: 'Laboratory for Atmospheric and Space Physics',
     linkedin: 'https://www.linkedin.com/in/blakedehaas/',
+    isClient: true,
     pullQuote: 'A solid foundation for my automation agency.',
   },
   {
@@ -96,6 +104,8 @@ export const testimonials = [
     role: 'AI Researcher, NLP & Generative AI',
     company: 'C-DAC',
     linkedin: 'https://www.linkedin.com/in/akhil-rajeev-p-42bb23235/',
+    // Worked alongside Niraj, never bought anything. Not a review.
+    isClient: false,
     pullQuote: 'One of the most versatile professionals I have come across.',
   },
 ];
@@ -262,7 +272,7 @@ export const services = [
     brief: "Campaigns and reporting that run without a babysitter.",
     index: '02',
     title: 'Marketing & lifecycle automation',
-    seoTitle: 'Marketing automation consultant & lifecycle workflows',
+    seoTitle: 'Marketing automation & lifecycle workflows',
     keyword: 'marketing automation consultant',
     summary:
       'Campaign, content and lifecycle workflows that run on their own without a person babysitting them.',
@@ -298,7 +308,7 @@ export const services = [
     brief: "Onboarding, approvals and reconciliation, made repeatable.",
     index: '03',
     title: 'Internal operations & back-office',
-    seoTitle: 'Business process automation services for back-office work',
+    seoTitle: 'Business process automation services',
     keyword: 'business process automation services',
     summary:
       'Onboarding, approvals, finance and admin workflows that currently live in someone’s head.',

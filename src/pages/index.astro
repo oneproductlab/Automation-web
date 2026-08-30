@@ -29,13 +29,20 @@ const schema = [
     of them would be fabricated structured data. Individual reviews are the
     honest representation and are what search engines can actually corroborate
     against the linked profiles.
+
+    Filtered to paying clients. A `Review` node asserts a customer
+    relationship, so emitting one for a former colleague would be a claim the
+    site cannot support — and it is the exact failure this comment block exists
+    to prevent. His quote still appears on the page as ordinary text.
   */
-  ...testimonials.map((t) => ({
-    '@type': 'Review',
-    itemReviewed: { '@id': `${site.domain}/#organization` },
-    author: { '@type': 'Person', name: t.name, url: t.linkedin },
-    reviewBody: t.quote,
-  })),
+  ...testimonials
+    .filter((t) => t.isClient)
+    .map((t) => ({
+      '@type': 'Review',
+      itemReviewed: { '@id': `${site.domain}/#organization` },
+      author: { '@type': 'Person', name: t.name, url: t.linkedin },
+      reviewBody: t.quote,
+    })),
 ];
 ---
 
