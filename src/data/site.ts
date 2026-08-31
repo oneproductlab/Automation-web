@@ -2,16 +2,14 @@ export const site = {
   name: 'Flowzora',
   // Short descriptor used in the logo lockup and footer.
   // Keyword-bearing on purpose: "workflow automation" is the term buyers search.
-  tagline: 'Workflow automation studio',
+  tagline: 'Workflow automation lab',
   domain: 'https://flowzora.com',
-  email: 'hello@flowzora.com',
-  // Clients are worldwide. This states what can honestly be committed to
-  // rather than naming a region's business hours, which would be a promise
-  // broken the first time a client in another time zone held us to it.
-  location: 'Remote · overlapping hours in most time zones',
+  email: 'info@flowzora.com',
   parent: 'oneProductLab',
   parentUrl: 'https://www.linkedin.com/company/oneproductlab',
   linkedin: 'https://www.linkedin.com/company/oneproductlab',
+  twitter: 'https://x.com/oneproductlab',
+  instagram: 'https://www.instagram.com/oneproductlab',
   /*
     Dedicated Calendly event type for this site — not the parent company's
     general link, so inbound bookings can be attributed and measured.
@@ -556,10 +554,6 @@ export const pricing = [
  * out of the page: question in the heading, complete answer in the first sentence.
  */
 export const faqs = [
-  {
-    q: 'How much does workflow automation cost?',
-    a: 'Most first projects land between $8,000 and $18,000 for a single workflow built, documented and handed over. A two-week Automation Map that scopes the work costs $2,500 and is credited against the build. Ongoing partnerships start at $6,000 per month.',
-  },
   {
     q: 'How long does it take to automate a workflow?',
     a: 'A single workflow typically takes three to five weeks from kickoff to handover, including the mapping phase. You see working automation in the first two weeks rather than at the end.',

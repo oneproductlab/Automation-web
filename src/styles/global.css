@@ -263,9 +263,9 @@
   .display {
     font-family: var(--font-display);
     font-weight: 460;
-    font-size: clamp(2.6rem, 7.5vw, 5.5rem);
-    line-height: 0.98;
-    letter-spacing: -0.03em;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
     text-wrap: balance;
   }
 

@@ -27,31 +27,13 @@ interface Props {
   plain?: boolean;
   heading?: string;
   eyebrow?: string;
-  /**
-   * Which quote is given the large treatment. Index, not a flag on the data,
-   * so the running order can be changed for a given placement without editing
-   * the source of truth.
-   */
-  featured?: number;
 }
 const {
   dark = false,
   plain = false,
   eyebrow = 'What clients say',
   heading = 'Verified, and signed.',
-  featured = 0,
 } = Astro.props;
-
-/*
-  One large, two small.
-
-  Three equal columns gave the weakest quote the same authority as the
-  strongest and forced the reader to choose an entry point. A featured quote
-  states which one to read first, and the two beside it become corroboration —
-  which is the job they were always doing.
-*/
-const lead = testimonials[featured];
-const rest = testimonials.filter((_, i) => i !== featured);
 ---
 
 <section
@@ -75,107 +57,66 @@ const rest = testimonials.filter((_, i) => i !== featured);
       </p>
     </div>
 
-    <div class="reveal mt-12 grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
-      <!-- The lead quote. Full text, never truncated. -->
-      <figure
-        data-stagger
-        style="--i:0"
-        class={`flex flex-col border-t-2 pt-6 ${
-          dark ? 'border-[var(--color-signal-bright)]' : 'border-[var(--color-signal)]'
-        }`}
-      >
-        <p class="font-[var(--font-display)] text-2xl leading-snug md:text-[1.75rem]">
-          {lead.pullQuote}
-        </p>
-        <blockquote
-          class={`mt-5 flex-1 leading-relaxed ${
-            dark ? 'text-[var(--color-inverse-ink-2)]' : 'text-[var(--color-ink-2)]'
-          }`}
-        >
-          {lead.quote}
-        </blockquote>
-        <figcaption class="mt-6">
-          <a
-            href={lead.linkedin}
-            rel="noopener nofollow"
-            target="_blank"
-            class="link-underline font-medium"
-          >
-            {lead.name}
-          </a>
-          <p
-            class={`mt-1 text-[0.85rem] ${
-              dark ? 'text-[var(--color-inverse-ink-3)]' : 'text-[var(--color-ink-3)]'
+    <ul class="reveal mt-12 grid gap-8 lg:grid-cols-3">
+      {
+        testimonials.map((t, i) => (
+          <li
+            data-stagger
+            style={`--i:${i}`}
+            class={`fz-quote flex flex-col border-t pt-5 ${
+              dark ? 'border-[var(--color-inverse-line)]' : 'border-[var(--color-line-2)]'
             }`}
           >
-            {lead.role}
-            {lead.company ? ` · ${lead.company}` : ''}
-          </p>
-        </figcaption>
-      </figure>
+            <p class="font-[var(--font-display)] text-lg leading-snug">{t.pullQuote}</p>
 
-      <!-- The corroborating pair, stacked and clamped. -->
-      <ul class="grid content-start gap-8">
-        {
-          rest.map((t, i) => (
-            <li
-              data-stagger
-              style={`--i:${i + 1}`}
-              class={`fz-quote flex flex-col border-t pt-5 ${
-                dark ? 'border-[var(--color-inverse-line)]' : 'border-[var(--color-line-2)]'
+            {/*
+              Clamped to three lines. The class is added by script, so with
+              JavaScript unavailable the full quote renders and the toggle
+              stays hidden — the evidence is never dependent on JS.
+            */}
+            <blockquote
+              data-quote
+              class={`fz-quote__body mt-3 text-[0.9rem] leading-relaxed ${
+                dark ? 'text-[var(--color-inverse-ink-2)]' : 'text-[var(--color-ink-2)]'
               }`}
             >
-              <p class="font-[var(--font-display)] text-lg leading-snug">{t.pullQuote}</p>
+              {t.quote}
+            </blockquote>
 
-              {/*
-                Clamped to three lines. The class is added by script, so with
-                JavaScript unavailable the full quote renders and the toggle
-                stays hidden — the evidence is never dependent on JS.
-              */}
-              <blockquote
-                data-quote
-                class={`fz-quote__body mt-3 text-[0.9rem] leading-relaxed ${
-                  dark ? 'text-[var(--color-inverse-ink-2)]' : 'text-[var(--color-ink-2)]'
+            <button
+              type="button"
+              data-more
+              hidden
+              aria-expanded="false"
+              class={`fz-quote__more mt-2 self-start font-[var(--font-mono)] text-xs ${
+                dark ? 'text-[var(--color-signal-bright)]' : 'text-[var(--color-signal-ink)]'
+              }`}
+            >
+              Read the full quote
+            </button>
+
+            <footer class="mt-4">
+              <a
+                href={t.linkedin}
+                rel="noopener nofollow"
+                target="_blank"
+                class="link-underline text-[0.95rem] font-medium"
+              >
+                {t.name}
+              </a>
+              <p
+                class={`mt-1 text-[0.82rem] ${
+                  dark ? 'text-[var(--color-inverse-ink-3)]' : 'text-[var(--color-ink-3)]'
                 }`}
               >
-                {t.quote}
-              </blockquote>
-
-              <button
-                type="button"
-                data-more
-                hidden
-                aria-expanded="false"
-                class={`fz-quote__more mt-2 self-start font-[var(--font-mono)] text-xs ${
-                  dark ? 'text-[var(--color-signal-bright)]' : 'text-[var(--color-signal-ink)]'
-                }`}
-              >
-                Read the full quote
-              </button>
-
-              <footer class="mt-4">
-                <a
-                  href={t.linkedin}
-                  rel="noopener nofollow"
-                  target="_blank"
-                  class="link-underline text-[0.95rem] font-medium"
-                >
-                  {t.name}
-                </a>
-                <p
-                  class={`mt-1 text-[0.82rem] ${
-                    dark ? 'text-[var(--color-inverse-ink-3)]' : 'text-[var(--color-ink-3)]'
-                  }`}
-                >
-                  {t.role}
-                  {t.company ? ` · ${t.company}` : ''}
-                </p>
-              </footer>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
+                {t.role}
+                {t.company ? ` · ${t.company}` : ''}
+              </p>
+            </footer>
+          </li>
+        ))
+      }
+    </ul>
   </div>
 </section>
 

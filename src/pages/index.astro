@@ -85,7 +85,6 @@ const schema = [
         </p>
         <div class="mt-9 flex flex-wrap items-center gap-3">
           <a href="/contact/" class="btn btn-primary">Let’s talk growth</a>
-          <a href="/pricing/" class="btn btn-ghost">From $8,000</a>
         </div>
 
         <!--
@@ -286,12 +285,13 @@ const schema = [
       }
     </ul>
     <!--
-      Says out loud that the list is a sample, not a menu. Without this a
+      Says out loud that the list is a sample rather than the full offer, Without this a
       reader whose problem isn't one of the six assumes we don't do it and
-      leaves — the exact opposite of what a services list is for.
+      leaves — the exact opposite of what a services list is for.Phrases as an invitation
+      rather than a denial.
     -->
     <p class="mt-6 max-w-xl font-[var(--font-mono)] text-xs leading-relaxed text-[var(--color-ink-3)]">
-      Not a menu — if your bottleneck isn’t listed, it’s still worth a call.
+      Whatever's slowing your team down, it’s still worth a call.
     </p>
   </section>
 
@@ -549,39 +549,29 @@ const schema = [
 
   <Faq items={faqs} />
 
-  <!--
-    Closing statement on the dark surface. Using it twice — once for proof, once
-    here — turns a one-off into a deliberate rhythm, and the oversized type gives
-    the page a single moment of real scale contrast.
+<!--
+    Closing CTA on the dark surface — compact, consistent with other sections.
   -->
   <section class="bg-[var(--color-slate)] text-[var(--color-inverse-ink)]">
-    <div class="wrap py-24 md:py-28">
-      <!--
-        A heading, not a paragraph. This is the page's closing statement and it
-        was the one major line with no place in the document outline.
-        `text-balance` handles the line break, so the phrase stays evenly split
-        at any width instead of relying on a hardcoded <br>.
-      -->
-      <h2 class="display max-w-3xl text-balance">Tell us what’s still done by hand.</h2>
-      <div class="mt-12 flex flex-col gap-8 border-t border-[var(--color-inverse-line)] pt-10 md:flex-row md:items-center md:justify-between">
-        <p class="max-w-md text-lg text-[var(--color-inverse-ink-2)]">
-          One workflow, honestly described. We’ll map it and tell you whether it’s
-          worth automating.
-        </p>
-        <div class="flex flex-col items-start gap-3 md:items-end">
-          <div class="flex flex-wrap items-center gap-3">
+    <div class="wrap py-16 md:py-20">
+      <div class="grid gap-6 md:grid-cols-[1fr_auto] md:items-start md:gap-8">
+        <div>
+          <h2 class="font-[var(--font-display)] text-2xl md:text-3xl leading-snug text-balance">
+            Tell us what's still done by hand.
+          </h2>
+          <p class="mt-3 max-w-md text-[0.95rem] text-[var(--color-inverse-ink-2)]">
+            One workflow, honestly described. We'll map it and tell you whether it's
+            worth automating.
+          </p>
+        </div>
+        <div class="flex flex-col items-end gap-3 md:w-auto">
+          <div class="flex flex-wrap items-center gap-3 md:ml-4">
             <a
               href="/contact/"
               class="btn border-[var(--color-inverse-ink)] bg-[var(--color-inverse-ink)] text-[var(--color-slate)] transition-colors hover:border-[var(--color-signal-bright)] hover:bg-[var(--color-signal-bright)] hover:text-[var(--color-inverse-ink)]"
-              >Let’s talk growth</a
+              >Let's talk growth</a
             >
             {
-              /*
-                Only rendered once a real event type exists. A "Book a call"
-                button that silently falls back to the same form the primary
-                CTA already points at is worse than no button — it promises a
-                calendar and delivers a text field.
-              */
               site.calendly && (
                 <BookCall
                   label="Book a 30-min call"
@@ -595,13 +585,8 @@ const schema = [
               >Email us</a
             >
           </div>
-          <!--
-            Sits with the buttons rather than orphaned below them. This answers
-            "will I be ignored?" at the exact moment that doubt arrives, so it
-            was the wrong line to render at the dimmest tone on the page.
-          -->
-          <p class="font-[var(--font-mono)] text-xs text-[var(--color-inverse-ink-3)]">
-            A real person replies within two working days.
+          <p class="font-[var(--font-mono)] text-xs text-[var(--color-inverse-ink-3)] text-right md:pr-4">
+            A real person replies within two hours.
           </p>
         </div>
       </div>
