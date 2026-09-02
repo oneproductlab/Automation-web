@@ -31,7 +31,7 @@ const schema = [
     publisher: { '@id': `${site.domain}/#organization` },
     image: `${site.domain}/og/work/${entry.id}.png`,
     mainEntityOfPage: `${site.domain}/work/${entry.id}/`,
-    // Concept and internal builds are labeled in the markup as well as the UI,
+    // Internal builds are labeled in the markup as well as the UI,
     // so nothing can read as a client engagement that was not one.
     creativeWorkStatus: kindLabel[d.kind],
   },

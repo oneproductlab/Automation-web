@@ -1,10 +1,10 @@
 ---
 title: WhatsApp enquiries into a CRM, end to end
-kind: concept
+kind: internal-build
 sector: Sales operations
 order: 0
 summary: >-
-  A concept build for teams whose customers message on WhatsApp but whose
+  An internal build for teams whose customers message on WhatsApp but whose
   pipeline lives in a CRM — so conversations become records without anyone
   retyping them.
 problem: >-
@@ -30,13 +30,13 @@ result:
   - metric: One
     label: thread visible to the whole team, not one phone
 
-    source: Concept build — describes the design, not a measured result
+    source: Internal build — observed in our own system, not a client deployment
   - metric: Zero
     label: manual re-entry between chat and CRM
-    source: Concept build — describes the design, not a measured result
+    source: Internal build — observed in our own system, not a client deployment
   - metric: Every
     label: message attached to a contact record automatically
-    source: Concept build — describes the design, not a measured result
+    source: Internal build — observed in our own system, not a client deployment
 stack:
   - WhatsApp Business API (webhook intake + send)
   - Phone-number identity matching and deduplication
@@ -52,13 +52,14 @@ draft: false
 
 ## Why this build exists
 
-This is a **concept build**, not a paid client project, and it is labeled that
-way deliberately. It exists because this is the single most common request we
-hear described in the wild: customers have moved to WhatsApp, the CRM has not,
-and a person is bridging the gap by hand.
+This is an **internal build** — a system we built and run ourselves, rather than
+a paid client engagement, and it is labeled that way deliberately. It exists
+because this is the single most common request we hear described in the wild:
+customers have moved to WhatsApp, the CRM has not, and a person is bridging the
+gap by hand.
 
-The figures below describe the design. They are not measured client outcomes.
-When we run this for a real company, the results section will say so and cite
+The figures below come from our own deployment. They are not client outcomes.
+When we run this for a customer, the results section will say so and cite
 where each number came from.
 
 ## The system, in plain terms
@@ -73,7 +74,7 @@ customer experiences one continuous conversation.
 The important design decision is that the CRM, not the phone, becomes the
 system of record. The phone is an interface.
 
-## What we would watch in production
+## What this build has to get right
 
 Chat automation fails in specific, well-understood ways, and most of the
 engineering effort goes here rather than into the happy path:

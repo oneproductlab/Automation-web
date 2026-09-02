@@ -5,8 +5,16 @@ const work = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/work' }),
   schema: z.object({
     title: z.string(),
-    // Honest labelling is a core brand rule. "internal-build" and "concept"
-    // are clearly marked in the UI so nothing is passed off as a paid client.
+   /*
+      Honest labelling is a core brand rule. Every entry is marked in the UI
+      and in structured data, so nothing can read as a paid client engagement
+      that was not one.
+
+      "concept" is retained for schema compatibility but is no longer used:
+      published builds are either client work or systems we built and ran
+      ourselves. Prefer "internal-build" — and if you reach for "concept",
+      the honest question is whether the thing exists at all.
+    */
     kind: z.enum(['client', 'internal-build', 'concept']).default('internal-build'),
     client: z.string().optional(),
     sector: z.string(),

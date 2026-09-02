@@ -26,8 +26,8 @@ research work at C-DAC.
 
 ## How we describe our evidence
 
-Published projects are labeled exactly for what they are: "client",
-"internal-build" or "concept". We do not publish client logos, named customers
+Published projects are labeled exactly for what they are: "client" or
+"internal-build". We do not publish client logos, named customers
 or performance metrics we cannot substantiate. If a page does not name a client,
 no client engagement is being claimed.
 

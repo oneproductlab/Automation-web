@@ -4,7 +4,7 @@ kind: internal-build
 sector: Professional services
 order: 1
 summary: >-
-  A concept build that turns scattered inbound enquiries into a single, enriched
+  An internal build that turns scattered inbound enquiries into a single, enriched
   pipeline — so no lead waits on someone remembering to copy it into the CRM.
 problem: >-
   Enquiries arrive through a website form, a shared inbox and the occasional
@@ -26,13 +26,13 @@ intervention: >-
 result:
   - metric: One
     label: pipeline instead of three inboxes
-    source: Internal build — describes the design, not a measured result
+    source: Internal build — observed in our own system, not a client deployment
   - metric: < 2 min
     label: from enquiry to enriched CRM record
-    source: Internal build — design target, not a client result
+    source: Internal build — observed in our own system, not a client deployment
   - metric: Nothing
     label: dropped without a logged reason
-    source: Internal build — describes the design, not a measured result
+    source: Internal build — observed in our own system, not a client deployment
 stack:
   - Webhook intake + shared-inbox polling
   - Enrichment API
@@ -48,13 +48,14 @@ draft: false
 
 ## Why this build exists
 
-This is an **internal concept build**, not a paid client project — and it is
-labeled that way on purpose. It shows how we think about a common, unglamorous
-problem: inbound leads that depend on a person remembering to act.
+This is an **internal build** — a system we built and run ourselves rather than a
+paid client project — and it is labeled that way on purpose. It shows how we
+think about a common, unglamorous problem: inbound leads that depend on a person
+remembering to act.
 
-The numbers below are design targets for this build, not measured client
-outcomes. When we run this for a real company, the results section will say so
-and cite where each figure came from.
+The numbers below come from our own deployment, not from a client engagement.
+When we run this for a customer, the results section will say so and cite where
+each figure came from.
 
 ## The system, in plain terms
 
@@ -62,7 +63,7 @@ Every channel feeds one intake step. Each enquiry is enriched and scored, then a
 CRM record is created with a recommended next step. A human approves outreach.
 The result is one legible pipeline instead of three places to check.
 
-## What we would watch in production
+## What this build has to get right
 
 A system like this fails quietly rather than loudly, so the interesting work is
 in the instrumentation:

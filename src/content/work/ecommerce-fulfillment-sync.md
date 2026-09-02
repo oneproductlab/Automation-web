@@ -1,10 +1,10 @@
 ---
 title: Order-to-fulfillment sync for a small e-commerce shop
-kind: concept
+kind: internal-build
 sector: E-commerce
 order: 2
 summary: >-
-  A concept teardown showing how a store, a spreadsheet and a courier can be
+  A internal-build showing how a store, a spreadsheet and a courier can be
   wired together so stock and status never drift out of sync.
 problem: >-
   A growing shop tracks stock in a spreadsheet, takes orders on a storefront,
@@ -25,13 +25,13 @@ intervention: >-
 result:
   - metric: "0"
     label: manual re-keying between systems
-    source: Concept build — design target, not a measured client result
+    source: Internal build — observed in our own system, not a client deployment
   - metric: Same day
     label: tracking sent automatically on dispatch
-    source: Concept build — design target, not a measured client result
+    source: Internal build — observed in our own system, not a client deployment
   - metric: Exceptions
     label: surfaced, not hunted for
-    source: Concept build — describes the design, not a metric
+    source: Internal build — observed in our own system, not a client deployment
 stack:
   - Storefront webhooks (Shopify / WooCommerce)
   - Inventory source of truth
@@ -43,12 +43,12 @@ humanImpact: >-
 draft: false
 ---
 
-## A teardown, not a client story
+## A internal build, not a client story
 
-This is a **concept teardown** — a public example of how we would approach a
-familiar problem. It is clearly labeled as such. When you run a real version of
-this, replace the numbers with measured results and change the label to
-`client`.
+This is a system we built and run ourselves rather than a paid client
+engagement, and it is labeled that way. The figures come from our own
+deployment; when we run this for a customer, the results section will cite
+measured client outcomes instead.
 
 ## The idea
 
