@@ -1,13 +1,13 @@
 # Flowzora
 
-> Flowzora is a workflow automation studio working with small and mid-sized
+> Flowzora is a workflow automation agency working with small and mid-sized
 > businesses worldwide. We connect the tools a company already runs, remove the
 > manual steps between them, and hand over systems the client owns outright.
 
-Flowzora operates as a studio under oneProductLab. It was founded by Niraj Kumar,
-a backend and AI engineer whose background is in FastAPI services, async data
-pipelines and production LLM applications, with earlier machine learning research
-work at C-DAC.
+Flowzora operates as a specialist agency under oneProductLab. It was founded by
+Niraj Kumar, a backend and AI engineer whose background is in production APIs,
+data platforms and applied machine learning, with earlier machine learning
+research work at C-DAC.
 
 ## What we do
 
@@ -26,10 +26,10 @@ work at C-DAC.
 
 ## How we describe our evidence
 
-Case studies are labeled exactly for what they are: "client", "internal-build"
-or "concept". We do not publish client logos, named customers or performance
-metrics we cannot substantiate. If a page does not name a client, no client
-engagement is being claimed.
+Published projects are labeled exactly for what they are: "client",
+"internal-build" or "concept". We do not publish client logos, named customers
+or performance metrics we cannot substantiate. If a page does not name a client,
+no client engagement is being claimed.
 
 Client testimonials on the site are public LinkedIn recommendations, quoted
 verbatim and linked to the profile that wrote them, with the relationship
@@ -39,9 +39,9 @@ verbatim and linked to the profile that wrote them, with the relationship
 
 - [Services](https://flowzora.com/services/): what we build
 - [Pricing](https://flowzora.com/pricing/): published rates
-- [Work](https://flowzora.com/work/): builds and teardowns, honestly labeled
+- [Work](https://flowzora.com/work/): automation systems shipped, honestly labeled
 - [Approach](https://flowzora.com/approach/): map, build, hand over
-- [About](https://flowzora.com/about/): the studio and its founder
+- [About](https://flowzora.com/about/): the agency and its founder
 - [Writing](https://flowzora.com/writing/): notes on operations and automation
 - [Contact](https://flowzora.com/contact/): start with one workflow
 

@@ -14,7 +14,7 @@ description: >-
 Rules derived from the existing Flowzora codebase. When a rule and the code
 disagree, the code is probably right and this file is stale — fix this file.
 
-The site is a **workflow automation studio**. It sells invisible work, so the
+The site is a **workflow automation agency**. It sells invisible work, so the
 governing principle is: **show the system, don't describe it.** A diagram that
 runs beats a paragraph explaining that things run.
 
@@ -145,7 +145,7 @@ runs beats a paragraph explaining that things run.
 
 ## Content & copy
 
-- Lead with the reader's problem, not the studio's capabilities.
+- Lead with the reader's problem, not the agency's capabilities.
 - Short declaratives. Cut adverbs and qualifiers.
 - Never insult the reader's current setup — they usually built it.
 - One caveat per page, maximum. Stacked hedges read as anxiety and undercut the

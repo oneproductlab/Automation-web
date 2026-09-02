@@ -24,7 +24,7 @@ genuinely fine for a contained job: one integration, one script, one report. The
 risk is not skill, it is continuity. When the person moves on, so does the only
 copy of how the thing works.
 
-**A specialist studio — $6,000 to $25,000 per workflow, fixed price.** You are
+**A specialist automation agency — $6,000 to $25,000 per workflow, fixed price.** You are
 paying for scoping, documentation and someone accountable when it breaks at 2am.
 Worth it when the workflow touches more than two systems or when being wrong has
 a cost.
@@ -75,7 +75,7 @@ to be harder than it looked, your invoice grows.
 Fixed price puts that risk on whoever wrote the estimate — which is the correct
 place for it, because they are the one who understood the problem well enough to
 quote it. The trade is that scoping has to happen first and properly, which is
-why serious studios charge for the scoping phase rather than giving it away.
+why serious agencies charge for the scoping phase rather than giving it away.
 
 ## What should be in the price
 

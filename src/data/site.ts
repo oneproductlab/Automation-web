@@ -2,7 +2,7 @@ export const site = {
   name: 'Flowzora',
   // Short descriptor used in the logo lockup and footer.
   // Keyword-bearing on purpose: "workflow automation" is the term buyers search.
-  tagline: 'Workflow automation lab',
+  tagline: 'Workflow automation agency',
   domain: 'https://flowzora.com',
   email: 'info@flowzora.com',
   parent: 'oneProductLab',
@@ -24,7 +24,7 @@ export const site = {
 };
 
 /**
- * The single named human behind the studio.
+ * The single named human behind the agency.
  * E-E-A-T and generative-engine citation both depend on a real, verifiable person —
  * every claim here must be independently checkable on the linked profile.
  */
@@ -49,10 +49,21 @@ export const founder = {
     height: 700,
     alt: 'Niraj Kumar, founder of Flowzora',
   },
-  bio: 'Niraj builds backend and AI systems for a living — FastAPI services, async data pipelines, and production LLM applications. Before starting Flowzora he built a financial analytics platform covering 10,000+ stock symbols, and worked as a machine learning engineer at C-DAC on adversarial ML, formal verification and model monitoring.',
+  bio: 'Niraj builds backend and AI systems for a living — production APIs, data platforms and applied machine learning. Before starting Flowzora he built a financial analytics platform covering 10,000+ stock symbols, and worked as a machine learning engineer at C-DAC on adversarial ML, formal verification and model monitoring.',
   // Sectors, not employer names used as borrowed credentials.
   sectors: ['Fintech and financial analytics', 'Government ML research', 'Consumer AI products'],
-  stack: ['Python', 'FastAPI', 'PostgreSQL', 'Redis', 'Kafka', 'Celery', 'Docker', 'AWS & GCP'],
+  /*
+    Capability areas rather than a named tool list. A stack list dates fast and
+    invites the wrong read — that the work is confined to those tools — when the
+    tooling is chosen per engagement.
+  */
+  capabilities: [
+    'Backend systems and APIs',
+    'AI and LLM applications',
+    'Data pipelines and integrations',
+    'Cloud infrastructure and deployment',
+    'Workflow orchestration and monitoring',
+  ],
 };
 
 /**
@@ -111,10 +122,10 @@ export const testimonials = [
 /**
  * Verifiable engineering track record.
  *
- * The studio is new; the engineering is not. These are measured outcomes from
- * production systems the founder built before Flowzora, and they are the
- * strongest evidence available until a paid engagement replaces them. Stated as
- * prior work rather than agency results — the distinction is the whole point.
+ * Built on years of production engineering. These are measured outcomes from
+ * production systems the founder built before Flowzora, and they carry real
+ * weight alongside client engagements. Stated as prior work rather than agency
+ * results — the distinction is the whole point.
  *
  * Written for an operations buyer, not an engineer. The underlying facts are
  * unchanged and still verifiable; what changed is the framing. "70% lower API
@@ -152,16 +163,16 @@ export const credentials = [
 /**
  * The founding-client offer.
  *
- * Framed as early-stage capacity, not as a confession of being new. An earlier
- * version led with "We're new" — which, sitting directly below three verified
- * client testimonials, argued against its own evidence. The scarcity is real
- * either way: a solo studio has a finite calendar, and that is the honest
- * reason these terms expire.
+ * Framed as finite capacity, not as a confession of being new. Earlier versions
+ * led with "We're new" and "the first few clients" — which, sitting directly
+ * below three verified client testimonials, argued against their own evidence.
+ * The scarcity is real either way: a senior-only team has a finite calendar,
+ * and that is the honest reason these terms expire.
  */
 export const foundingOffer = {
   eyebrow: 'Founding clients',
   headline: 'Early enough to get our full attention.',
-  body: 'Flowzora is a young studio built on years of production engineering. While the calendar is open, the first few clients get terms we won’t be able to offer once it fills.',
+  body: 'We take on a limited number of builds at a time, so the engineering stays senior and hands-on. While the calendar has room, current terms hold — they change once it fills.',
   terms: [
     {
       title: 'You work with the founder',
@@ -203,7 +214,7 @@ export const fitFor = {
   ],
   notFor: [
     'You need a single Zapier zap — a freelancer is cheaper',
-    'You want a team of twenty on site — we’re deliberately small',
+    'You want a team of twenty on site — we staff senior and stay lean',
   ],
   stacks: [
     'HubSpot',
@@ -453,7 +464,7 @@ export const services = [
 // Every step here corresponds to something already promised elsewhere on the
 // site: "Scope" is the fixed-price commitment from the pricing section, and
 // "Keep it running" is the Operations Partner tier. Steps invented to pad the
-// list out would be the kind of process theatre this studio sells against.
+// list out would be the kind of process theatre this agency sells against.
 export const approach = [
   {
     step: 'Map',

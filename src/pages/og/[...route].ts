@@ -28,8 +28,8 @@ const pages: Record<string, { title: string; description: string }> = {
     description: 'Published rates. Fixed scope, fixed price.',
   },
   work: {
-    title: 'Selected work',
-    description: 'Systems we have built, honestly labeled.',
+    title: 'Automation systems we have shipped',
+    description: 'Built, handed over and honestly labeled.',
   },
   approach: {
     title: 'Map, build, hand over',
@@ -37,7 +37,7 @@ const pages: Record<string, { title: string; description: string }> = {
   },
   about: {
     title: 'About Flowzora',
-    description: 'A workflow automation studio under oneProductLab.',
+    description: 'A workflow automation agency under oneProductLab.',
   },
   writing: {
     title: 'Writing',

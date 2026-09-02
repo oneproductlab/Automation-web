@@ -14,7 +14,7 @@ interface Props {
   ogType?: string;
   /** Which generated share card to use, e.g. "work/lead-intake-agency". */
   ogRoute?: string;
-  /** Extra JSON-LD nodes merged into the page graph (FAQ, Service, Article...). */
+  /** Extra JSON-LD nodes merged into the page graph (FAQ, Service, Article…). */
   schema?: Record<string, unknown>[];
   /** Keep a page out of the index without removing it from the site. */
   noindex?: boolean;
@@ -24,8 +24,18 @@ interface Props {
 
 const {
   title,
-  description = 'Flowzora is a workflow automation lab. We connect the tools you already use, remove the manual steps between them, and hand over systems your team owns.',
+  /*
+    Names the buyer and names the tools. The previous version — "we connect the
+    tools you already use" — was true of every automation vendor on the results
+    page, so it gave a searcher no reason to click this one. Concrete product
+    names also give search and generative engines something to match against a
+    query like "HubSpot Shopify integration agency".
 
+    Kept near 160 characters. Anything longer is truncated in the SERP, and the
+    part that gets cut is always the end — which is why the ownership promise
+    is last only after the differentiators have already landed.
+  */
+  description = 'Flowzora is a workflow automation agency for SMBs. We connect tools like HubSpot, Salesforce and Shopify, remove the manual steps, and hand over systems you own.',
   path,
   ogType = 'website',
   ogRoute = 'default',
@@ -48,7 +58,7 @@ const orgId = `${site.domain}/#organization`;
 const founderId = `${site.domain}/#founder`;
 
 // One connected graph rather than several orphaned blobs: search and generative
-// engines resolve the lab, the person and the site as a single entity.
+// engines resolve the agency, the person and the site as a single entity.
 const graph = [
   {
     '@type': ['Organization', 'ProfessionalService'],
@@ -62,7 +72,6 @@ const graph = [
       '@type': 'Organization',
       name: site.parent,
       url: site.parentUrl,
-
     },
     founder: { '@id': founderId },
     employee: { '@id': founderId },
@@ -95,8 +104,7 @@ const graph = [
       '@type': 'CollegeOrUniversity',
       name: 'National Institute of Technology, Kurukshetra',
     },
-
-    knowsAbout: founder.stack,
+    knowsAbout: founder.expertise,
   },
   {
     '@type': 'WebSite',
