@@ -27,7 +27,8 @@ copy of how the thing works.
 **A specialist automation agency — $6,000 to $25,000 per workflow, fixed price.** You are
 paying for scoping, documentation and someone accountable when it breaks at 2am.
 Worth it when the workflow touches more than two systems or when being wrong has
-a cost.
+a cost. This is [the shape of engagement we run](/approach/): map the work first,
+build to a fixed scope, then hand it over.
 
 **A large consultancy — $50,000 and up.** Appropriate for enterprise compliance
 and procurement requirements. For a 40-person company automating lead intake, it
@@ -94,9 +95,11 @@ see it yet.
 
 ## What we charge
 
-We publish ours: **$2,500** for a two-week Automation Map that scopes the work,
-credited against the build. **$8,000 to $18,000** for a first system, fixed
-scope. **From $6,000 a month** for ongoing partnerships.
+We publish [our rates in full](/pricing/): **$1,500** for a two-week Automation
+Map that scopes the work, credited against the build. **$6,000 to $14,000** for a
+first system, fixed scope, with 90 days of maintenance included after handover.
+**From $3,500 a month** for ongoing partnerships.
 
 If the arithmetic above says your workflow is not worth automating yet, we would
-rather tell you that than sell you a build.
+rather tell you that than sell you a build. If it says otherwise,
+[tell us what is still done by hand](/contact/).

@@ -1,0 +1,133 @@
+---
+/*
+  Terms.
+
+  Deliberately short and readable rather than a wall of boilerplate. These are
+  website terms plus the commercial principles we already state publicly on the
+  pricing and approach pages — repeated here so they are findable in one place.
+
+  Anything binding on an actual engagement lives in the signed proposal, and
+  this page says so rather than pretending to be that contract.
+*/
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { site } from '../data/site';
+
+const description = `Terms of use for the ${site.name} website, plus the commercial principles that apply to engagements: ownership, fixed scope and included maintenance.`;
+
+const lastUpdated = 'September 2026';
+---
+
+<Base title="Terms" description={description} ogRoute="default">
+  <section class="wrap pt-10 pb-12 md:pt-14">
+    <Breadcrumbs trail={[]} current="Terms" />
+
+    <p class="eyebrow mt-8">Legal</p>
+    <h1 class="mt-5 max-w-3xl text-[2.4rem] leading-[1.05] md:text-[3.4rem]">Terms</h1>
+    <p class="mt-7 max-w-2xl text-lg text-[var(--color-ink-2)]">
+      The rules for using this site, and the commercial principles behind our
+      work. Last updated {lastUpdated}.
+    </p>
+  </section>
+
+  <section class="wrap pb-16">
+    <div class="post-body max-w-2xl">
+      <h2>Using this site</h2>
+      <p>
+        You are welcome to read, quote and link to anything published here. If
+        you quote us at length, attribute it and link back. You may not
+        republish whole articles as your own, and you may not use the site to
+        distribute anything harmful.
+      </p>
+
+      <h2>What the content is and is not</h2>
+      <p>
+        The writing and published figures on this site are general information,
+        not advice for your specific situation. Costs vary with scope, and the
+        ranges we publish are honest averages rather than a quote. Nothing here
+        forms a contract until it is written into a proposal and signed.
+      </p>
+
+      <h2>Published pricing</h2>
+      <p>
+        We publish our rates because we think hiding them wastes your time.
+        They are current at the date above and can change. A price quoted to you
+        in a proposal is fixed for that engagement and does not move with this
+        page.
+      </p>
+
+      <h2>Engagement principles</h2>
+      <p>
+        These apply to every engagement and are repeated from the pricing and
+        approach pages so they are all in one place:
+      </p>
+      <ul>
+        <li>
+          <strong>Fixed scope, fixed price.</strong> Scope is agreed in writing
+          after the Automation Map. Overruns against agreed scope are ours to
+          absorb. Added scope is quoted separately rather than invoiced quietly.
+        </li>
+        <li>
+          <strong>You own the result.</strong> Code, credentials, repositories
+          and infrastructure are in your name from the first day. On full payment,
+          intellectual property in what we build for you is yours. Handover
+          includes runbooks and diagrams.
+        </li>
+        <li>
+          <strong>90 days of maintenance included.</strong> After handover, we fix
+          breakages in what we built and adapt to upstream API changes for 90 days
+          at no extra cost. It does not cover new features or changes you request,
+          which are quoted separately.
+        </li>
+        <li>
+          <strong>No lock-in.</strong> Ongoing engagements can be cancelled with
+          30 days' notice. Everything built stays yours and keeps running.
+        </li>
+        <li>
+          <strong>Confidentiality.</strong> We treat what we see inside your
+          operation as confidential, and we do not publish a client write-up
+          without written approval.
+        </li>
+      </ul>
+
+      <h2>Limits</h2>
+      <p>
+        We build systems that integrate with third-party services we do not
+        control. If a vendor changes or withdraws an API, we will tell you and
+        propose a fix, but we cannot warrant the behaviour of platforms that are
+        not ours. Our liability for any engagement is limited to the fees paid
+        for it, except where the law does not allow that limit.
+      </p>
+
+      <h2>Getting in touch</h2>
+      <p>
+        Questions about any of this go to
+        <a href={`mailto:${site.email}`} class="link-underline">{site.email}</a>.
+        How we handle your data is covered in our
+        <a href="/privacy/" class="link-underline">privacy policy</a>.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .post-body :global(h2) {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin-top: 2.25rem;
+    margin-bottom: 0.5rem;
+  }
+  .post-body :global(p) {
+    color: var(--color-ink-2);
+    margin-bottom: 1rem;
+  }
+  .post-body :global(ul) {
+    color: var(--color-ink-2);
+    margin-bottom: 1rem;
+    padding-left: 1.1rem;
+    list-style: disc;
+  }
+  .post-body :global(li) {
+    margin-bottom: 0.6rem;
+  }
+</style>

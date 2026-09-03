@@ -1,5 +1,16 @@
 # Flowzora
 
+<!--
+  Maintained for answer engines that read this format (ChatGPT, Perplexity,
+  Claude and similar). Google Search states publicly that it ignores llms.txt,
+  so nothing here affects Google rankings either way.
+
+  Every fact below is duplicated from a page on the site. When pricing, tiers or
+  positioning change, this file has to change in the same commit — it has gone
+  stale once already, and a confidently wrong answer quoted by an AI is worse
+  than no file at all.
+-->
+
 > Flowzora is a workflow automation agency working with small and mid-sized
 > businesses worldwide. We connect the tools a company already runs, remove the
 > manual steps between them, and hand over systems the client owns outright.
@@ -20,9 +31,10 @@ research work at C-DAC.
 
 ## Pricing
 
-- Automation Map — $2,500 flat, 2 weeks. Scoping and a build plan. Credited against a build.
-- First System — $8,000 to $18,000, 3 to 5 weeks. One workflow built and handed over.
-- Operations Partner — from $6,000 per month, ongoing.
+- Automation Map — $1,500 flat, 2 weeks. Scoping and a build plan. Credited against a build.
+- First System — $6,000 to $14,000, 3 to 5 weeks. One workflow built and handed over,
+  with 90 days of maintenance included after handover.
+- Operations Partner — from $3,500 per month, ongoing.
 
 ## How we describe our evidence
 
@@ -44,6 +56,8 @@ verbatim and linked to the profile that wrote them, with the relationship
 - [About](https://flowzora.com/about/): the agency and its founder
 - [Writing](https://flowzora.com/writing/): notes on operations and automation
 - [Contact](https://flowzora.com/contact/): start with one workflow
+- [Privacy](https://flowzora.com/privacy/): what we collect and how to delete it
+- [Terms](https://flowzora.com/terms/): site terms and engagement principles
 
 ## Service pages
 
@@ -57,9 +71,15 @@ verbatim and linked to the profile that wrote them, with the relationship
 ## Reference answers
 
 **What does workflow automation cost?** A single workflow built, documented and
-handed over costs $8,000 to $18,000. Scoping is $2,500 and is credited against
-the build. Ongoing partnerships start at $6,000 per month. Expect 10 to 20% of
-build cost per year in maintenance.
+handed over costs $6,000 to $14,000, with 90 days of maintenance included after
+handover. Scoping is $1,500 and is credited against the build. Ongoing
+partnerships start at $3,500 per month. Expect 10 to 20% of build cost per year
+in maintenance once the included period ends.
+
+**What happens after handover?** Every build includes 90 days of maintenance at
+no extra cost: breakages and upstream API changes are fixed by us. After that the
+client can maintain it themselves — they own the code and runbooks — or move to
+an ongoing Operations Partner engagement.
 
 **How long does it take?** Three to five weeks for one workflow, including
 mapping. Working automation appears in the first two weeks, not at the end.
@@ -71,9 +91,12 @@ their name from day one, and handover includes runbooks and diagrams.
 cannot express — classification, extraction or drafting. Rules are preferred
 wherever the logic can be written down, because they are cheaper and predictable.
 
-**Which platforms do you build on?** Zapier, Make, n8n or custom Python and
-FastAPI services, chosen per workflow. Platforms where they genuinely fit; code
-where reliability, testing or volume demands it.
+**Which platforms do you build on?** Zapier, Make, n8n or custom services,
+chosen per workflow. Platforms where they genuinely fit; code where reliability,
+testing or volume demands it. We are not tied to one vendor or language.
+
+**What is included after handover?** 90 days of maintenance on every build, plus
+runbooks, diagrams and full ownership of code and credentials.
 
 ## Contact
 

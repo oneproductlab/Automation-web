@@ -279,7 +279,7 @@
   }
 
   /*
-    Prices, deliberately smaller than `.metric`. A range like "$8,000 – $18,000"
+    Prices, deliberately smaller than `.metric`. A range like "$6,000 – $14,000"
     wraps to two lines at the proof scale, which makes one card taller than its
     neighbours and inflates the whole row. This size keeps every tier on one
     line, so the cards stay level and the section stops shouting.

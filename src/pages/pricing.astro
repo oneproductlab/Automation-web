@@ -6,7 +6,52 @@ import Testimonials from '../components/Testimonials.astro';
 import { pricing, site } from '../data/site';
 
 const description =
-  'Workflow automation pricing: a $2,500 two-week Automation Map, first systems at $8,000–$18,000 fixed scope, and ongoing partnerships from $6,000 a month.';
+  'Workflow automation pricing: a $1,500 two-week Automation Map, first systems from $6,000 fixed scope, and 90 days of maintenance included after handover.';
+
+/*
+  The visible FAQ list is the single source for both the page and the schema.
+
+  It was previously duplicated: a hand-written FAQPage block alongside the
+  rendered list, which had already drifted — the schema asserted a "How much
+  does workflow automation cost?" answer that appeared nowhere on the page.
+  Structured data describing content a visitor cannot see is the exact thing
+  FAQ markup is not supposed to do, so the question now leads the visible list
+  and the schema is generated from it.
+
+  Google retired FAQ rich results in May 2026, so this earns no snippet there.
+  It is kept because Bing still renders them, because answer engines read the
+  Q&A pairs, and because deriving it costs nothing.
+*/
+const faqs = [
+  {
+    q: 'How much does workflow automation cost?',
+    a: 'Most first projects land between $6,000 and $14,000 for a single workflow built, documented and handed over, with 90 days of maintenance included after handover. A two-week Automation Map that scopes the work costs $1,500 and is credited against the build. Ongoing partnerships start at $3,500 per month.',
+  },
+  {
+    q: 'Why do you publish your prices?',
+    a: 'Because a price you have to book a call to hear is a price set by how badly you appear to need help. Published ranges let you decide whether we’re worth a conversation before you sit through one, and they hold us to a number we have to justify in public.',
+  },
+  {
+    q: 'What happens after handover — do we pay to keep it running?',
+    a: 'Every build includes 90 days of maintenance after handover at no extra cost: if something we built breaks, or an API you depend on changes underneath it, we fix it. After that you can take it on yourself — you own the code and the runbooks — or move to an Operations Partner engagement.',
+  },
+  {
+    q: 'What happens if the project takes longer than expected?',
+    a: 'The price does not move. Scope is fixed in writing after the Automation Map, so overruns are our problem to absorb, not yours to pay for. If you want to add scope mid-build, we quote it separately rather than quietly extending the invoice.',
+  },
+  {
+    q: 'Do you charge for the first conversation?',
+    a: 'No. The first call is free and ends with an honest answer about whether the workflow is worth automating yet. Only the Automation Map, which produces documented deliverables, is paid.',
+  },
+  {
+    q: 'What if you decide our workflow is not worth automating?',
+    a: 'We tell you, and we say why. Talking a company out of a build we could have sold is cheaper for us than delivering something that quietly fails to earn its cost.',
+  },
+  {
+    q: 'Who owns the code and the accounts?',
+    a: 'You do, from the first day. Credentials, repositories and infrastructure are in your name, and handover includes runbooks and diagrams so another engineer could pick the system up without us.',
+  },
+];
 
 const schema = [
   {
@@ -32,63 +77,11 @@ const schema = [
   {
     '@type': 'FAQPage',
     '@id': `${site.domain}/pricing/#faq`,
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: 'How much does workflow automation cost?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Most first projects land between $8,000 and $18,000 for a single workflow built, documented and handed over. A two-week Automation Map that scopes the work costs $2,500 and is credited against the build. Ongoing partnerships start at $6,000 per month.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Why do you publish your prices?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Because hiding them wastes everyone\u2019s time. Published ranges let you decide whether we are worth a conversation before you sit through one, and they hold us to a number rather than pricing off how badly you appear to need help.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'What happens if the project takes longer than expected?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'The price does not move. Scope is fixed in writing after the Automation Map, so overruns are our problem to absorb, not yours to pay for. If you want to add scope mid-build we quote it separately rather than quietly extending the invoice.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Do you charge for the first conversation?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'No. The first call is free and ends with an honest answer about whether the workflow is worth automating yet. Only the Automation Map, which produces documented deliverables, is paid.',
-        },
-      },
-    ],
-  },
-];
-
-const faqs = [
-  {
-    q: 'Why do you publish your prices?',
-    a: 'Because hiding them wastes everyone’s time. Published ranges let you decide whether we’re worth a conversation before you sit through one, and they hold us to a number rather than pricing off how badly you appear to need help.',
-  },
-  {
-    q: 'What happens if the project takes longer than expected?',
-    a: 'The price does not move. Scope is fixed in writing after the Automation Map, so overruns are our problem to absorb, not yours to pay for. If you want to add scope mid-build, we quote it separately rather than quietly extending the invoice.',
-  },
-  {
-    q: 'Do you charge for the first conversation?',
-    a: 'No. The first call is free and ends with an honest answer about whether the workflow is worth automating yet. Only the Automation Map, which produces documented deliverables, is paid.',
-  },
-  {
-    q: 'What if you decide our workflow is not worth automating?',
-    a: 'We tell you, and we say why. Talking a company out of a build we could have sold is cheaper for us than delivering something that quietly fails to earn its cost.',
-  },
-  {
-    q: 'Who owns the code and the accounts?',
-    a: 'You do, from the first day. Credentials, repositories and infrastructure are in your name, and handover includes runbooks and diagrams so another engineer could pick the system up without us.',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
   },
 ];
 ---
@@ -103,7 +96,8 @@ const faqs = [
     </h1>
     <p class="mt-7 max-w-2xl text-lg text-[var(--color-ink-2)]">
       Fixed scope, fixed price, written down before we start. Most first projects
-      land between <strong class="font-medium text-[var(--color-ink)]">$8,000 and $18,000</strong>.
+      land between <strong class="font-medium text-[var(--color-ink)]">$6,000 and $14,000</strong>,
+      with 90 days of maintenance included after handover.
     </p>
   </section>
 
@@ -161,7 +155,7 @@ const faqs = [
           <div class="border-t border-[var(--color-line)] pt-4">
             <h3 class="font-[var(--font-display)] text-xl">The Map is credited</h3>
             <p class="mt-2 text-[0.95rem] text-[var(--color-ink-2)]">
-              If you go ahead with the build, the $2,500 comes off the project fee.
+              If you go ahead with the build, the $1,500 comes off the project fee.
             </p>
           </div>
           <div class="border-t border-[var(--color-line)] pt-4">

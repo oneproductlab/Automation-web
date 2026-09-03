@@ -1,0 +1,156 @@
+---
+/*
+  Privacy policy.
+
+  Written to describe what this site actually does rather than to recite a
+  template. Every processor named below is one the site genuinely uses — an
+  inaccurate privacy policy is worse than none, because it is a published
+  statement a regulator can hold you to.
+
+  Kept indexable. A privacy page is a trust signal that search quality raters
+  and buyers both look for, and hiding it defeats the point of having one.
+*/
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { site } from '../data/site';
+
+const description = `How ${site.name} handles personal data: what the contact form collects, which processors are used, how long data is kept, and how to have it deleted.`;
+
+// Stated so the page carries its own currency rather than implying it is
+// maintained more often than it is.
+const lastUpdated = 'September 2026';
+---
+
+<Base title="Privacy policy" description={description} ogRoute="default">
+  <section class="wrap pt-10 pb-12 md:pt-14">
+    <Breadcrumbs trail={[]} current="Privacy" />
+
+    <p class="eyebrow mt-8">Legal</p>
+    <h1 class="mt-5 max-w-3xl text-[2.4rem] leading-[1.05] md:text-[3.4rem]">Privacy policy</h1>
+    <p class="mt-7 max-w-2xl text-lg text-[var(--color-ink-2)]">
+      What we collect, why, and how to get rid of it. Last updated {lastUpdated}.
+    </p>
+  </section>
+
+  <section class="wrap pb-16">
+    <div class="post-body max-w-2xl">
+      <h2>Who we are</h2>
+      <p>
+        {site.name} is a workflow automation agency operating under {site.parent}.
+        For anything in this policy, contact
+        <a href={`mailto:${site.email}`} class="link-underline">{site.email}</a>.
+      </p>
+
+      <h2>What we collect</h2>
+      <p>
+        <strong>Contact form submissions.</strong> If you use the contact form we
+        receive your name, email address, company name, an approximate team size,
+        and whatever you write in the message field. You choose all of it. We ask
+        for nothing else and there are no hidden fields beyond a spam honeypot,
+        which is never read as personal data.
+      </p>
+      <p>
+        <strong>Analytics.</strong> We use Vercel Analytics and Vercel Speed
+        Insights. Both are cookieless and do not fingerprint visitors or build
+        cross-site profiles. They report aggregate page views and performance
+        timings. We cannot identify you from them, and neither can we tie a page
+        view to a contact form submission.
+      </p>
+      <p>
+        <strong>Server logs.</strong> Our host records standard request logs,
+        including IP addresses, as part of operating the site. The contact
+        endpoint also holds an IP address in memory briefly to rate-limit
+        submissions. It is not written to a database and does not survive a
+        restart.
+      </p>
+
+      <h2>What we do not do</h2>
+      <ul>
+        <li>We set no advertising or tracking cookies.</li>
+        <li>We do not sell, rent or share your data with advertisers.</li>
+        <li>We do not run remarketing or ad-network pixels.</li>
+        <li>We do not add you to a mailing list because you filled in the form.</li>
+      </ul>
+
+      <h2>Who processes your data</h2>
+      <p>
+        We keep the list short deliberately — every processor is somewhere your
+        data could go, so we use as few as the site needs.
+      </p>
+      <ul>
+        <li><strong>Vercel</strong> — hosting, serverless functions, analytics.</li>
+        <li><strong>Resend</strong> — delivers contact form submissions to our inbox.</li>
+        <li><strong>Google Workspace</strong> — where that email is then received and stored.</li>
+      </ul>
+      <p>
+        These providers operate internationally, so your data may be processed
+        outside your own country, including in the United States.
+      </p>
+
+      <h2>Why we are allowed to hold it</h2>
+      <p>
+        Contact form data is processed on the basis of legitimate interest:
+        you asked us about work, and answering requires holding what you sent
+        long enough to reply. Analytics is aggregate and cookieless, so it does
+        not rely on consent under GDPR or ePrivacy.
+      </p>
+
+      <h2>How long we keep it</h2>
+      <p>
+        Enquiries stay in our email for as long as the conversation is live and
+        for up to 24 months afterwards, so we can pick up a thread you left open.
+        Ask us to delete it sooner and we will. Records tied to paid work are
+        kept for as long as accounting rules require.
+      </p>
+
+      <h2>Your rights</h2>
+      <p>
+        Depending on where you live you can ask for a copy of what we hold, ask
+        us to correct it, ask us to delete it, or object to us holding it at all.
+        Email <a href={`mailto:${site.email}`} class="link-underline">{site.email}</a>
+        and we will action it within 30 days. You do not need to explain why, and
+        asking will not affect any live conversation.
+      </p>
+      <p>
+        If you are in the UK or EU and think we have handled this badly, you can
+        complain to your national data protection authority.
+      </p>
+
+      <h2>Client systems we build</h2>
+      <p>
+        This policy covers this website only. When we build automation for a
+        client, that client remains the data controller for anything flowing
+        through it; we act as a processor under the terms of that engagement,
+        and credentials and infrastructure sit in the client's own accounts.
+      </p>
+
+      <h2>Changes</h2>
+      <p>
+        If this policy changes materially we update the date at the top. We do
+        not backdate it to look freshly maintained.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .post-body :global(h2) {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin-top: 2.25rem;
+    margin-bottom: 0.5rem;
+  }
+  .post-body :global(p) {
+    color: var(--color-ink-2);
+    margin-bottom: 1rem;
+  }
+  .post-body :global(ul) {
+    color: var(--color-ink-2);
+    margin-bottom: 1rem;
+    padding-left: 1.1rem;
+    list-style: disc;
+  }
+  .post-body :global(li) {
+    margin-bottom: 0.4rem;
+  }
+</style>

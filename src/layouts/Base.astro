@@ -35,7 +35,7 @@ const {
     part that gets cut is always the end — which is why the ownership promise
     is last only after the differentiators have already landed.
   */
-  description = 'Flowzora is a workflow automation agency for SMBs. We connect tools like HubSpot, Salesforce and Shopify, remove the manual steps, and hand over systems you own.',
+  description = 'Flowzora is a workflow automation agency for SMBs. We connect tools like HubSpot, Salesforce and Shopify, remove manual steps, and hand over systems you own.',
   path,
   ogType = 'website',
   ogRoute = 'default',
@@ -76,6 +76,38 @@ const graph = [
     founder: { '@id': founderId },
     employee: { '@id': founderId },
     sameAs: [site.linkedin, founder.linkedin],
+    /*
+      `logo` is what a Knowledge Panel renders, and Google reads it only from
+      an Organization node — an og:image is not a substitute. A raster file at
+      512×512 rather than the SVG favicon: Google's documented requirement is a
+      raster image of at least 112×112, and SVG is tolerated rather than read
+      reliably. Generated from the same source mark, so they cannot drift.
+    */
+    logo: {
+      '@type': 'ImageObject',
+      url: new URL('/logo.png', site.domain).href,
+      width: 512,
+      height: 512,
+    },
+    image: new URL('/og/default.png', site.domain).href,
+    /*
+      An explicit contact route. Without it, engines infer contact details from
+      page text, which is how a wrong address ends up in an AI answer.
+    */
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'sales',
+      email: site.email,
+      url: `${site.domain}/contact/`,
+      areaServed: site.areaServed,
+      availableLanguage: 'English',
+    },
+    /*
+      `priceRange` is expected on ProfessionalService. Expressed as an open
+      floor rather than a closed band: a closed range silently excludes the
+      ongoing retainer and caps larger builds before anyone has read the scope.
+    */
+    priceRange: 'From $1,500',
     // schema.org accepts a plain string here. Naming specific countries would
     // tell search engines we don't serve anywhere else.
     areaServed: site.areaServed,
@@ -104,7 +136,7 @@ const graph = [
       '@type': 'CollegeOrUniversity',
       name: 'National Institute of Technology, Kurukshetra',
     },
-    knowsAbout: founder.expertise,
+    knowsAbout: founder.capabilities,
   },
   {
     '@type': 'WebSite',
@@ -160,6 +192,30 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
       continuity of a single-page app.
     */}
     <ClientRouter />
+
+    {/*
+      No-JS fallback for scroll reveals.
+
+      `.reveal` starts at opacity 0 and is only made visible by the
+      IntersectionObserver below. Without this override, a visitor with
+      JavaScript disabled or blocked gets a page where most sections —
+      testimonials, services, pricing, work — are present in the DOM but
+      invisible, which looks like a broken site rather than a plain one.
+
+      Scoped to <noscript> so it costs nothing for everyone else and cannot
+      race the normal animation.
+    */}
+    <noscript>
+      <style>
+        .reveal {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+        [data-stagger] {
+          animation: none !important;
+        }
+      </style>
+    </noscript>
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
   </head>

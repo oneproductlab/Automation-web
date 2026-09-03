@@ -69,7 +69,8 @@ notification and unaffordable for money movement.
 
 **The honest cost:** custom code needs someone who can maintain it. If nobody at
 your company can, a platform your team can actually operate is the better
-engineering decision, even though it is the worse engineering.
+engineering decision, even though it is the worse engineering. Whatever gets
+built, [the documentation and credentials should end up in your name](/approach/).
 
 ## The signals that you have outgrown your tool
 
@@ -88,12 +89,14 @@ Independent of which tool you are on:
 ## What we actually do
 
 We use platforms when they genuinely fit — there is no credit for building a
-custom integration where a connector would have held up fine. We write Python and
-FastAPI services when reliability, testing or volume demands it.
+custom integration where a connector would have held up fine. We write custom
+services when reliability, testing or volume demands it.
 
 Most real systems end up mixed: a platform handling the well-supported edges, a
 service handling the part that matters, and monitoring across both so a failure
-anywhere is visible in one place.
+anywhere is visible in one place. Our [n8n workflow rebuild](/work/granite-marketing-n8n/)
+is a worked example of exactly that split.
 
 The question worth asking is not "which tool is best." It is "what happens when
-this breaks, and who finds out?"
+this breaks, and who finds out?" If you are at the point of asking it,
+[the services we build](/services/) start from that question.

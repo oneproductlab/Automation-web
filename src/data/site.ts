@@ -179,8 +179,8 @@ export const foundingOffer = {
       detail: 'Not an account manager. The person scoping the work writes the code.',
     },
     {
-      title: 'Founding-client pricing',
-      detail: 'Below where these engagements will sit once there’s a waiting list.',
+      title: '90 days of maintenance, included',
+      detail: 'After handover we keep it running at no extra cost. Breakages and API changes are ours.',
     },
     {
       title: 'Your build becomes the case study',
@@ -248,7 +248,7 @@ export const services = [
     seoTitle: 'CRM automation & revenue operations services',
     keyword: 'crm automation services',
     summary:
-      'Lead capture, routing, enrichment and CRM hygiene that stops deals stalling between tools.',
+      'Lead capture, routing, enrichment and CRM hygiene that stops deals stalling between tools — connecting HubSpot, Salesforce or Pipedrive to where leads arrive.',
     detail:
       'We connect the places leads arrive to the systems your team actually works in — so nothing is re-keyed, nothing is dropped, and every record is where a rep expects it.',
     answer:
@@ -284,7 +284,7 @@ export const services = [
     seoTitle: 'Marketing automation & lifecycle workflows',
     keyword: 'marketing automation consultant',
     summary:
-      'Campaign, content and lifecycle workflows that run on their own without a person babysitting them.',
+      'Campaign, content and lifecycle workflows that run on their own without a person babysitting them: segmentation, hand-offs and reporting that stay accurate.',
     detail:
       'The repetitive parts of marketing operations — segmentation, hand-offs, reporting — turned into systems that run to a schedule and surface exceptions instead of demanding attention.',
     answer:
@@ -320,7 +320,7 @@ export const services = [
     seoTitle: 'Business process automation services',
     keyword: 'business process automation services',
     summary:
-      'Onboarding, approvals, finance and admin workflows that currently live in someone’s head.',
+      'Onboarding, approvals, finance and admin workflows that currently live in someone’s head — documented, automated, and handed over for your team to own.',
     detail:
       'The unglamorous work that keeps a company running: approvals, provisioning, reconciliation. We make it repeatable, auditable and fast — with a human in the loop where it matters.',
     answer:
@@ -356,7 +356,7 @@ export const services = [
     seoTitle: 'Support ticket automation & triage',
     keyword: 'support ticket automation',
     summary:
-      'Triage, classification and response drafting that shortens resolution without hiding humans.',
+      'Triage, classification and response drafting that shortens resolution without hiding humans. Every automated reply stays reviewable, logged and yours to adjust.',
     detail:
       'We route and classify incoming requests, draft responses for review, and connect support to the systems that hold the answers — so your team spends time on the hard cases.',
     answer:
@@ -392,7 +392,7 @@ export const services = [
     seoTitle: 'Systems integration & API integration services',
     keyword: 'systems integration consultant',
     summary:
-      'The connections between systems that turn a stack of tools into one operation.',
+      'The connections between systems that turn a stack of tools into one operation, with retries and alerting so failures surface before customers do.',
     detail:
       'Most automation problems are really integration problems. We build reliable, observable connections between your systems so data moves once, correctly, and you can see when it doesn’t.',
     answer:
@@ -428,7 +428,7 @@ export const services = [
     seoTitle: 'AI automation agency & AI agent development',
     keyword: 'ai automation agency',
     summary:
-      'AI used where it genuinely earns its place — with rules, review and traceability around it.',
+      'AI used where it genuinely earns its place, with rules, review and traceability around it. Models handle judgment; rules handle anything you can write down.',
     detail:
       'We reach for an AI model when a task needs judgment a rule can’t express — classification, extraction, drafting — and we wrap it in guardrails, evaluation and human review so you can trust the output.',
     answer:
@@ -508,13 +508,18 @@ export const approach = [
  * Published pricing. This is the highest-intent page on the site: "how much does
  * workflow automation cost" is the query buyers actually type, and stating real
  * numbers is what makes us quotable by answer and generative engines.
+ *
+ * The figures are deliberately set at the accessible end of the specialist
+ * band rather than the middle. The buyer we want — an SMB automating its first
+ * workflow — disqualifies itself at a $8,000 entry point and never enquires,
+ * and a quote that never happens cannot be negotiated upward.
  */
 export const pricing = [
   {
     slug: 'automation-map',
     name: 'Automation Map',
-    price: '$2,500',
-    priceValue: 2500,
+    price: '$1,500',
+    priceValue: 1500,
     unit: 'flat',
     duration: '2 weeks',
     summary:
@@ -529,8 +534,8 @@ export const pricing = [
   {
     slug: 'first-system',
     name: 'First System',
-    price: '$8,000 – $18,000',
-    priceValue: 8000,
+    price: '$6,000 – $14,000',
+    priceValue: 6000,
     unit: 'fixed scope',
     duration: '3–5 weeks',
     summary:
@@ -539,14 +544,15 @@ export const pricing = [
       'The system built in visible weekly increments',
       'Monitoring, retries and alerting from day one',
       'Runbooks and diagrams written as we ship',
+      '90 days of maintenance after handover, included',
       'Code and accounts in your name, not ours',
     ],
   },
   {
     slug: 'operations-partner',
     name: 'Operations Partner',
-    price: 'From $6,000',
-    priceValue: 6000,
+    price: 'From $3,500',
+    priceValue: 3500,
     unit: 'per month',
     duration: 'Ongoing',
     summary:
@@ -575,7 +581,7 @@ export const faqs = [
   },
   {
     q: 'Which tools do you build with?',
-    a: 'We build with the tools you already run, connected with Python and FastAPI services where an off-the-shelf connector will not hold up. We use platforms like n8n, Make or Zapier when they genuinely fit, and custom code when reliability matters more than speed of assembly.',
+    a: 'We build with the tools you already run, connected with custom services where an off-the-shelf connector will not hold up. We use platforms like n8n, Make or Zapier when they genuinely fit, and custom code when reliability matters more than speed of assembly.',
   },
   {
     q: 'When should a business use an AI agent instead of a rule?',

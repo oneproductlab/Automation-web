@@ -13,7 +13,7 @@ const year = new Date().getFullYear();
           {site.tagline}. We build the systems that do the repetitive work a business
           currently does by hand.
         </p>
-        <p class="eyebrow mt-6">A lab within {site.parent}</p>
+        <p class="eyebrow mt-6">An agency within {site.parent}</p>
       </div>
 
       <div>
@@ -62,6 +62,24 @@ const year = new Date().getFullYear();
       <p class="font-[var(--font-mono)] text-[0.72rem] tracking-[0.04em] text-[var(--color-ink-3)]">
         © {year} {site.name}. All rights reserved.
       </p>
+
+      {/*
+        Legal links live in the footer rather than the main nav: buyers look for
+        them here, and a privacy policy that exists but cannot be found does
+        none of the trust work it is there to do.
+      */}
+      <ul class="flex flex-wrap items-center gap-x-5 gap-y-2">
+        <li>
+          <a href="/privacy/" class="font-[var(--font-mono)] text-[0.72rem] tracking-[0.04em] text-[var(--color-ink-3)] link-underline">
+            Privacy
+          </a>
+        </li>
+        <li>
+          <a href="/terms/" class="font-[var(--font-mono)] text-[0.72rem] tracking-[0.04em] text-[var(--color-ink-3)] link-underline">
+            Terms
+          </a>
+        </li>
+      </ul>
 
       <p class="font-[var(--font-mono)] text-[0.72rem] tracking-[0.04em] text-[var(--color-ink-3)]">
         Built to keep running after we leave.

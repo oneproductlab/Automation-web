@@ -32,7 +32,8 @@ const schema = [
     headline: d.title,
     description: d.description,
     datePublished: d.pubDate.toISOString(),
-    dateModified: d.pubDate.toISOString(),
+    // Falls back to pubDate so the field is always present and always truthful.
+    dateModified: (d.updatedDate ?? d.pubDate).toISOString(),
     keywords: d.tags.join(', '),
     image: `${site.domain}/og/writing/${entry.id}.png`,
     mainEntityOfPage: `${site.domain}/writing/${entry.id}/`,
@@ -58,6 +59,16 @@ const schema = [
 
       <span aria-hidden="true"> · </span>
       <span>{founder.name}</span>
+      {
+        d.updatedDate && (
+          <>
+            <span aria-hidden="true"> · </span>
+            <span>
+              Updated <time datetime={d.updatedDate.toISOString()}>{fmt(d.updatedDate)}</time>
+            </span>
+          </>
+        )
+      }
     </p>
     <h1 class="mt-3 max-w-3xl text-[2.3rem] leading-[1.06] md:text-[3.2rem]">{d.title}</h1>
     <p class="mt-6 max-w-2xl text-lg text-[var(--color-ink-2)]">{d.description}</p>

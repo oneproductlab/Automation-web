@@ -63,6 +63,16 @@ const writing = defineCollection({
     title: z.string(),
     description: z.string(),
     pubDate: z.coerce.date(),
+    /*
+      Optional. When present, drives `dateModified` in the Article schema and a
+      visible "Updated" line. Previously `dateModified` was hardcoded to
+      `pubDate`, so revising a post signalled nothing to a crawler — the field
+      was present but carried no information.
+
+      Only set this for a substantive revision. Bumping it for a typo trains
+      crawlers to ignore it, which is the same failure as a per-build `lastmod`.
+    */
+    updatedDate: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
   }),
