@@ -100,4 +100,4 @@ runbooks, diagrams and full ownership of code and credentials.
 
 ## Contact
 
-hello@flowzora.com
+info@flowzora.com
