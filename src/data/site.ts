@@ -7,7 +7,30 @@ export const site = {
   email: 'info@flowzora.com',
   parent: 'oneProductLab',
   parentUrl: 'https://www.linkedin.com/company/oneproductlab',
-  linkedin: 'https://www.linkedin.com/company/oneproductlab',
+  // Flowzora's OWN LinkedIn Company Page — not the parent's. This is the single
+  // most important external entity signal: it is the third party that confirms
+  // "Flowzora" the automation agency exists, so Google stops resolving the brand
+  // term to the similarly-named competitor. Feeds the footer icon and, via
+  // Base.astro, the Organization `sameAs`. The parent's page stays on parentUrl.
+  linkedin: 'https://www.linkedin.com/company/flowzora',
+  /*
+    Google Business Profile. The strongest brand-disambiguation signal available:
+    it is the record that feeds a Knowledge Panel, and it is what stops Google
+    resolving "flowzora" as a typo for the similarly-named competitor.
+
+    Listed in `sameAs` so the site and the profile corroborate each other in both
+    directions — the profile's Website field points here, this points back.
+
+    Canonical Maps URL rather than the share.google shortlink: it names the place
+    directly via its CID instead of making a crawler follow an opaque redirect.
+
+    Tracking parameters from the copied address bar (`sa`, `ved`, `ictx`, and an
+    `hl=en-IN` locale pin) are deliberately stripped — they are session artifacts,
+    not part of the identity, and the locale would have pinned the entity to a
+    single market. What remains is the stable `data=` fragment holding the CID.
+  */
+  googleBusiness:
+    'https://www.google.com/maps/place/Flowzora/data=!4m2!3m1!1s0x0:0xaef894a78951395f',
   twitter: 'https://x.com/oneproductlab',
   instagram: 'https://www.instagram.com/oneproductlab',
   /*

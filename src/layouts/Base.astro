@@ -64,6 +64,21 @@ const graph = [
     '@type': ['Organization', 'ProfessionalService'],
     '@id': orgId,
     name: site.name,
+    /*
+      Disambiguation, not keyword stuffing.
+
+      "Flowzora" collides with two established entities: a typeface of the same
+      name, and "FlowSora" — a business process automation company one letter
+      away from us. Google was autocorrecting the brand term to the competitor
+      and dropping this site from results for our own name.
+
+      These variants give the entity additional exact strings to match, each of
+      which pairs the brand with the category so the automation sense is the
+      one that resolves. They are genuine trading variations of the name, not
+      invented aliases — an alternateName that nobody actually uses would be
+      fabricated structured data.
+    */
+    alternateName: ['Flowzora Automation', 'Flowzora Workflow Automation', 'Flowzora Agency'],
     description,
     url: site.domain,
     email: site.email,
@@ -75,7 +90,7 @@ const graph = [
     },
     founder: { '@id': founderId },
     employee: { '@id': founderId },
-    sameAs: [site.linkedin, founder.linkedin],
+    sameAs: [site.linkedin, site.googleBusiness, founder.linkedin],
     /*
       `logo` is what a Knowledge Panel renders, and Google reads it only from
       an Organization node — an og:image is not a substitute. A raster file at
