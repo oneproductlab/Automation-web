@@ -170,6 +170,22 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
 <!doctype html>
 <html lang={site.locale}>
   <head>
+    <script is:inline>
+      /* Apply the saved theme before the first paint to avoid a dark-mode flash. */
+      (() => {
+        const storageKey = 'flowzora-theme';
+        let theme = 'light';
+
+        try {
+          const saved = localStorage.getItem(storageKey);
+          if (saved === 'dark' || saved === 'light') theme = saved;
+        } catch {
+          // Private browsing or disabled storage should still get light mode.
+        }
+
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
@@ -195,8 +211,7 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     {/* Matches mobile browser chrome to the page surface in both schemes. */}
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f1ea" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#17150f" />
+    <meta name="theme-color" content="#f4f1ea" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="alternate" type="application/rss+xml" title={`${site.name} — Writing`} href="/rss.xml" />
 

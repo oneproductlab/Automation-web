@@ -108,35 +108,50 @@
   layer, and unlayered rules beat layered ones regardless of order — so this
   override cannot be silently defeated by a change in layer sequence.
 
-  System preference only, no toggle: honoring the setting a visitor already
-  chose is the expected behavior, and a toggle adds persisted state for no gain.
+  Light is the default. Dark is selected explicitly by the site toggle and
+  persisted in localStorage rather than inferred from the operating system.
 */
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
+:root[data-theme='dark'] {
+  color-scheme: dark;
 
-    --color-paper: #17150f;
-    --color-paper-2: #1e1b14;
-    --color-paper-3: #262219;
-    --color-ink: #f2efe6;
-    --color-ink-2: #c8c3b4;
-    --color-ink-3: #918b7c;
-    --color-line: #353128;
-    --color-line-2: #423d32;
+  --color-paper: #17150f;
+  --color-paper-2: #1e1b14;
+  --color-paper-3: #262219;
+  --color-ink: #f2efe6;
+  --color-ink-2: #c8c3b4;
+  --color-ink-3: #918b7c;
+  --color-line: #353128;
+  --color-line-2: #423d32;
 
-    --color-signal: #e0662f;
-    --color-signal-ink: #ef8a55;
+  --color-signal: #e0662f;
+  --color-signal-ink: #ef8a55;
 
-    /* The inverted band drops darker so it still separates from the page. */
-    --color-slate: #0b0a07;
-    --color-slate-2: #141209;
-    --color-inverse-ink: #f2efe6;
-    --color-inverse-ink-2: #c8c3b4;
-    --color-inverse-ink-3: #918b7c;
-    --color-inverse-ink-4: #6f6a5d;
-    --color-inverse-line: #35312a;
-    --color-signal-bright: #f08b52;
-  }
+  /* The inverted band drops darker so it still separates from the page. */
+  --color-slate: #0b0a07;
+  --color-slate-2: #141209;
+  --color-inverse-ink: #f2efe6;
+  --color-inverse-ink-2: #c8c3b4;
+  --color-inverse-ink-3: #918b7c;
+  --color-inverse-ink-4: #6f6a5d;
+  --color-inverse-line: #35312a;
+  --color-signal-bright: #f08b52;
+}
+
+.theme-toggle__icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.theme-toggle__sun {
+  display: none;
+}
+
+:root[data-theme='dark'] .theme-toggle__moon {
+  display: none;
+}
+
+:root[data-theme='dark'] .theme-toggle__sun {
+  display: block;
 }
 
 @layer base {
