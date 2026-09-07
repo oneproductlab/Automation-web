@@ -191,28 +191,57 @@ export const credentials = [
  * below three verified client testimonials, argued against their own evidence.
  * The scarcity is real either way: a senior-only team has a finite calendar,
  * and that is the honest reason these terms expire.
+ *
+ * These four were previously split across two consecutive sections: three
+ * commercial reassurances under the price, and three "founding client" terms a
+ * screen below. Six trust statements in a row is where a reader stops reading
+ * them — the second set was being scrolled past, having already been pattern-
+ * matched as more of the first. Merged, they read once, next to the number they
+ * are meant to justify.
+ *
+ * Ordered by the sequence the objections actually arrive in: what will it cost
+ * me, what if I leave, who is doing the work, what happens after handover.
  */
-export const foundingOffer = {
-  eyebrow: 'Founding clients',
-  headline: 'Early enough to get our full attention.',
-  body: 'We take on a limited number of builds at a time, so the engineering stays senior and hands-on. While the calendar has room, current terms hold — they change once it fills.',
-  terms: [
-    {
-      title: 'You work with the founder',
-      detail: 'Not an account manager. The person scoping the work writes the code.',
-    },
-    {
-      title: '90 days of maintenance, included',
-      detail: 'After handover we keep it running at no extra cost. Breakages and API changes are ours.',
-    },
-    {
-      title: 'Your build becomes the case study',
-      detail: 'Written up in full, with your approval, and credited if you want it.',
-    },
-  ],
-  caveat:
-    'In exchange we ask for honest feedback and, if the work earns it, a reference.',
-};
+export const engagementTerms = [
+  {
+    title: 'The number doesn’t move',
+    detail: 'Scope is fixed in writing before we start. Overruns are ours to absorb.',
+  },
+  {
+    title: 'You own everything',
+    detail: 'Code and accounts in your name from day one. No lock-in, no licence to keep paying.',
+  },
+  {
+    // "You work with the founder" was the wrong unit of reassurance. It asks
+    // the reader to care about our org chart, and to a buyer who does not know
+    // us it reads as a one-man band admitting its size rather than as a
+    // guarantee. The thing they actually want promised is that the person who
+    // understood the problem is the person who builds it — which is a claim
+    // about seniority and continuity, and survives the agency growing.
+    title: 'A senior engineer, start to finish',
+    // Trimmed to its siblings' length. The original spelled out both failure
+    // modes it was ruling out — a junior and an account manager — which made
+    // it half again as long as every other term and turned a promise into a
+    // rebuttal. One clause states the promise; the second names the thing that
+    // does not happen, once.
+    detail: 'The person who scopes your build writes the code. No hand-off to a junior.',
+  },
+  {
+    title: '90 days of maintenance, included',
+    detail: 'After handover we keep it running at no extra cost. Breakages and API changes are ours.',
+  },
+];
+
+/*
+ * The two claims that did not survive the cut to four, kept as prose.
+ *
+ * Both are real and worth saying, but neither is an objection a buyer raises at
+ * the price — "we'll talk you out of it" is a disqualifier and "your build
+ * becomes the case study" is an exchange. As a sentence under the grid they
+ * still land; as two more bordered cells they diluted the four that matter.
+ */
+export const engagementNote =
+  'If it isn’t worth automating yet, we say so before you spend. We take on a limited number of builds at a time, so the engineering stays senior and hands-on — while the calendar has room, these terms hold.';
 
 /**
  * Qualification. A buyer's first question is "are these people for me?", and
@@ -421,7 +450,11 @@ export const services = [
     answer:
       'Systems integration connects the tools you already run so data moves once, correctly, and you can see when it fails. Most problems described as automation problems are really integration problems: the same information living in three places and quietly disagreeing.',
     builds: [
-      'Two-way syncs between CRM, finance, support and data tools',
+      // The named tools moved here when the homepage's stack list was dropped.
+      // They read as scope on a page about integrations, where a reader is
+      // already asking "will it work with ours?" — and it keeps those tool
+      // names somewhere on the site rather than losing them with the list.
+      'Two-way syncs between CRM, finance, support and data tools — HubSpot, Salesforce, Shopify, QuickBooks, Zendesk, Notion and Airtable among them',
       'API integrations for systems without off-the-shelf connectors',
       'Reliable job handling with retries and alerting',
       'A single source of truth your teams can agree on',
@@ -528,75 +561,172 @@ export const approach = [
 ];
 
 /**
- * Published pricing. This is the highest-intent page on the site: "how much does
- * workflow automation cost" is the query buyers actually type, and stating real
- * numbers is what makes us quotable by answer and generative engines.
+ * Published pricing.
  *
- * The figures are deliberately set at the accessible end of the specialist
- * band rather than the middle. The buyer we want — an SMB automating its first
- * workflow — disqualifies itself at a $8,000 entry point and never enquires,
- * and a quote that never happens cannot be negotiated upward.
+ * The model is deliberately asymmetric: the entry point carries a real number,
+ * the build does not.
+ *
+ * "How much does workflow automation cost" is the query buyers actually type,
+ * so the page has to answer it — but the honest answer to "what will MY build
+ * cost" is that nobody knows before scoping it. Quoting a range anyway either
+ * anchors small jobs too high or promises large ones too little. So the Audit
+ * is priced, cheaply and openly, and the build is priced after it.
+ *
+ * `From $500` is a floor, not a rate, and it is set low on purpose: the buyer
+ * we want is an SMB automating its first workflow, and that buyer disqualifies
+ * itself at a four-figure entry point and never enquires. A quote that never
+ * happens cannot be negotiated upward.
+ *
+ * `priceValue` feeds Offer schema and is null where no number is published.
+ * Consuming code must omit the price fields rather than invent one — a wrong
+ * price in structured data is worse than an absent one.
  */
 export const pricing = [
   {
-    slug: 'automation-map',
-    name: 'Automation Map',
-    price: '$1,500',
-    priceValue: 1500,
-    unit: 'flat',
-    duration: '2 weeks',
+    slug: 'automation-audit',
+    name: 'Automation Audit',
+    price: 'From $500',
+    priceValue: 500,
+    unit: 'fixed fee',
+    duration: '1–2 weeks',
+    // A buyer self-selects faster from a symptom than from a deliverable.
+    forWho: 'Something is costing you time or leads, but you are not sure what to fix first.',
     summary:
-      'We map one workflow end to end and hand you the diagrams and a build plan. The fee is credited if you go ahead with the build.',
+      'We map one workflow end to end and hand you the diagram, what the leak is costing, and a fixed quote to fix it. Credited in full against your build.',
     includes: [
-      'Interviews with the people doing the work today',
-      'A diagram of the current process and where it leaks time',
-      'A costed build plan with a recommended sequence',
-      'An honest call on whether it is worth automating yet',
+      'We talk to the people doing the work, not just the owner — that is where the real problems show up',
+      'A plain map of what happens today, and where it leaks time or money',
+      'A number on what that leak is actually costing you each month',
+      'One clear recommendation with a fixed quote — or an honest “not worth it yet”',
     ],
   },
   {
     slug: 'first-system',
     name: 'First System',
-    price: '$6,000 – $14,000',
-    priceValue: 6000,
+    price: 'Quoted after the Audit',
+    priceValue: null,
     unit: 'fixed scope',
-    duration: '3–5 weeks',
+    duration: '3–5 weeks typical',
+    forWho: 'You know what is costing you most, and want it built properly rather than duct-taped.',
     summary:
-      'One workflow, built, documented and handed over. Fixed scope and fixed price, so the number does not move while we build.',
+      'One workflow, built, documented and handed over. The price is fixed in writing after the Audit and does not move while we build.',
     includes: [
-      'The system built in visible weekly increments',
-      'Monitoring, retries and alerting from day one',
-      'Runbooks and diagrams written as we ship',
-      '90 days of maintenance after handover, included',
-      'Code and accounts in your name, not ours',
+      'Built in your accounts, under your name — yours, with no lock-in',
+      'A senior engineer on your build, not whoever was free that week',
+      'Tested on real, messy scenarios before you ever see it',
+      'Once live it retries on its own, and we are alerted before your customer notices',
+      'Weekly progress you can actually see, not silence until a big reveal',
+      'One success metric agreed upfront, so there is no argument later about whether it worked',
+      'A direct Slack line to us, plus 90 days of fixes after handover',
     ],
   },
   {
     slug: 'operations-partner',
     name: 'Operations Partner',
-    price: 'From $3,500',
-    priceValue: 3500,
+    price: 'From $1,500',
+    priceValue: 1500,
     unit: 'per month',
     duration: 'Ongoing',
+    forWho:
+      'You have more than one thing running, and do not want to be the one who finds out something broke.',
     summary:
       'A standing engagement for teams automating more than one thing. We keep building, keep it running, and stay accountable for uptime.',
     includes: [
-      'A rolling backlog of systems, prioritized with you',
-      'Maintenance and monitoring of everything we have built',
-      'A named engineer who knows your operation',
-      'Cancel with 30 days notice — no lock-in',
+      'One named engineer who knows your systems — not someone new every time',
+      'If something breaks, we catch and fix it before you or your customer do',
+      'New automations built and tested the same careful way, ranked by what matters to you',
+      'A direct Slack line, plus a short monthly note on what ran, what broke, what it saved',
+      'Leave anytime with 30 days notice — no contracts',
     ],
   },
 ];
 
 /**
- * Answer-engine surface. Each answer is written to stand alone if it is lifted
- * out of the page: question in the heading, complete answer in the first sentence.
+ * Workflow patterns, for the homepage gallery.
+ *
+ * These are shapes of work we build, not claims of work delivered. That
+ * distinction is the whole reason this can exist on a young agency's site:
+ * the `work` collection carries evidence and is labelled "client" or
+ * "internal-build", while this carries range. Nothing here names a customer or
+ * asserts an outcome.
+ *
+ * Every entry maps to a service page that already exists. None of them gets a
+ * URL of its own — six near-duplicate pages of a dozen words each is textbook
+ * doorway content, and it would put the whole domain at risk to win nothing.
+ * As internal links into pages that already rank, they cost no new URLs and
+ * add the phrases buyers actually search.
+ *
+ * `steps` are deliberately the tools and verbs a reader recognises. A person
+ * scanning this should find their own stack in it without reading a sentence.
+ */
+export const workflows = [
+  {
+    title: 'Lead intake to CRM',
+    steps: ['Web form', 'Enrich', 'HubSpot', 'Slack'],
+    outcome: 'New leads reach a rep in minutes, with nobody retyping them.',
+    href: '/services/revenue-operations/',
+    tag: 'Revenue operations',
+  },
+  {
+    title: 'Quote to invoice to chase',
+    steps: ['CRM', 'QuickBooks', 'Reminder'],
+    outcome: 'Invoices raise themselves and follow up on their own.',
+    href: '/services/internal-operations/',
+    tag: 'Internal operations',
+  },
+  {
+    title: 'Shopify orders to fulfilment',
+    steps: ['Shopify', 'Inventory', 'Courier', 'Email'],
+    outcome: 'Stock and shipping stay in step without a spreadsheet in between.',
+    href: '/services/integrations/',
+    tag: 'Integrations',
+  },
+  {
+    title: 'Support triage',
+    steps: ['Inbox', 'Classify', 'Route', 'Draft reply'],
+    outcome: 'Tickets are sorted and drafted before an agent opens them.',
+    href: '/services/customer-support/',
+    tag: 'Customer support',
+  },
+  {
+    title: 'Client onboarding',
+    steps: ['Signed', 'Accounts', 'Folders', 'Kickoff'],
+    outcome: 'A signature sets up everything the first week needs.',
+    href: '/services/internal-operations/',
+    tag: 'Internal operations',
+  },
+  {
+    title: 'Weekly ops report',
+    steps: ['Schedule', 'Pull metrics', 'Sheet', 'Slack'],
+    outcome: 'The Monday numbers assemble themselves overnight.',
+    href: '/services/marketing-lifecycle/',
+    tag: 'Marketing & lifecycle',
+  },
+];
+
+/**
+ * Answer-engine surface, homepage. Each answer is written to stand alone if it
+ * is lifted out of the page: question in the heading, complete answer in the
+ * first sentence.
+ *
+ * These are the questions a stranger asks — capability, method, scope of the
+ * offer. Money and contract-term questions live on the pricing page instead,
+ * where a cost-intent searcher actually lands. The one exception is the cost
+ * question itself, which is deliberately answered in both places because it is
+ * the highest-intent query in the category and should never require a click.
  */
 export const faqs = [
   {
+    q: 'How much does workflow automation cost?',
+    a: 'An Automation Audit starts at $500 and is credited in full against your build. The build itself is quoted after the Audit, because one workflow can be a few days of work or several weeks — a number given before anyone has looked at your process is a guess. Ongoing support starts at $1,500 per month.',
+  },
+  {
+    q: 'We don’t know what to automate yet — where do we start?',
+    a: 'Start with an Automation Audit; that is exactly what it is for. We map one workflow, put a number on what it is costing you, and come back with a fixed quote — or an honest “not worth it yet”. The first conversation before that is free.',
+  },
+  {
     q: 'How long does it take to automate a workflow?',
-    a: 'A single workflow typically takes three to five weeks from kickoff to handover, including the mapping phase. You see working automation in the first two weeks rather than at the end.',
+    a: 'The Automation Audit takes one to two weeks, and a single workflow typically takes three to five weeks from kickoff to handover after that. You see working automation during the build rather than at the end of it.',
   },
   {
     q: 'Do we own the automation you build?',

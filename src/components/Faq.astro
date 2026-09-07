@@ -17,9 +17,11 @@ interface Props {
   items: Item[];
   title?: string;
   eyebrow?: string;
+  /** Optional supporting line under the heading, in the otherwise empty column. */
+  note?: string;
 }
 
-const { items, title = 'Common questions', eyebrow = 'FAQ' } = Astro.props;
+const { items, title = 'Common questions', eyebrow = 'FAQ', note } = Astro.props;
 ---
 
 <!--
@@ -29,9 +31,22 @@ const { items, title = 'Common questions', eyebrow = 'FAQ' } = Astro.props;
 -->
 <section class="wrap border-t border-[var(--color-line)] py-14 md:py-16">
   <div class="grid gap-10 md:grid-cols-[0.8fr_1.2fr]">
-    <div>
+    {/*
+      The heading column is short and the question list is long, which left a
+      tall column of dead space beside the answers — most visible on wide
+      screens, where the whole left half of the section sat empty.
+
+      Two fixes, both cheap: the column sticks to the viewport so the heading
+      stays with the questions as they scroll, and it carries a way out for the
+      reader whose question is not listed. An FAQ is the last thing many people
+      read before deciding, so a route to a human belongs here rather than only
+      at the foot of the page.
+    */}
+    <div class="md:sticky md:top-24 md:self-start">
       <p class="eyebrow">{eyebrow}</p>
       <h2 class="mt-4 text-3xl md:text-4xl">{title}</h2>
+      {note && <p class="mt-5 max-w-xs text-[0.95rem] text-[var(--color-ink-2)]">{note}</p>}
+      <a href="/contact/" class="btn btn-ghost mt-7">Ask us directly</a>
     </div>
 
     <div class="border-t border-[var(--color-line)]">

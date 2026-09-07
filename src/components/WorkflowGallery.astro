@@ -1,0 +1,542 @@
+---
+/*
+  WorkflowGallery
+  ---------------
+  A continuously scrolling row of workflow patterns.
+
+  Motion is the argument here. A static grid of six says "we do six things";
+  a row that keeps moving says "there are more of these than fit on a screen",
+  which is the impression an automation agency wants and the one a page of
+  prose cannot give. This is also the one place on the site where a marquee is
+  defensible — these are illustrative patterns, not evidence. The testimonials
+  deliberately refuse to auto-rotate, because hiding proof from someone about
+  to spend money is a different thing entirely.
+
+  Three constraints the usual implementation of this gets wrong:
+
+  - The track is duplicated to loop seamlessly, so the clone is `aria-hidden`
+    and its links are removed from the tab order. Otherwise a keyboard user
+    tabs through twelve cards to escape six, and a screen reader reads the
+    whole list twice.
+  - Hovering or focusing anything inside pauses it. A moving target that
+    cannot be stopped is unusable for anyone reading carefully.
+  - Under `prefers-reduced-motion` it stops being a marquee at all and becomes
+    a normal scrollable row, rather than simply freezing mid-slide.
+*/
+import { workflows } from '../data/site';
+
+interface Props {
+  eyebrow?: string;
+  heading?: string;
+  intro?: string;
+}
+const {
+  eyebrow = 'Workflow patterns',
+  heading = 'The shapes this usually takes.',
+  intro = 'Common builds, and the service each one sits under.',
+} = Astro.props;
+
+/*
+  Node-graph geometry, computed here rather than drawn by hand.
+
+  The previous card was a wrapped line of bordered words with an arrow glyph
+  between them, which is a description of a workflow rather than a picture of
+  one — and at six cards it read as six identical paragraphs. An editor is the
+  thing this business actually hands over, so the card now draws one: nodes on
+  a canvas, joined by curved connectors, with a signal travelling the path.
+
+  Positions are derived from the step count so a three-step and a four-step
+  flow both fill the same canvas. The vertical stagger is the whole trick — a
+  straight row of boxes looks like a diagram of nothing, while a slight rise
+  and fall reads as a graph someone laid out.
+*/
+const VB = { w: 344, h: 148 };
+const NODE = { h: 38, minW: 52, padX: 14, icon: 13, gapIcon: 3 };
+
+/*
+  Monospace advance width at the font size used below, measured from the
+  rendered SVG rather than guessed. Every glyph in a mono face is the same
+  width, so a label's box is exactly `length x CH` and a node can be sized to
+  fit it.
+*/
+const CH = 5.05;
+
+// The wire has to be long enough to read as a wire. Below roughly this, two
+// nodes look like one shape with a nick in it.
+const MIN_GAP = 18;
+
+/*
+  Generic glyphs for generic steps.
+
+  These say what *kind* of step a node is — the job an icon is actually good
+  at — and stay legible at 13px. Named products get their own mark below.
+*/
+const GLYPHS: Record<string, string> = {
+  form: 'M2 1h9v11H2z M4 4h5 M4 6.5h5 M4 9h3',
+  bolt: 'M7.5 1L3 7.5h3L5.5 12L10 5.5H7z',
+  db: 'M2 3c0-1.1 2.2-2 4.5-2S11 1.9 11 3v7c0 1.1-2.2 2-4.5 2S2 11.1 2 10z M2 3c0 1.1 2.2 2 4.5 2S11 4.1 11 3',
+  chat: 'M1.5 2h10v7h-6l-3 3V9h-1z',
+  mail: 'M1.5 2.5h10v8h-10z M1.5 2.5l5 4 5-4',
+  cart: 'M1.5 2h2l1.5 7h6l1.5-5H4',
+  box: 'M2 4l4.5-2.5L11 4v5l-4.5 2.5L2 9z M2 4l4.5 2.5L11 4 M6.5 6.5V11.5',
+  truck: 'M1 3h6v6H1z M7 5h2.5L11.5 7v2H7z M3 9.5a1 1 0 102 0 M8.5 9.5a1 1 0 102 0',
+  filter: 'M1.5 2h10L7.5 6.5v4l-2 1.5v-5.5z',
+  route: 'M2 2h3v3H2z M8 8h3v3H8z M5 3.5h2.5v5H8',
+  clock: 'M6.5 1.5a5 5 0 110 10 5 5 0 010-10 M6.5 3.5v3.5l2.5 1.5',
+  chart: 'M1.5 11.5h10 M3.5 9.5v-3 M6.5 9.5v-6 M9.5 9.5v-4',
+  sheet: 'M2 1.5h9v10H2z M2 5h9 M2 8h9 M5.5 1.5v10',
+  doc: 'M2.5 1h5l3 3v8h-8z M7.5 1v3h3',
+  check: 'M2 6.5l3 3 6-6.5',
+};
+
+/*
+  Product marks, drawn rather than embedded.
+
+  Nominative use — naming the tools we integrate, beside their own name — is
+  what trademark law allows and what every integration directory relies on.
+  What it does not allow is implying endorsement, so these are single-colour,
+  sized like every other node icon, and never shown without the product name
+  next to them.
+
+  Simplified to the mark's defining geometry so it survives 13px: Slack's four
+  crossed bars, HubSpot's spoked sprocket, Shopify's bag, QuickBooks' ring.
+  Filled rather than stroked, which is how these marks are actually drawn.
+*/
+const BRANDS: Record<string, string> = {
+  slack:
+    'M3 8a1.3 1.3 0 11-1.3-1.3H3zm.7 0a1.3 1.3 0 012.6 0v3.2a1.3 1.3 0 11-2.6 0zM5 3a1.3 1.3 0 111.3-1.3V3zm0 .7a1.3 1.3 0 010 2.6H1.8a1.3 1.3 0 010-2.6zM10 5a1.3 1.3 0 111.3 1.3H10zm-.7 0a1.3 1.3 0 01-2.6 0V1.8a1.3 1.3 0 012.6 0zM8 10a1.3 1.3 0 11-1.3 1.3V10zm0-.7a1.3 1.3 0 010-2.6h3.2a1.3 1.3 0 010 2.6z',
+  hubspot:
+    'M9.4 4.6V3.2a1.5 1.5 0 10-1.3 0v1.5a3.6 3.6 0 00-1.5.6L3.2 2.6a1.6 1.6 0 10-.8 1l3.3 2.6a3.4 3.4 0 00.3 3.6l-1 1a1.1 1.1 0 00-.3 0 1.2 1.2 0 101.2 1.2 1.1 1.1 0 000-.3l1-1a3.5 3.5 0 102.5-6.1m-.7 5.2a1.8 1.8 0 111.8-1.8 1.8 1.8 0 01-1.8 1.8',
+  shopify:
+    'M8.6 2.4a.2.2 0 00-.2-.1L7.5 2 6.8 1.3a.4.4 0 00-.4 0L6 1.5A1.9 1.9 0 004.8.4a1.3 1.3 0 00-1 .5A3.2 3.2 0 003 3l-1 .3c-.3.1-.3.1-.4.4L.8 11l6 1.1 3.3-.8zM5.6 1.7 5 1.9a2.6 2.6 0 01.5-1.2c.1.2.2.5.1 1M4.8 1a.6.6 0 01.3.1 3.1 3.1 0 00-.6 1.5l-1 .3A2.6 2.6 0 014.8 1M6.7 5.6l-.4 1a1.9 1.9 0 00-.8-.2c-.7 0-.7.4-.7.5 0 .6 1.6.8 1.6 2.2 0 1.1-.7 1.8-1.6 1.8a2.2 2.2 0 01-1.7-.7l.3-1a1.9 1.9 0 001.2.5.5.5 0 00.5-.5c0-.7-1.3-.8-1.3-2.1 0-1.1.8-2.1 2.3-2.1a1.9 1.9 0 01.6.1',
+  quickbooks:
+    'M6.5.5a6 6 0 106 6 6 6 0 00-6-6M2.9 6.5A2.2 2.2 0 015.1 4.3h.4v1.2h-.4a1 1 0 100 2h.7V3.1h1.2v5.6h-1.9a2.2 2.2 0 01-2.2-2.2m5.1 4.2h-.4V9.5h.4a1 1 0 100-2h-.7v5.4H6.1V4.3H8a2.2 2.2 0 010 4.4',
+};
+
+// Which mark a step gets. Product marks first — a reader who runs Slack should
+// see Slack — then generic glyphs by the kind of work the step describes.
+function glyphFor(label: string) {
+  const l = label.toLowerCase();
+  if (l.includes('slack')) return { d: BRANDS.slack, brand: true };
+  if (l.includes('hubspot')) return { d: BRANDS.hubspot, brand: true };
+  if (l.includes('shopify')) return { d: BRANDS.shopify, brand: true };
+  if (l.includes('quickbooks')) return { d: BRANDS.quickbooks, brand: true };
+
+  if (l.includes('form')) return { d: GLYPHS.form, brand: false };
+  if (l.includes('enrich') || l.includes('classify')) return { d: GLYPHS.bolt, brand: false };
+  if (l.includes('crm') || l.includes('accounts')) return { d: GLYPHS.db, brand: false };
+  if (l.includes('email') || l.includes('inbox') || l.includes('reminder') || l.includes('reply'))
+    return { d: GLYPHS.mail, brand: false };
+  if (l.includes('inventory')) return { d: GLYPHS.box, brand: false };
+  if (l.includes('courier')) return { d: GLYPHS.truck, brand: false };
+  if (l.includes('route')) return { d: GLYPHS.route, brand: false };
+  if (l.includes('schedule')) return { d: GLYPHS.clock, brand: false };
+  if (l.includes('metric')) return { d: GLYPHS.chart, brand: false };
+  if (l.includes('sheet')) return { d: GLYPHS.sheet, brand: false };
+  if (l.includes('folder') || l.includes('kickoff')) return { d: GLYPHS.doc, brand: false };
+  if (l.includes('signed')) return { d: GLYPHS.check, brand: false };
+  return { d: GLYPHS.filter, brand: false };
+}
+
+/*
+  Laid out by the gaps, not by the centres.
+
+  The previous version spaced node *centres* evenly across a fixed span. That
+  is only correct when every node is the same width — once each node sized
+  itself to its own label, a long one like "Pull metrics" grew into the space
+  either side of it, and the wire between two wide neighbours shrank to a few
+  units or vanished behind them entirely. One pair actually overlapped.
+
+  Distributing the leftover space instead makes the gap the thing being held
+  constant, which is what the eye is reading: the wire is the whole point of a
+  node graph, so it gets the guaranteed space and the nodes take what remains.
+  Overlap is now arithmetically impossible rather than merely unlikely.
+*/
+function layout(steps: string[]) {
+  const n = steps.length;
+  const inset = 6;
+
+  const sized = steps.map((label) => {
+    const g = glyphFor(label);
+    return {
+      label,
+      icon: g.d,
+      brand: g.brand,
+      w: Math.max(
+        NODE.minW,
+        Math.round(label.length * CH + NODE.padX + NODE.icon + NODE.gapIcon)
+      ),
+    };
+  });
+
+  const totalW = sized.reduce((sum, s) => sum + s.w, 0);
+  const free = VB.w - inset * 2 - totalW;
+  const gap = n > 1 ? Math.max(MIN_GAP, free / (n - 1)) : 0;
+
+  // Centre the finished chain, so a short flow does not sit hard against the
+  // left edge with dead grid to its right.
+  const chainW = totalW + gap * (n - 1);
+  let cursor = (VB.w - chainW) / 2;
+
+  return sized.map((s, i) => {
+    const x = cursor + s.w / 2;
+    cursor += s.w + gap;
+    return {
+      ...s,
+      x,
+      // Alternating baseline, so consecutive nodes never share a row.
+      y: i % 2 === 0 ? 52 : 92,
+    };
+  });
+}
+
+// A cubic with horizontal control handles — the same shape node editors use,
+// and the reason the connector reads as a wire rather than a diagonal line.
+function wire(a: { x: number; y: number; w: number }, b: { x: number; y: number; w: number }) {
+  const x1 = a.x + a.w / 2;
+  const x2 = b.x - b.w / 2;
+  const c = (x2 - x1) * 0.55;
+  return `M${x1},${a.y} C${x1 + c},${a.y} ${x2 - c},${b.y} ${x2},${b.y}`;
+}
+
+const cards = workflows.map((w) => {
+  const nodes = layout(w.steps);
+  return {
+    ...w,
+    nodes,
+    wires: nodes.slice(0, -1).map((n, j) => wire(n, nodes[j + 1])),
+  };
+});
+
+const canvases = [
+  // The first pass is the real content; the second is scenery that exists only
+  // so the loop has somewhere to go.
+  { items: cards, clone: false },
+  { items: cards, clone: true },
+];
+---
+
+<section class="border-y border-[var(--color-line)] bg-[var(--color-paper-2)]">
+  <div class="wrap py-16 md:py-20">
+    {/*
+      Heading and intro share a baseline row instead of stacking.
+
+      Three left-aligned lines — eyebrow, heading, one-line intro — read as a
+      ragged little stack with most of the row empty beside them. Setting the
+      intro alongside the heading uses that width, pins it to the heading's
+      baseline so the two do not float independently, and drops the section's
+      header from three lines to two.
+    */}
+    <p class="eyebrow">{eyebrow}</p>
+    <div class="mt-4 flex flex-col gap-x-6 gap-y-3 md:flex-row md:flex-wrap md:items-baseline">
+      <h2 class="text-3xl md:text-4xl">{heading}</h2>
+      <p class="max-w-sm text-[0.95rem] text-[var(--color-ink-2)]">{intro}</p>
+    </div>
+  </div>
+
+  {/*
+    Held to the same gutters as every other section.
+
+    This ran full-bleed on the theory that a row escaping the text column reads
+    as a row rather than a grid. In a centred layout it just looked like a
+    different website bolted on: every other section stops at the wrap, and
+    this one ran to both screen edges. Contained, with the fade drawn at the
+    wrap edge instead of the viewport edge, the motion still reads as endless
+    because the mask is what sells that — not the width.
+  */}
+  <div class="wrap pb-16 md:pb-20">
+    <div class="marquee">
+      <div class="marquee__track">
+        {
+          canvases.map(({ items, clone }) => (
+            <ul class="marquee__group" aria-hidden={clone ? 'true' : undefined}>
+              {items.map((w) => (
+                <li>
+                  <a
+                    href={w.href}
+                    tabindex={clone ? -1 : undefined}
+                    class="wf card group"
+                  >
+                    {/*
+                      The canvas. Tool names stay as real text inside the SVG —
+                      they are the reason a reader recognises their own stack
+                      here, and they are crawlable where an image would not be.
+                    */}
+                    <div class="wf__canvas">
+                      <svg
+                        viewBox={`0 0 ${VB.w} ${VB.h}`}
+                        role="img"
+                        aria-label={`${w.title}: ${w.steps.join(', then ')}.`}
+                        preserveAspectRatio="xMidYMid meet"
+                      >
+                        {w.wires.map((d) => (
+                          <>
+                            <path class="wf__wire" d={d} />
+                            {/* The travelling packet, one per connector. */}
+                            <path class="wf__flow" d={d} />
+                          </>
+                        ))}
+                        {w.nodes.map((n, i) => (
+                          <g class="wf__node">
+                            <rect
+                              x={n.x - n.w / 2}
+                              y={n.y - NODE.h / 2}
+                              width={n.w}
+                              height={NODE.h}
+                              rx="4"
+                            />
+                            {/* Port stubs, so a node looks wired rather than placed. */}
+                            {i > 0 && <circle class="wf__port" cx={n.x - n.w / 2} cy={n.y} r="2.4" />}
+                            {i < w.nodes.length - 1 && (
+                              <circle class="wf__port" cx={n.x + n.w / 2} cy={n.y} r="2.4" />
+                            )}
+                            {n.icon ? (
+                              <>
+                                <path
+                                  class={n.brand ? 'wf__mark' : 'wf__glyph'}
+                                  d={n.icon}
+                                  transform={`translate(${n.x - n.w / 2 + NODE.padX / 2}, ${n.y - 6.5}) scale(0.88)`}
+                                />
+                                <text x={n.x - n.w / 2 + NODE.padX / 2 + NODE.icon + NODE.gapIcon} y={n.y + 3}>
+                                  {n.label}
+                                </text>
+                              </>
+                            ) : (
+                              <text x={n.x} y={n.y + 3} text-anchor="middle">
+                                {n.label}
+                              </text>
+                            )}
+                          </g>
+                        ))}
+                      </svg>
+                    </div>
+
+                    <div class="wf__body">
+                      <p class="wf__title">{w.title}</p>
+                      <p class="wf__outcome">{w.outcome}</p>
+                      <p class="wf__foot">
+                        <span class="wf__tag">{w.tag}</span>
+                        <span class="wf__cta" aria-hidden="true">See the service →</span>
+                      </p>
+                    </div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .marquee {
+    overflow: hidden;
+    /*
+      Fades both ends so cards enter and leave rather than being clipped by an
+      invisible edge. A mask rather than gradient overlays, so it works on any
+      surface without the component knowing what is behind it.
+    */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+  }
+
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: wf-scroll 46s linear infinite;
+  }
+
+  /*
+    Slow enough to read a card as it passes. Anything faster turns the section
+    into decoration a reader gives up on.
+  */
+  @keyframes wf-scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Pause on hover, and on keyboard focus, so it can always be stopped. */
+  .marquee:hover .marquee__track,
+  .marquee:focus-within .marquee__track {
+    animation-play-state: paused;
+  }
+
+  .marquee__group {
+    display: flex;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0 0.625rem;
+    list-style: none;
+  }
+  .marquee__group > li {
+    /*
+      Capped against the viewport as well as in absolute terms. At 23.5rem flat
+      a phone got a card fractionally wider than the column holding it, so the
+      right edge was permanently under the fade with no way to see it. The vw
+      cap also leaves the next card visibly peeking, which is what tells a
+      reader the row continues.
+    */
+    width: min(23.5rem, 78vw);
+    flex: 0 0 auto;
+    display: flex;
+  }
+
+  .wf {
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /*
+    The canvas panel. Tinted a step away from the card body and dotted like an
+    editor grid, so the graph reads as a screenshot of a running thing rather
+    than as an illustration floating in the card.
+  */
+  .wf__canvas {
+    background-color: var(--color-paper-2);
+    background-image: radial-gradient(var(--color-line-2) 1px, transparent 1px);
+    background-size: 13px 13px;
+    background-position: -1px -1px;
+    border-bottom: 1px solid var(--color-line-2);
+  }
+  .wf__canvas svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /*
+    Darkened from `line-2`. At this stroke width the lighter rule read as a
+    smudge on the dotted grid rather than as a connection — the wire is the
+    element carrying the whole diagram, so it should be at least as present as
+    the node borders it joins.
+  */
+  .wf__wire {
+    fill: none;
+    stroke: var(--color-ink-3);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    opacity: 0.55;
+  }
+  /*
+    A short dash chased along the same path as the wire. `pathLength` is not
+    set, so the dash array is in user units and the gap is long enough that
+    only one packet is ever on a wire at a time.
+  */
+  .wf__flow {
+    fill: none;
+    stroke: var(--color-signal);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-dasharray: 5 400;
+    stroke-dashoffset: 405;
+    animation: wf-flow 2.6s linear infinite;
+  }
+
+  .wf__node rect {
+    fill: var(--color-paper);
+    stroke: var(--color-line-2);
+    stroke-width: 1;
+  }
+  .wf__port {
+    fill: var(--color-signal);
+  }
+  .wf__glyph {
+    fill: none;
+    stroke: var(--color-signal-ink);
+    stroke-width: 1.1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  /*
+    Product marks are solid shapes, not outlines — drawing them stroked would
+    turn a recognisable logo into an unreadable tangle at this size.
+  */
+  .wf__mark {
+    fill: var(--color-signal-ink);
+    stroke: none;
+  }
+  .wf__node text {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    fill: var(--color-ink-2);
+  }
+
+  .wf:hover .wf__node rect {
+    stroke: var(--color-signal);
+  }
+
+  .wf__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.15rem 1.25rem 1.25rem;
+    flex: 1;
+  }
+  .wf__title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    line-height: 1.25;
+  }
+  .wf__outcome {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--color-ink-2);
+    flex: 1;
+  }
+  .wf__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 0.35rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--color-line-2);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .wf__tag {
+    color: var(--color-ink-3);
+  }
+  .wf__cta {
+    color: var(--color-signal-ink);
+    white-space: nowrap;
+  }
+
+  @keyframes wf-flow {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /*
+      Not a paused marquee — a plain scrollable row. Freezing the animation
+      would strand half a card at the edge with no way to reach the rest.
+    */
+    .marquee {
+      overflow-x: auto;
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+    .marquee__track {
+      animation: none;
+    }
+    .wf__flow {
+      animation: none;
+      stroke-dasharray: none;
+      stroke-dashoffset: 0;
+      opacity: 0.55;
+    }
+  }
+</style>

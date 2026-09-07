@@ -156,6 +156,15 @@ const {
       const btn = card.querySelector<HTMLButtonElement>('[data-more]');
       if (!body || !btn) return;
 
+      /*
+        Bind once per element. This now runs again after each view transition,
+        and the document is not re-parsed between them — so without the guard a
+        button would collect a second listener and the two toggles would cancel
+        each other out on click.
+      */
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = 'true';
+
       const full = body.scrollHeight;
       body.classList.add('is-clamped');
       // `scrollHeight` still reports the full content under -webkit-line-clamp,
@@ -180,4 +189,10 @@ const {
   } else {
     initQuotes();
   }
+  /*
+    Re-run after a view transition. The site navigates without re-parsing the
+    document, so quotes on the second page a visitor sees would otherwise never
+    be measured — leaving every quote at full length and no toggle at all.
+  */
+  document.addEventListener('astro:page-load', initQuotes);
 </script>

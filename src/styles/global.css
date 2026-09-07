@@ -108,35 +108,50 @@
   layer, and unlayered rules beat layered ones regardless of order — so this
   override cannot be silently defeated by a change in layer sequence.
 
-  System preference only, no toggle: honoring the setting a visitor already
-  chose is the expected behavior, and a toggle adds persisted state for no gain.
+  Light is the default. Dark is selected explicitly by the site toggle and
+  persisted in localStorage rather than inferred from the operating system.
 */
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
+:root[data-theme='dark'] {
+  color-scheme: dark;
 
-    --color-paper: #17150f;
-    --color-paper-2: #1e1b14;
-    --color-paper-3: #262219;
-    --color-ink: #f2efe6;
-    --color-ink-2: #c8c3b4;
-    --color-ink-3: #918b7c;
-    --color-line: #353128;
-    --color-line-2: #423d32;
+  --color-paper: #17150f;
+  --color-paper-2: #1e1b14;
+  --color-paper-3: #262219;
+  --color-ink: #f2efe6;
+  --color-ink-2: #c8c3b4;
+  --color-ink-3: #918b7c;
+  --color-line: #353128;
+  --color-line-2: #423d32;
 
-    --color-signal: #e0662f;
-    --color-signal-ink: #ef8a55;
+  --color-signal: #e0662f;
+  --color-signal-ink: #ef8a55;
 
-    /* The inverted band drops darker so it still separates from the page. */
-    --color-slate: #0b0a07;
-    --color-slate-2: #141209;
-    --color-inverse-ink: #f2efe6;
-    --color-inverse-ink-2: #c8c3b4;
-    --color-inverse-ink-3: #918b7c;
-    --color-inverse-ink-4: #6f6a5d;
-    --color-inverse-line: #35312a;
-    --color-signal-bright: #f08b52;
-  }
+  /* The inverted band drops darker so it still separates from the page. */
+  --color-slate: #0b0a07;
+  --color-slate-2: #141209;
+  --color-inverse-ink: #f2efe6;
+  --color-inverse-ink-2: #c8c3b4;
+  --color-inverse-ink-3: #918b7c;
+  --color-inverse-ink-4: #6f6a5d;
+  --color-inverse-line: #35312a;
+  --color-signal-bright: #f08b52;
+}
+
+.theme-toggle__icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.theme-toggle__sun {
+  display: none;
+}
+
+:root[data-theme='dark'] .theme-toggle__moon {
+  display: none;
+}
+
+:root[data-theme='dark'] .theme-toggle__sun {
+  display: block;
 }
 
 @layer base {
@@ -291,6 +306,85 @@
     letter-spacing: -0.02em;
     font-variant-numeric: tabular-nums;
     text-wrap: nowrap;
+  }
+
+  /*
+    Not every tier has a number. The build is quoted after the Audit, so its
+    "price" is a sentence — and a sentence set at numeric scale with `nowrap`
+    runs straight out of the card and off the page on mobile.
+
+    Smaller, allowed to wrap, and balanced so it breaks evenly rather than
+    leaving one orphaned word. Deliberately still a `.price` so it holds the
+    same vertical slot in the card and the three tiers stay aligned.
+  */
+  .price-text {
+    font-size: clamp(1.15rem, 1.7vw, 1.4rem);
+    text-wrap: balance;
+    white-space: normal;
+    color: var(--color-ink-2);
+  }
+
+  /*
+    Card primitive.
+
+    Shared by the pricing tiers and anything else that needs to read as a
+    discrete object rather than a cell in a table. The previous pricing layout
+    faked its borders with `gap-px` over a tinted grid background, which is
+    exactly why those panels read as a spreadsheet: a table implies the columns
+    are the same kind of thing, when the whole point is that they are three
+    different commitments.
+
+    Bordered in `line-2` rather than `line`. On the tinted `paper-2` surface the
+    lighter rule almost disappears, which left the cards looking like faint
+    rectangles; the mid-tone is the same neutral family but actually holds an
+    edge against both surfaces. Every card carries it — a single accented card
+    reads as an inconsistency rather than as emphasis unless it is labelled.
+
+    Motion is confined to transform and border-color so it composes with the
+    entrance stagger and stays off the paint path.
+  */
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-paper);
+    border: 1px solid var(--color-line-2);
+    border-radius: 3px;
+    transition:
+      transform 0.22s ease,
+      border-color 0.22s ease,
+      box-shadow 0.22s ease;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-signal);
+    box-shadow: 0 6px 22px -14px rgb(0 0 0 / 0.35);
+  }
+
+  /*
+    The same card on the dark proof section.
+
+    A modifier rather than a second component: the geometry, the lift and the
+    timing all come from `.card`, and only the surface and rule colours change.
+    The inset background is a step lighter than the section behind it, because
+    on a dark ground a border alone reads as a hairline drawn on nothing —
+    the card needs to be a distinct plane before an edge means anything.
+  */
+  .card--dark {
+    background: var(--color-slate-2);
+    border-color: var(--color-inverse-line);
+  }
+  .card--dark:hover {
+    border-color: var(--color-signal-bright);
+    box-shadow: 0 8px 26px -14px rgb(0 0 0 / 0.7);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card,
+    .card:hover {
+      transform: none;
+      transition: border-color 0.22s ease;
+    }
   }
 
   .btn {

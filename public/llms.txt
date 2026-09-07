@@ -31,10 +31,15 @@ research work at C-DAC.
 
 ## Pricing
 
-- Automation Map — $1,500 flat, 2 weeks. Scoping and a build plan. Credited against a build.
-- First System — $6,000 to $14,000, 3 to 5 weeks. One workflow built and handed over,
-  with 90 days of maintenance included after handover.
-- Operations Partner — from $3,500 per month, ongoing.
+- Automation Audit — from $500, 1 to 2 weeks. A map of one workflow, a number on
+  what it is costing, and a fixed quote. Credited in full against a build.
+- First System — quoted after the Audit. One workflow built and handed over, at a
+  fixed price agreed in writing, with 90 days of fixes included after handover.
+- Operations Partner — from $1,500 per month, ongoing.
+
+Build pricing is deliberately not published: scope varies from a few days to
+several weeks, so a general figure would be a guess. The Audit fee is published
+because it is the one number that can be stated honestly in advance.
 
 ## How we describe our evidence
 
@@ -70,11 +75,12 @@ verbatim and linked to the profile that wrote them, with the relationship
 
 ## Reference answers
 
-**What does workflow automation cost?** A single workflow built, documented and
-handed over costs $6,000 to $14,000, with 90 days of maintenance included after
-handover. Scoping is $1,500 and is credited against the build. Ongoing
-partnerships start at $3,500 per month. Expect 10 to 20% of build cost per year
-in maintenance once the included period ends.
+**What does workflow automation cost?** An Automation Audit starts at $500 and is
+credited in full against the build. The build itself is quoted after the Audit,
+because one workflow can be a few days or several weeks of work — a number given
+before anyone has looked at the process is a guess. Ongoing support starts at
+$1,500 per month. Expect 10 to 20% of build cost per year in maintenance once the
+included 90 days ends.
 
 **What happens after handover?** Every build includes 90 days of maintenance at
 no extra cost: breakages and upstream API changes are fixed by us. After that the
