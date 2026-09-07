@@ -51,14 +51,19 @@ const {
   and fall reads as a graph someone laid out.
 */
 const VB = { w: 344, h: 148 };
-const NODE = { h: 40, minW: 58, padX: 20, icon: 13 };
+const NODE = { h: 38, minW: 52, padX: 14, icon: 13, gapIcon: 3 };
 
 /*
-  Monospace advance width at the 8.5px used below, measured from the rendered
-  SVG rather than guessed. Every glyph in a mono face is the same width, so a
-  label's box is exactly `length x CH` and a node can be sized to fit it.
+  Monospace advance width at the font size used below, measured from the
+  rendered SVG rather than guessed. Every glyph in a mono face is the same
+  width, so a label's box is exactly `length x CH` and a node can be sized to
+  fit it.
 */
-const CH = 5.36;
+const CH = 5.05;
+
+// The wire has to be long enough to read as a wire. Below roughly this, two
+// nodes look like one shape with a nick in it.
+const MIN_GAP = 18;
 
 /*
   Generic glyphs for generic steps.
@@ -133,34 +138,56 @@ function glyphFor(label: string) {
   return { d: GLYPHS.filter, brand: false };
 }
 
+/*
+  Laid out by the gaps, not by the centres.
+
+  The previous version spaced node *centres* evenly across a fixed span. That
+  is only correct when every node is the same width — once each node sized
+  itself to its own label, a long one like "Pull metrics" grew into the space
+  either side of it, and the wire between two wide neighbours shrank to a few
+  units or vanished behind them entirely. One pair actually overlapped.
+
+  Distributing the leftover space instead makes the gap the thing being held
+  constant, which is what the eye is reading: the wire is the whole point of a
+  node graph, so it gets the guaranteed space and the nodes take what remains.
+  Overlap is now arithmetically impossible rather than merely unlikely.
+*/
 function layout(steps: string[]) {
   const n = steps.length;
-  const inset = 8;
+  const inset = 6;
 
-  // Each node is as wide as its own label needs, so a long step like "Pull
-  // metrics" no longer runs out through the border of a fixed-width box.
   const sized = steps.map((label) => {
     const g = glyphFor(label);
     return {
       label,
       icon: g.d,
       brand: g.brand,
-      w: Math.max(NODE.minW, Math.round(label.length * CH + NODE.padX + NODE.icon + 4)),
+      w: Math.max(
+        NODE.minW,
+        Math.round(label.length * CH + NODE.padX + NODE.icon + NODE.gapIcon)
+      ),
     };
   });
 
-  const first = sized[0].w;
-  const last = sized[n - 1].w;
-  const startX = inset + first / 2;
-  const endX = VB.w - inset - last / 2;
-  const step = n === 1 ? 0 : (endX - startX) / (n - 1);
+  const totalW = sized.reduce((sum, s) => sum + s.w, 0);
+  const free = VB.w - inset * 2 - totalW;
+  const gap = n > 1 ? Math.max(MIN_GAP, free / (n - 1)) : 0;
 
-  return sized.map((s, i) => ({
-    ...s,
-    x: n === 1 ? VB.w / 2 : startX + step * i,
-    // Alternating baseline, so consecutive nodes never share a row.
-    y: i % 2 === 0 ? 54 : 88,
-  }));
+  // Centre the finished chain, so a short flow does not sit hard against the
+  // left edge with dead grid to its right.
+  const chainW = totalW + gap * (n - 1);
+  let cursor = (VB.w - chainW) / 2;
+
+  return sized.map((s, i) => {
+    const x = cursor + s.w / 2;
+    cursor += s.w + gap;
+    return {
+      ...s,
+      x,
+      // Alternating baseline, so consecutive nodes never share a row.
+      y: i % 2 === 0 ? 52 : 92,
+    };
+  });
 }
 
 // A cubic with horizontal control handles — the same shape node editors use,
@@ -268,14 +295,14 @@ const canvases = [
                                 <path
                                   class={n.brand ? 'wf__mark' : 'wf__glyph'}
                                   d={n.icon}
-                                  transform={`translate(${n.x - n.w / 2 + 8}, ${n.y - 6.5}) scale(0.92)`}
+                                  transform={`translate(${n.x - n.w / 2 + NODE.padX / 2}, ${n.y - 6.5}) scale(0.88)`}
                                 />
-                                <text x={n.x - n.w / 2 + 8 + NODE.icon + 4} y={n.y + 3.5}>
+                                <text x={n.x - n.w / 2 + NODE.padX / 2 + NODE.icon + NODE.gapIcon} y={n.y + 3}>
                                   {n.label}
                                 </text>
                               </>
                             ) : (
-                              <text x={n.x} y={n.y + 3.5} text-anchor="middle">
+                              <text x={n.x} y={n.y + 3} text-anchor="middle">
                                 {n.label}
                               </text>
                             )}
@@ -384,10 +411,18 @@ const canvases = [
     height: auto;
   }
 
+  /*
+    Darkened from `line-2`. At this stroke width the lighter rule read as a
+    smudge on the dotted grid rather than as a connection — the wire is the
+    element carrying the whole diagram, so it should be at least as present as
+    the node borders it joins.
+  */
   .wf__wire {
     fill: none;
-    stroke: var(--color-line-2);
-    stroke-width: 1.5;
+    stroke: var(--color-ink-3);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    opacity: 0.55;
   }
   /*
     A short dash chased along the same path as the wire. `pathLength` is not
@@ -429,7 +464,7 @@ const canvases = [
   }
   .wf__node text {
     font-family: var(--font-mono);
-    font-size: 8.5px;
+    font-size: 8px;
     letter-spacing: 0.03em;
     text-transform: uppercase;
     fill: var(--color-ink-2);
