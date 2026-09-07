@@ -84,9 +84,20 @@
   --color-inverse-ink: #f4f1ea;
   --color-inverse-ink-2: #cbc6b8;
   --color-inverse-ink-3: #a8a291;
-  --color-inverse-ink-4: #8a8574;
+  /*
+    Lightened from #8a8574, which measured 3.99:1 against `--color-slate-2` —
+    under the 4.5:1 AA floor for the 12px mono labels this tone is used for
+    ("CASE // 01", the sourcing note). 4.86:1 now, and still a clear step
+    quieter than `inverse-ink-3` above it.
+  */
+  --color-inverse-ink-4: #9a9482;
   --color-inverse-line: #4a463a;
-  --color-signal-bright: #e0662f;
+  /*
+    Lightened from #e0662f for the same reason: 4.28:1 on `--color-slate-2`,
+    used for the 10px "client" badge and the "Read the build" link. 5.23:1 now.
+    Only ever painted on dark surfaces, so nothing on the light theme shifts.
+  */
+  --color-signal-bright: #ea7c46;
 
   --font-display: 'Fraunces Variable', 'Fraunces Fallback', Georgia, 'Times New Roman', serif;
   --font-sans: 'IBM Plex Sans Variable', 'Plex Sans Fallback', ui-sans-serif, system-ui,
@@ -132,7 +143,8 @@
   --color-inverse-ink: #f2efe6;
   --color-inverse-ink-2: #c8c3b4;
   --color-inverse-ink-3: #918b7c;
-  --color-inverse-ink-4: #6f6a5d;
+  /* 3.48:1 against the dark theme's `--color-slate-2` before; 4.62:1 now. */
+  --color-inverse-ink-4: #837e6e;
   --color-inverse-line: #35312a;
   --color-signal-bright: #f08b52;
 }

@@ -330,7 +330,18 @@ const schema = [
   <WorkflowGallery />
 
   <!-- Proof -->
-  <section class="bg-[var(--color-slate)] text-[var(--color-paper)]">
+  {/*
+    `inverse-ink`, not `paper`.
+
+    `--color-slate` is a fixed dark surface: it stays dark in both themes. But
+    `--color-paper` is a *flipping* token — it is light in the light theme and
+    near-black in the dark theme. Pairing the two meant that in dark mode this
+    section rendered #17150f text on a #0b0a07 background: a contrast ratio of
+    1.08, i.e. the entire section was invisible. The inverse scale exists for
+    exactly this — it is light in both themes, because the surface it describes
+    is dark in both themes.
+  */}
+  <section class="bg-[var(--color-slate)] text-[var(--color-inverse-ink)]">
     <div class="wrap py-16 md:py-20">
       <div class="flex items-end justify-between gap-6 flex-wrap">
         <div>

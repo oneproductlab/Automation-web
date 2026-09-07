@@ -246,7 +246,14 @@ const describe = spokes.map((s) => s.label).join(', ');
     flex-direction: column;
     align-items: center;
     gap: 0.15rem;
-    background: var(--color-ink);
+    /*
+      `slate`, not `ink`. `--color-ink` flips with the theme — dark in light
+      mode, light in dark mode — while `--color-inverse-ink` below is light in
+      both. Together they rendered a light label on a light box in dark mode: a
+      1:1 contrast ratio, so the hub label vanished entirely. `--color-slate` is
+      a fixed dark surface in both themes, which is what an inverted node needs.
+    */
+    background: var(--color-slate);
     color: var(--color-inverse-ink);
 
     padding: 1rem 1.35rem;
