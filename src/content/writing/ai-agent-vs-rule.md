@@ -1,7 +1,7 @@
 ---
 title: When to use an AI agent, and when to use a rule
 description: >-
-  Most automation problems don't need a model. A practical way to decide when AI
+  Most automation problems don’t need a model. A practical way to decide when AI
   earns its place in a workflow — and when a plain rule is the better engineering.
 pubDate: 2026-02-18
 tags: ['ai', 'automation', 'process']
@@ -48,7 +48,7 @@ log line and a shrug.
 ## Use a model when the input is messy and the judgment is fuzzy
 
 Reach for a model when the input is unstructured and the decision needs judgment
-a rule can't express: classifying the intent of a free-text support message,
+a rule can’t express: classifying the intent of a free-text support message,
 extracting fields from a PDF that never has the same layout twice, drafting a
 first-pass reply. These are the tasks where a model genuinely outperforms a
 brittle pile of conditions.
@@ -63,9 +63,9 @@ A model call costs a fraction of a cent, which is why people assume models are
 cheap. The running cost is not the cost.
 
 The real cost is evaluation: knowing whether the model is still making good
-decisions six months from now. That means keeping a labelled set of examples,
+decisions six months from now. That means keeping a labeled set of examples,
 re-checking against it, and having someone who cares when accuracy drifts. If
-nobody in your organisation will own that, the honest engineering decision is to
+nobody in your organization will own that, the honest engineering decision is to
 not ship the model — not because it won't work today, but because nobody will
 notice when it stops.
 
@@ -74,7 +74,7 @@ the question that gets asked.
 
 ## Whatever you use, wrap it in something you can trust
 
-When we do use a model, it doesn't get to act unsupervised. It sits inside:
+When we do use a model, it doesn’t get to act unsupervised. It sits inside:
 
 - **Guardrails** — hard limits on what it can touch.
 - **A human checkpoint** — for anything consequential or irreversible.
@@ -100,6 +100,6 @@ and a person confirms anything consequential.
 
 The goal isn't to use AI. The goal is a system that does the work correctly and
 that you can hand over with confidence. AI is one tool in that toolbox — used
-where it earns its place, and left out where it doesn't. If you're weighing the
+where it earns its place, and left out where it doesn’t. If you’re weighing the
 same decision on a workflow of your own,
 [that is what a scoping conversation is for](/contact/).

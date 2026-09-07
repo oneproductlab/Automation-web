@@ -11,10 +11,10 @@ problem: >-
   Customers message on WhatsApp because it is the easiest thing to open. The
   business runs its pipeline in a CRM. Between the two sits a person with a
   phone, reading threads and retyping names, numbers and intent into contact
-  records. Threads sit on one salesperson's device, so nobody else can see them.
+  records. Threads sit on one salesperson’s device, so nobody else can see them.
   When that person is on leave, the pipeline goes dark.
 before:
-  - Enquiry arrives as a WhatsApp message on a salesperson's phone
+  - Enquiry arrives as a WhatsApp message on a salesperson’s phone
   - They read it and decide, informally, whether it is a real lead
   - They retype the name, number and request into the CRM
   - Follow-ups continue in WhatsApp, invisible to everyone else
@@ -46,7 +46,7 @@ stack:
 humanImpact: >-
   A salesperson answers WhatsApp the way they always have. Everyone else can see
   the conversation, the record is current without anyone maintaining it, and a
-  handover no longer means reading someone else's phone.
+  handover no longer means reading someone else’s phone.
 draft: false
 ---
 

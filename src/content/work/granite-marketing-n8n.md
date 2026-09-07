@@ -32,7 +32,7 @@ result:
     label: deployed where no-code could not reach
     source: >-
       Stated by the client in the same recommendation: "deployed custom code
-      where necessary — showing that he's more than just a no/low-code
+      where necessary — showing that he’s more than just a no/low-code
       developer".
   - metric: Improved
     label: efficiency across the existing estate
@@ -62,7 +62,7 @@ time savings are claimed, because none were measured.
 
 > I worked with Niraj on an n8n project that comprised of over 10 workflows
 > working in sync. He improved the efficiency, added new features with ease and
-> deployed custom code where necessary — showing that he's more than just a
+> deployed custom code where necessary — showing that he’s more than just a
 > no/low-code developer which is very valuable in this day and age. I would not
 > hesitate to recommend him if you're looking for professional execution and
 > strong communication!

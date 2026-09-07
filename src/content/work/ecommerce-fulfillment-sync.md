@@ -4,7 +4,7 @@ kind: internal-build
 sector: E-commerce
 order: 2
 summary: >-
-  A internal-build showing how a store, a spreadsheet and a courier can be
+  An internal build showing how a store, a spreadsheet and a courier can be
   wired together so stock and status never drift out of sync.
 problem: >-
   A growing shop tracks stock in a spreadsheet, takes orders on a storefront,
@@ -43,7 +43,7 @@ humanImpact: >-
 draft: false
 ---
 
-## A internal build, not a client story
+## An internal build, not a client story
 
 This is a system we built and run ourselves rather than a paid client
 engagement, and it is labeled that way. The figures come from our own

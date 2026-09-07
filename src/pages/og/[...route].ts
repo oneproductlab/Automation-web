@@ -33,7 +33,7 @@ const pages: Record<string, { title: string; description: string }> = {
   },
   approach: {
     title: 'Map, build, hand over',
-    description: 'How an engagement actually runs.',
+    description: 'How an engagement runs, step by step.',
   },
   about: {
     title: 'About Flowzora',

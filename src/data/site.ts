@@ -209,7 +209,7 @@ export const engagementTerms = [
   },
   {
     title: 'You own everything',
-    detail: 'Code and accounts in your name from day one. No lock-in, no licence to keep paying.',
+    detail: 'Code and accounts in your name from day one. No lock-in, no license to keep paying.',
   },
   {
     // "You work with the founder" was the wrong unit of reassurance. It asks
@@ -438,7 +438,7 @@ export const services = [
   {
     slug: 'integrations',
     // Short form for scanning contexts; `summary` is the fuller version.
-    brief: "Data moves once, correctly, and you see when it doesn't.",
+    brief: 'Data moves once, correctly, and you see when it doesn’t.',
     index: '05',
     title: 'Integrations & data plumbing',
     seoTitle: 'Systems integration & API integration services',
@@ -478,7 +478,7 @@ export const services = [
   {
     slug: 'ai-agents',
     // Short form for scanning contexts; `summary` is the fuller version.
-    brief: "Models only where a rule genuinely can't do the job.",
+    brief: 'Models only where a rule genuinely can’t do the job.',
     index: '06',
     title: 'AI agents & assisted workflows',
     seoTitle: 'AI automation agency & AI agent development',
@@ -675,7 +675,7 @@ export const workflows = [
     tag: 'Internal operations',
   },
   {
-    title: 'Shopify orders to fulfilment',
+    title: 'Shopify orders to fulfillment',
     steps: ['Shopify', 'Inventory', 'Courier', 'Email'],
     outcome: 'Stock and shipping stay in step without a spreadsheet in between.',
     href: '/services/integrations/',
