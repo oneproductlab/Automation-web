@@ -21,6 +21,22 @@ interface Props {
 
 const { trail, current } = Astro.props;
 
+/*
+  On a top-level page the visible trail is just "Home / Pricing" — a line that
+  tells the reader something the header nav already shows, directly above a
+  heading that says it a third time.
+
+  So it is hidden visually there, but only visually. The BreadcrumbList schema
+  below is still emitted and the nav is still in the DOM for screen readers,
+  because that markup is what Google uses to render the trail in place of a raw
+  URL in search results. Deleting the component would cost that on every page.
+
+  Nested pages keep the visible trail: "Work / WhatsApp enquiries into a CRM"
+  is genuine wayfinding, since the header cannot show which case study you are
+  inside.
+*/
+const isTopLevel = trail.length === 0;
+
 const itemListElement = [
   { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.domain}/` },
   ...trail.map((crumb, i) => ({
@@ -33,7 +49,7 @@ const itemListElement = [
 ];
 ---
 
-<nav aria-label="Breadcrumb" class="crumbs">
+<nav aria-label="Breadcrumb" class={isTopLevel ? 'crumbs sr-only' : 'crumbs'}>
   <ol>
     <li><a href="/">Home</a></li>
     {

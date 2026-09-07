@@ -196,12 +196,27 @@ const describe = spokes.map((s) => s.label).join(', ');
     background-repeat: repeat-x;
   }
 
+  /*
+    A fifth of the spoke, not all of it.
+
+    The dot is drawn at this track's left edge and moved by translating the
+    track, so the track's width is only ever a unit of measurement — but it is
+    still a box, and a box translated past its parent still scrolls the page.
+    At `width: 100%` the keyframe below pushed its right edge to 1.76x the ring
+    radius: nothing visible out there, yet enough to give the whole document a
+    horizontal scrollbar at viewport widths where the ring sat in a column.
+
+    At 20% the same travel needs a bigger percentage (a percentage of a fifth
+    of the distance), and the far edge lands just inside the stage instead of
+    well outside it. Keep the two in step if either changes: the dot's reach is
+    `width x translate`.
+  */
   .fz-spoke__pulse {
     position: absolute;
     top: 0;
     left: 0;
 
-    width: 100%;
+    width: 20%;
     height: 0;
     opacity: 0;
   }
@@ -312,17 +327,18 @@ const describe = spokes.map((s) => s.label).join(', ');
 
   /*
     One dot per spoke, out to the system and back to the core, identical timing
-    everywhere. Percentages resolve against the track width, which is the ring
-    radius, so the travel distance is the same on every spoke regardless of
-    angle. Compositor-only — transform and opacity, no layout.
+    everywhere. Percentages resolve against the track width, which is a fifth
+    of the ring radius, so 150% and 380% are the 30% and 76% of the radius this
+    used to say — same travel, a box small enough not to overflow the stage.
+    Compositor-only — transform and opacity, no layout.
   */
   @keyframes fz-pulse {
-    0% { transform: translateX(30%); opacity: 0; }
+    0% { transform: translateX(150%); opacity: 0; }
     8% { opacity: 1; }
-    42% { transform: translateX(76%); opacity: 1; }
-    50% { transform: translateX(76%); opacity: 1; }
-    92% { transform: translateX(30%); opacity: 1; }
-    100% { transform: translateX(30%); opacity: 0; }
+    42% { transform: translateX(380%); opacity: 1; }
+    50% { transform: translateX(380%); opacity: 1; }
+    92% { transform: translateX(150%); opacity: 1; }
+    100% { transform: translateX(150%); opacity: 0; }
   }
   @keyframes fz-blink {
     0%, 100% { opacity: 0.3; }

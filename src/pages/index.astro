@@ -3,12 +3,13 @@ import Base from '../layouts/Base.astro';
 import WorkflowCanvas from '../components/WorkflowCanvas.astro';
 import BeforeAfter from '../components/BeforeAfter.astro';
 import ConnectedSystems from '../components/ConnectedSystems.astro';
+import WorkflowGallery from '../components/WorkflowGallery.astro';
 import Faq from '../components/Faq.astro';
 import Testimonials from '../components/Testimonials.astro';
 import BookCall from '../components/BookCall.astro';
 import { Image } from 'astro:assets';
 import founderPhoto from '../assets/images/niraj.jpg';
-import { services, approach, faqs, site, founder, fitFor, pricing, foundingOffer, testimonials } from '../data/site';
+import { services, approach, faqs, site, founder, fitFor, pricing, engagementTerms, engagementNote, testimonials } from '../data/site';
 import { getWork } from '../lib/work';
 
 const work = await getWork();
@@ -80,31 +81,22 @@ const schema = [
           <span class="text-[var(--color-signal-ink)]">Not the overhead.</span>
         </h1>
         <p class="mt-7 max-w-xl text-lg text-[var(--color-ink-2)]">
-          We connect the tools you already run and remove the manual steps
-          between them. You own the system outright.
+          The tools you already pay for, wired into one system that runs the
+          repetitive work by itself — and it’s yours outright.
         </p>
         <div class="mt-9 flex flex-wrap items-center gap-3">
           <a href="/contact/" class="btn btn-primary">Let’s talk growth</a>
-        </div>
+          {/*
+            A second door out of the hero.
 
-        <!--
-          The founder, in the hero. A buyer is hiring a person, not software, and
-          burying the only named human on an About page costs more trust than the
-          space it saves.
-        -->
-        <div class="mt-11 flex items-center gap-4 border-t border-[var(--color-line)] pt-6">
-          <Image
-            src={founderPhoto}
-            alt=""
-            width={96}
-            height={96}
-            loading="eager"
-            class="h-11 w-11 shrink-0 rounded-full border border-[var(--color-line)] object-cover"
-          />
-          <p class="max-w-md text-[0.92rem] text-[var(--color-ink-2)]">
-            Built by <strong class="font-medium text-[var(--color-ink)]">{founder.name}</strong>, who
-            writes the code as well as the proposal. <a href="/about/" class="link-underline">About the agency</a>
-          </p>
+            The founder card that used to sit here has moved down to "How we
+            work", where the claim it makes — the person who scopes the work
+            writes the code — is the evidence for that section rather than a
+            standalone boast. What the hero loses in credibility it regains
+            here: a visitor who is not ready to talk now has somewhere to go
+            other than away, and the work is the strongest thing to send them to.
+          */}
+          <a href="/work/" class="btn btn-ghost">See what we’ve built</a>
         </div>
       </div>
 
@@ -115,38 +107,69 @@ const schema = [
   </section>
 
   <!--
-    Client proof, first thing after the hero.
+    The problem, first thing after the hero.
 
-    This is the strongest evidence on the site: named people, dated, linked to
-    the profile that wrote the words. It used to sit behind a strip of backend
-    metrics — API latency, database load — which were credentials for a job
-    nobody here is hiring for, and which competed with stronger proof. The
-    project work below now carries that weight, so the
-    metrics strip is gone entirely.
+    Client proof used to sit here. It has moved down to just after the price,
+    where doubt actually peaks — praise before relevance reads as noise, because
+    a stranger is still asking "do these people solve *my* problem" rather than
+    "can I trust them". This also lifts the problem and service copy above the
+    fold-adjacent area, which is the keyword-bearing content worth ranking.
+
+    The problem is drawn rather than described. The qualification list that used
+    to live in its own full section is folded in here, because "is this my
+    problem?" and "am I the right buyer?" are the same question asked twice.
   -->
-  <Testimonials plain />
+  <section class="wrap py-16 md:py-20">
+    {/*
+      Near-even columns rather than 0.85/1.15.
 
-  <!--
-    The problem, drawn rather than described.
-
-    This was three labelled rows of prose making a point the diagram makes
-    instantly: point-to-point wiring costs you a person in the middle. The
-    qualification list that used to live in its own full section is folded in
-    here, because "is this my problem?" and "am I the right buyer?" are the same
-    question asked twice.
-  -->
-  <section class="wrap py-20 md:py-24">
-    <div class="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
-      <div class="lg:pt-2">
+      The old split left the text column at ~430px, which was too narrow for
+      the qualification lines — "data" and "platform" each fell to a second
+      line on their own, and a one-word orphan line reads as a mistake. The
+      text column now gets roughly the same width as the diagram, which is
+      enough for those lines to close up, and it also brings the two columns
+      to a similar height so neither hangs below the other.
+    */}
+    <div class="grid gap-12 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:gap-14">
+      <div>
         <p class="eyebrow">The problem</p>
         <h2 class="mt-4 max-w-md text-3xl md:text-4xl">
           Your business shouldn’t depend on repetitive work.
         </h2>
-        <p class="mt-5 max-w-sm text-[var(--color-ink-2)]">
-          It doesn’t scale, and it costs more every month you grow.
-        </p>
+        {/*
+          The cost, as a worked example rather than a claim.
 
-        <ul class="reveal mt-9 border-t border-[var(--color-line-2)]">
+          This began life as a bare "~$12,000/year" — a round, research-shaped
+          number with nothing behind it. That is the one kind of copy this site
+          cannot afford: a page arguing for fixed prices and honest scoping
+          loses more from one unsupported statistic than it gains from the
+          statistic landing.
+
+          Two things fix it. The label says "worked example", so the figure is
+          framed as arithmetic rather than a finding about the reader's
+          business. And the inputs are printed, so it stops being our number
+          and becomes theirs — anyone can substitute their own salary and get
+          their own answer, which persuades better than a figure we chose and
+          cannot be wrong in a way that costs trust.
+
+          Deliberately conservative: base salary only, no employer taxes,
+          benefits or seats, and no error costs. The true figure is higher.
+        */}
+        <div class="mt-6 max-w-sm border-l-2 border-[var(--color-signal)] pl-4">
+          <p class="font-[var(--font-mono)] text-[0.7rem] uppercase tracking-[0.1em] text-[var(--color-ink-3)]">
+            Worked example
+          </p>
+          <p class="price mt-1 text-[var(--color-ink)]">~$12,000<span class="text-[0.5em] text-[var(--color-ink-3)]">/year</span></p>
+          <p class="mt-2 text-[0.92rem] leading-relaxed text-[var(--color-ink-2)]">
+            One person, one day a week, re-typing between systems. It never
+            shows up as a line item, so it rarely gets fixed.
+          </p>
+          <p class="mt-2 font-[var(--font-mono)] text-[0.7rem] leading-relaxed text-[var(--color-ink-3)]">
+            $55,000 salary ÷ 230 working days × 48 days. Use your own numbers.
+          </p>
+        </div>
+
+        <ul class="reveal mt-8 border-t border-[var(--color-line-2)]">
           {
             fitFor.signals.map((s, i) => (
               <li
@@ -162,83 +185,77 @@ const schema = [
             ))
           }
         </ul>
-        <p class="mt-6 font-[var(--font-mono)] text-xs leading-relaxed text-[var(--color-ink-3)]">
-          Sound familiar? That’s the work we take out. Not a fit? We’ll say so on
-          the first call.
+
+        {/*
+          Closing line for the signals above.
+
+          The two "not for you if" exclusions used to sit here. They failed the
+          section's own question: this block asks "is this my problem?", and
+          they answer "are these the right people?" — a question about us,
+          settled by clauses about our staffing and a freelancer's rate. Under
+          an eyebrow reading THE PROBLEM, a reader hits them and has to work out
+          why the subject changed. They now sit next to the price, where "is
+          this the right size of job for these people" is the question actually
+          being asked.
+        */}
+        <p class="mt-5 font-[var(--font-mono)] text-xs leading-relaxed text-[var(--color-ink-3)]">
+          Sound familiar? That’s the work we take out.
         </p>
       </div>
 
-      <div class="reveal self-start">
+      {/*
+        No `self-start`: the diagram was pinned to the top of a taller text
+        column, which left it floating with a block of empty space beneath it.
+        Centred against the text, the two columns read as one row.
+      */}
+      <div class="reveal">
         <BeforeAfter />
       </div>
     </div>
   </section>
 
   <!--
-    Your existing stack, wired in.
+    What we build — and what it gets wired into.
 
-    Previously this section also carried the full workflow diagram and its own
-    explanatory paragraph. The diagram now opens the page, so what remains is
-    the one claim this section alone makes: you don't need another tool.
+    "Your stack" used to run as its own full section here: a heading, a claim
+    that you don't need another app, the exclusions, and this diagram. It was
+    ~745px to explain tooling, which is not what a visitor is deciding at this
+    point in the page. The section is gone; its three parts were rehomed to
+    where each already had a job. The exclusions joined the signals list above.
+    The claim survives as the line under this heading — it is really an
+    argument about what we build, so it reads better as this section's premise
+    than as a section of its own. And the diagram, which was the only part
+    doing work no sentence could, is now the visual for this section instead of
+    illustrating a paragraph that repeated it.
   -->
-  <section class="bg-[var(--color-paper-2)] border-y border-[var(--color-line)]">
-    <div class="wrap py-16 md:py-20">
-      <div class="grid items-center gap-12 md:grid-cols-2">
-        <div>
-          <p class="eyebrow">Your stack</p>
-          <h2 class="mt-4 max-w-sm text-3xl md:text-4xl">
-            You don’t need another app.
-          </h2>
-          <p class="mt-5 max-w-md text-[var(--color-ink-2)]">
-            You need the tools you already pay for to talk to each other, in the
-            right order, without a person in the middle.
-          </p>
-
-          <!--
-            The exclusions, kept. They used to sit in a section of their own,
-            which gave two lines of disqualification the same weight as the
-            pricing table. Here they do the same job at the right volume.
-          -->
-          <ul class="mt-8 border-t border-[var(--color-line-2)]">
-            {
-              fitFor.notFor.map((s) => (
-                <li class="flex gap-3 border-b border-[var(--color-line-2)] py-3">
-                  <span class="font-[var(--font-mono)] text-sm text-[var(--color-ink-3)]" aria-hidden="true">
-                    ✕
-                  </span>
-                  <span class="text-[0.9rem] text-[var(--color-ink-3)]">{s}</span>
-                </li>
-              ))
-            }
-          </ul>
-
-          <a href="/services/integrations/" class="btn btn-ghost mt-8">How integrations work</a>
-        </div>
-        <div class="reveal">
-          <ConnectedSystems />
-          <p class="mt-7 font-[var(--font-mono)] text-[0.72rem] uppercase tracking-[0.1em] text-[var(--color-ink-3)]">
-            Stacks we work in
-          </p>
-          <ul class="mt-3 flex flex-wrap gap-x-4 gap-y-2">
-            {
-              fitFor.stacks.map((s) => (
-                <li class="font-[var(--font-mono)] text-[0.82rem] text-[var(--color-ink-2)]">{s}</li>
-              ))
-            }
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- What we build -->
   <section class="wrap py-16 md:py-20">
-    <div class="flex items-end justify-between gap-6 flex-wrap">
+    {/*
+      Two columns at `lg`, not `md`.
+
+      At `md` this split the row at 768px, which handed the diagram a ~340px
+      column. The ring sizes its nodes off the stage width and its own stacking
+      fallback is keyed to the viewport, not the column — so between 768px and
+      1024px the outer nodes had a container too narrow to sit inside and spilled
+      past the viewport edge, scrolling the whole page sideways. `lg` matches the
+      `min-width: 64rem` the component already uses to grow its stage, so the
+      row now splits exactly when the diagram has the width to be in a row.
+    */}
+    <div class="grid items-center gap-12 lg:grid-cols-[1fr_0.95fr]">
       <div>
         <p class="eyebrow">What we build</p>
         <h2 class="mt-4 text-3xl md:text-4xl">Where we usually remove manual work.</h2>
+        <p class="mt-5 max-w-md text-[var(--color-ink-2)]">
+          You don’t need another app. You need the tools you already pay for to
+          talk to each other, in the right order, without a person in the middle.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/services/" class="btn btn-ghost">All services</a>
+          <a href="/services/integrations/" class="btn btn-ghost">How integrations work</a>
+        </div>
       </div>
-      <a href="/services/" class="btn btn-ghost">All services</a>
+      <div class="reveal">
+        <ConnectedSystems />
+      </div>
     </div>
     <!--
       A two-column matrix rather than six full-width rows. This section is a
@@ -295,6 +312,22 @@ const schema = [
     </p>
   </section>
 
+  <!--
+    Workflow patterns, directly after the service categories.
+
+    The list above names six categories; this shows what one actually looks
+    like, which is the difference between a reader understanding the offer and
+    recognising their own problem in it. Placed before the work section on
+    purpose: patterns are illustrative and belong next to the categories they
+    illustrate, while the section below is evidence and should not have to
+    share a reader's attention with hypotheticals.
+
+    Every card links to a service page that already exists, so this adds
+    internal links and the phrases buyers search without creating a single new
+    URL to thin out.
+  -->
+  <WorkflowGallery />
+
   <!-- Proof -->
   <section class="bg-[var(--color-slate)] text-[var(--color-paper)]">
     <div class="wrap py-16 md:py-20">
@@ -317,14 +350,25 @@ const schema = [
         figures from actual projects rather than backend statistics from a
         previous job: index, honest kind badge, sector, title, summary, then the
         sourced result metrics from the case study itself.
+
+        Discrete cards on a gap, matching the pricing tiers. They previously
+        drew their dividers with `gap-px` over a lighter background, which is
+        the same table effect the pricing section had: three separate projects
+        reading as three columns of one object, with every height difference
+        looking like a fault rather than a fact about the write-ups.
       -->
-      <ul class="reveal mt-10 grid gap-px bg-[var(--color-slate-2)] md:grid-cols-3">
+      <ul class="reveal mt-10 grid gap-5 md:grid-cols-3">
         {
           work.slice(0, 3).map((item, i) => (
-            <li data-stagger style={`--i:${i}`} class="bg-[var(--color-slate)]">
+            <li data-stagger style={`--i:${i}`} class="card card--dark">
+              {/*
+                The link fills the card and carries no surface of its own: the
+                hover treatment now belongs to `.card--dark`, and a second
+                background change here would fight it.
+              */}
               <a
                 href={`/work/${item.id}/`}
-                class="group flex h-full flex-col p-7 transition-colors hover:bg-[var(--color-slate-2)]"
+                class="group flex h-full flex-col p-7"
               >
                 <div class="flex items-center justify-between gap-3">
                   <span class="font-[var(--font-mono)] text-xs tracking-[0.14em] text-[var(--color-inverse-ink-4)]">
@@ -445,7 +489,42 @@ const schema = [
         ))
       }
     </ol>
-    <a href="/approach/" class="btn btn-ghost mt-10">How an engagement runs</a>
+    {/*
+      The founder, attached to the ownership claim rather than the hero.
+
+      This section promises you own what is left behind and that you can see
+      where you are at any point. Both promises rest on there being one person
+      who does the scoping and the building, so the card belongs here as the
+      evidence for that — in the hero it was a standalone boast a reader had no
+      reason to care about yet.
+
+      Deliberately not next to the pricing terms below, which already promise a
+      senior engineer start to finish. Two versions of the same claim, a screen
+      apart, would read as padding.
+
+      Card and link share one row: stacking them left two 40px margins and a
+      24px rule between the steps and the byline, which read as the section
+      having ended twice.
+    */}
+    <div class="mt-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-5 border-t border-[var(--color-line)] pt-6">
+      <div class="flex items-center gap-4">
+        <Image
+          src={founderPhoto}
+          alt=""
+          width={96}
+          height={96}
+          loading="lazy"
+          class="h-11 w-11 shrink-0 rounded-full border border-[var(--color-line)] object-cover"
+        />
+        <p class="max-w-sm text-[0.92rem] text-[var(--color-ink-2)]">
+          Every step above is run by{' '}
+          <strong class="font-medium text-[var(--color-ink)]">{founder.name}</strong>, who writes
+          the code as well as the proposal.{' '}
+          <a href="/about/" class="link-underline">About the agency</a>
+        </p>
+      </div>
+      <a href="/approach/" class="btn btn-ghost">How an engagement runs</a>
+    </div>
   </section>
 
   <!--
@@ -458,18 +537,33 @@ const schema = [
       <div class="flex flex-wrap items-end justify-between gap-6">
         <div>
           <p class="eyebrow">What it costs</p>
-          <h2 class="mt-4 max-w-md text-3xl md:text-4xl">Published prices. Fixed scope.</h2>
+          {/*
+            `max-w-md` wrapped this to two lines while most of the row sat
+            empty. The heading is short enough to hold one line at every width
+            the three-column grid below it survives, so the constraint only
+            cost vertical space.
+          */}
+          <h2 class="mt-4 text-3xl md:text-4xl">Published prices. Fixed scope.</h2>
         </div>
         <a href="/pricing/" class="btn btn-ghost">Full pricing</a>
       </div>
 
-      <ul class="reveal mt-10 grid gap-px border-y border-[var(--color-line)] bg-[var(--color-line)] lg:grid-cols-3">
+      {/*
+        Same card primitive as the pricing page, so a visitor who clicks
+        through meets the component they just looked at rather than a
+        differently-styled restatement of it.
+      */}
+      <ul class="reveal mt-10 grid gap-5 lg:grid-cols-3">
         {
           pricing.map((tier, i) => (
-            <li data-stagger style={`--i:${i}`} class="bg-[var(--color-paper-2)] px-6 py-6">
+            <li
+              data-stagger
+              style={`--i:${i}`}
+              class="card p-6"
+            >
               <p class="font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]">{tier.duration}</p>
               <h3 class="mt-2 font-[var(--font-display)] text-lg">{tier.name}</h3>
-              <p class="price mt-3 text-[var(--color-ink)]">{tier.price}</p>
+              <p class={`price mt-3 text-[var(--color-ink)] ${tier.priceValue === null ? 'price-text' : ''}`}>{tier.price}</p>
               <p class="mt-3 max-w-[34ch] text-[0.9rem] leading-relaxed text-[var(--color-ink-2)]">
                 {tier.summary}
               </p>
@@ -478,74 +572,70 @@ const schema = [
         }
       </ul>
 
-      <ul class="mt-10 grid gap-6 sm:grid-cols-3">
-        <li class="border-t border-[var(--color-line-2)] pt-4">
-          <p class="font-[var(--font-mono)] text-xs uppercase tracking-[0.1em] text-[var(--color-signal-ink)]">
-            The number doesn’t move
-          </p>
-          <p class="mt-2 text-[0.92rem] text-[var(--color-ink-2)]">
-            Scope fixed in writing. Overruns are ours to absorb.
-          </p>
-        </li>
-        <li class="border-t border-[var(--color-line-2)] pt-4">
-          <p class="font-[var(--font-mono)] text-xs uppercase tracking-[0.1em] text-[var(--color-signal-ink)]">
-            You own everything
-          </p>
-          <p class="mt-2 text-[0.92rem] text-[var(--color-ink-2)]">
-            Code and accounts in your name from day one. No lock-in.
-          </p>
-        </li>
-        <li class="border-t border-[var(--color-line-2)] pt-4">
-          <p class="font-[var(--font-mono)] text-xs uppercase tracking-[0.1em] text-[var(--color-signal-ink)]">
-            We’ll talk you out of it
-          </p>
-          <p class="mt-2 text-[0.92rem] text-[var(--color-ink-2)]">
-            If it isn’t worth automating yet, we say so before you spend.
-          </p>
-        </li>
+      {/*
+        One trust block, not two.
+
+        This grid and the "founding clients" section that used to sit two
+        screens below were both answering "why should I believe you" — six
+        bordered statements in a row, which a reader pattern-matches after the
+        first three and scrolls past. Merged to the four objections that
+        actually arrive at a price, and kept here, adjacent to the number,
+        because that is the moment the doubt forms.
+      */}
+      <ul class="reveal mt-10 grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          engagementTerms.map((t, i) => (
+            <li
+              data-stagger
+              style={`--i:${i}`}
+              class="border-t border-[var(--color-line-2)] pt-4"
+            >
+              <p class="font-[var(--font-mono)] text-xs uppercase tracking-[0.1em] text-[var(--color-signal-ink)]">
+                {t.title}
+              </p>
+              <p class="mt-2 text-[0.92rem] leading-relaxed text-[var(--color-ink-2)]">{t.detail}</p>
+            </li>
+          ))
+        }
       </ul>
+
+      <p class="mt-8 max-w-2xl text-[0.92rem] leading-relaxed text-[var(--color-ink-3)]">
+        {engagementNote}
+      </p>
     </div>
   </section>
 
   <!--
-    The founding-client offer, placed immediately after the price.
+    Client proof, immediately after the price.
 
-    Framed as finite capacity rather than as a confession. Placed right after
-    the number, it converts a pricing hesitation into a reason to move now
-    — without undercutting the honest labelling used everywhere else.
+    This is the moment doubt peaks: a reader has just seen what it costs and is
+    asking whether it is worth it. A named person who paid and would say so
+    publicly answers that better than any further explanation — which is why
+    the pricing page uses the same order.
+
+    Deliberately far from "Systems we've built" higher up. That section proves
+    the work exists; this proves people were glad they paid for it. Adjacent,
+    the two read as the same argument twice; four sections apart, they read as
+    two different kinds of evidence.
   -->
-  <section class="wrap py-16 md:py-20">
-    <div class="grid gap-12 md:grid-cols-[0.9fr_1.1fr]">
-      <div>
-        <p class="eyebrow">{foundingOffer.eyebrow}</p>
-        <h2 class="mt-4 max-w-sm text-3xl md:text-4xl">{foundingOffer.headline}</h2>
-        <p class="mt-5 max-w-sm text-[var(--color-ink-2)]">{foundingOffer.body}</p>
-      </div>
-      <div>
-        <ul class="reveal border-t border-[var(--color-line-2)]">
-          {
-            foundingOffer.terms.map((t, i) => (
-              <li
-                data-stagger
-                style={`--i:${i}`}
-                class="border-b border-[var(--color-line-2)] py-4"
-              >
-                <p class="font-[var(--font-mono)] text-xs uppercase tracking-[0.1em] text-[var(--color-signal-ink)]">
-                  {t.title}
-                </p>
-                <p class="mt-2 text-[0.95rem] text-[var(--color-ink-2)]">{t.detail}</p>
-              </li>
-            ))
-          }
-        </ul>
-        <p class="mt-6 max-w-md font-[var(--font-mono)] text-xs leading-relaxed text-[var(--color-ink-3)]">
-          {foundingOffer.caveat}
-        </p>
-      </div>
-    </div>
-  </section>
+  {/*
+    `plain` because the pricing section directly above is already the tinted
+    surface. Left on its default, this would sit on the same paper-2 and the
+    two would run together into one undifferentiated block.
+  */}
+  <Testimonials plain />
 
-  <Faq items={faqs} />
+  <!--
+    The founding-client section that used to sit here has been merged into the
+    pricing block above. Its terms now sit beside the price they justify, and
+    the capacity line runs as prose under them. Nothing was cut but the second
+    heading and the duplicated framing.
+  -->
+
+  <Faq
+    items={faqs}
+    note="What people ask before getting in touch. Cost is covered in more detail on the pricing page."
+  />
 
 <!--
     Closing CTA on the dark surface — compact, consistent with other sections.

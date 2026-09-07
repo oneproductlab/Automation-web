@@ -22,11 +22,19 @@ interface Props {
 }
 const { class: className = '' } = Astro.props;
 
+/*
+  Real tools, not categories.
+
+  "Forms / Inbox / CRM / Finance" named four boxes on a whiteboard. Naming the
+  products a reader actually pays for makes the tangle theirs rather than an
+  illustration of somebody else's problem — and these are the same four names
+  used elsewhere on the page, so the diagram and the copy describe one stack.
+*/
 const tools = [
-  { id: 't1', label: 'Forms', x: 100, y: 74 },
+  { id: 't1', label: 'Web form', x: 100, y: 74 },
   { id: 't2', label: 'Inbox', x: 100, y: 306 },
   { id: 't3', label: 'CRM', x: 620, y: 74 },
-  { id: 't4', label: 'Finance', x: 620, y: 306 },
+  { id: 't4', label: 'Invoicing', x: 620, y: 306 },
 ];
 
 /* Every pair — the cost of point-to-point wiring, drawn to scale. */
@@ -53,10 +61,10 @@ const clean = [
   into illegibility by a landscape viewBox.
 */
 const toolsTall = [
-  { id: 'm1', label: 'Forms', x: 90, y: 46 },
+  { id: 'm1', label: 'Web form', x: 90, y: 46 },
   { id: 'm2', label: 'Inbox', x: 270, y: 46 },
   { id: 'm3', label: 'CRM', x: 90, y: 414 },
-  { id: 'm4', label: 'Finance', x: 270, y: 414 },
+  { id: 'm4', label: 'Invoicing', x: 270, y: 414 },
 ];
 const tangledTall = [
   'M90,46 L270,46',
@@ -84,7 +92,7 @@ const cleanTall = [
         With a system
       </button>
     </div>
-    <p class="fz-ba__count" data-count-label aria-live="polite">6 connections, kept in sync by hand</p>
+    <p class="fz-ba__count" data-count-label aria-live="polite">6 connections, run by hand</p>
   </div>
 
   <div class="fz-ba__stage">
@@ -96,10 +104,18 @@ const cleanTall = [
         {clean.map((d) => <path d={d} pathLength="100" />)}
       </g>
 
-      <!-- The middle. A person, then a system. -->
+      <!--
+        The middle. A person, then a system.
+
+        "Someone" was doing this badly. It is vague where the whole point is
+        specific, and it quietly blames a colleague rather than the wiring — the
+        reader is usually the person who set this up, or the person still doing
+        it. "A person" names the same role without the shrug, and reads as the
+        cost of the arrangement rather than as somebody's fault.
+      -->
       <g class="fz-ba__hub">
         <rect class="fz-ba__hub-box" x="300" y="160" width="120" height="60" rx="4" />
-        <text class="fz-ba__hub-text" x="360" y="195" text-anchor="middle">Someone</text>
+        <text class="fz-ba__hub-text" x="360" y="195" text-anchor="middle">A person</text>
       </g>
       <g class="fz-ba__hub fz-ba__hub--after">
         <rect class="fz-ba__hub-box" x="300" y="160" width="120" height="60" rx="4" />
@@ -125,12 +141,12 @@ const cleanTall = [
       </g>
 
       <g class="fz-ba__hub">
-        <rect class="fz-ba__hub-box" x="150" y="200" width="60" height="60" rx="4" />
-        <text class="fz-ba__hub-text" x="180" y="235" text-anchor="middle">You</text>
+        <rect class="fz-ba__hub-box" x="130" y="200" width="100" height="60" rx="4" />
+        <text class="fz-ba__hub-text" x="180" y="235" text-anchor="middle">A person</text>
       </g>
       <g class="fz-ba__hub fz-ba__hub--after">
         <rect class="fz-ba__hub-box" x="130" y="200" width="100" height="60" rx="4" />
-        <text class="fz-ba__hub-text" x="180" y="235" text-anchor="middle">System</text>
+        <text class="fz-ba__hub-text" x="180" y="235" text-anchor="middle">One system</text>
       </g>
 
       {
@@ -145,8 +161,7 @@ const cleanTall = [
   </div>
 
   <p class="fz-ba__note" data-note>
-    Every tool wired to every other tool, with a person holding it together. Miss
-    a step and the records quietly disagree.
+    Six links, held together by hand. Miss one and the invoice goes out wrong.
   </p>
 </div>
 
@@ -319,10 +334,18 @@ const cleanTall = [
 </style>
 
 <script>
+  /*
+    Both captions rewritten to end on a consequence rather than a description.
+
+    The originals explained the picture the reader was already looking at —
+    "every tool wired to every other tool" is a caption for a diagram that says
+    exactly that. A caption earns its place by adding what the drawing cannot
+    show: what it costs when it breaks, and what changes when it does not.
+  */
   const BEFORE_NOTE =
-    'Every tool wired to every other tool, with a person holding it together. Miss a step and the records quietly disagree.';
+    'Six links, held together by hand. Miss one and the invoice goes out wrong.';
   const AFTER_NOTE =
-    'Wired once, through one system. The same four tools, four connections, and nobody in the middle re-typing.';
+    'Four links, wired once. The same tools, running without anyone in the middle.';
 
   document.querySelectorAll<HTMLElement>('[data-ba]').forEach((root) => {
     const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('.fz-ba__tab'));
@@ -339,9 +362,7 @@ const cleanTall = [
       });
       if (note) note.textContent = after ? AFTER_NOTE : BEFORE_NOTE;
       if (count) {
-        count.textContent = after
-          ? '4 connections, kept in sync by the system'
-          : '6 connections, kept in sync by hand';
+        count.textContent = after ? '4 connections, run by the system' : '6 connections, run by hand';
       }
     };
 

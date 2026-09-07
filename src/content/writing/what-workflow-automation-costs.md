@@ -4,6 +4,7 @@ description: >-
   A straight breakdown of what businesses pay to automate a workflow — freelancer,
   agency and in-house — and how to tell which one your problem needs.
 pubDate: 2026-08-24
+updatedDate: 2026-09-07
 
 tags: [pricing, operations, buying]
 draft: false
@@ -95,10 +96,16 @@ see it yet.
 
 ## What we charge
 
-We publish [our rates in full](/pricing/): **$1,500** for a two-week Automation
-Map that scopes the work, credited against the build. **$6,000 to $14,000** for a
-first system, fixed scope, with 90 days of maintenance included after handover.
-**From $3,500 a month** for ongoing partnerships.
+We publish the one number we can state honestly before looking at your process:
+**an [Automation Audit from $500](/pricing/)**, credited in full against the
+build. It maps one workflow, puts a number on what the leak is costing you, and
+ends with a fixed quote.
+
+We do not publish a build price, and the reason is in the arithmetic above: the
+same "one workflow" is three days of work for one company and five weeks for
+another. A range wide enough to be honest would be too wide to be useful. So the
+build is quoted after the Audit, fixed in writing, and it does not move
+afterwards. Ongoing support starts at **$1,500 a month**.
 
 If the arithmetic above says your workflow is not worth automating yet, we would
 rather tell you that than sell you a build. If it says otherwise,

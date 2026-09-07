@@ -6,7 +6,7 @@ import Testimonials from '../components/Testimonials.astro';
 import { pricing, site } from '../data/site';
 
 const description =
-  'Workflow automation pricing: a $1,500 two-week Automation Map, first systems from $6,000 fixed scope, and 90 days of maintenance included after handover.';
+  'Workflow automation pricing: a fixed-fee Automation Audit from $500, credited against your build, then one fixed price agreed in writing before we start.';
 
 /*
   The visible FAQ list is the single source for both the page and the schema.
@@ -22,34 +22,52 @@ const description =
   It is kept because Bing still renders them, because answer engines read the
   Q&A pairs, and because deriving it costs nothing.
 */
+/*
+  Cost and contract terms only.
+
+  Split by what the reader came for rather than by topic tidiness: someone on
+  this page is deciding whether to spend money, so every question here answers
+  a commercial objection. Capability questions — which tools, how long, AI
+  versus rules, where clients are — sit in the sitewide FAQ on the homepage,
+  because a person asking those has not started worrying about price yet.
+
+  The cost question is duplicated across both pages on purpose. It is the
+  highest-intent query in the category, and answer engines quote whichever page
+  they land on; making it click-dependent would lose that.
+
+  Two earlier entries — "do you charge for the first conversation" and "what if
+  you decide it is not worth automating" — were separate questions asking the
+  same thing, and both are now inside the Audit answer. A long FAQ reads as
+  anxiety; the ones left are the objections that genuinely stop a deal.
+*/
 const faqs = [
   {
     q: 'How much does workflow automation cost?',
-    a: 'Most first projects land between $6,000 and $14,000 for a single workflow built, documented and handed over, with 90 days of maintenance included after handover. A two-week Automation Map that scopes the work costs $1,500 and is credited against the build. Ongoing partnerships start at $3,500 per month.',
+    a: 'An Automation Audit starts at $500 and is credited in full against your build. The build itself is quoted after the Audit, because a single workflow can be a few days of work or several weeks — and a number given before anyone has looked at your process is a guess. Ongoing support starts at $1,500 per month.',
   },
   {
-    q: 'Why do you publish your prices?',
-    a: 'Because a price you have to book a call to hear is a price set by how badly you appear to need help. Published ranges let you decide whether we’re worth a conversation before you sit through one, and they hold us to a number we have to justify in public.',
+    q: 'Why isn’t there a price list for the build?',
+    a: 'Because every business is a different mess to untangle, and a generic number would be more misleading than useful. What we promise instead is a fixed price, agreed in writing before we start, that does not move afterwards. The Audit is deliberately cheap and priced openly so you can get a real number without committing to a build.',
   },
   {
-    q: 'What happens after handover — do we pay to keep it running?',
-    a: 'Every build includes 90 days of maintenance after handover at no extra cost: if something we built breaks, or an API you depend on changes underneath it, we fix it. After that you can take it on yourself — you own the code and the runbooks — or move to an Operations Partner engagement.',
+    q: 'Is the Audit fee wasted if we go ahead with the build?',
+    a: 'No. The Audit fee is credited in full against your build, so going ahead costs you nothing extra for the scoping. The first conversation before the Audit is free, and if we decide your workflow is not worth automating yet we will tell you and say why — talking a company out of a build we could have sold is cheaper for us than delivering something that quietly fails to earn its cost.',
   },
   {
-    q: 'What happens if the project takes longer than expected?',
-    a: 'The price does not move. Scope is fixed in writing after the Automation Map, so overruns are our problem to absorb, not yours to pay for. If you want to add scope mid-build, we quote it separately rather than quietly extending the invoice.',
+    q: 'What if the work turns out bigger than expected?',
+    a: 'The agreed price does not move. Scope is fixed in writing after the Audit, so overruns against that scope are ours to absorb, not yours to pay for. If the work turns out materially bigger than scoped, we stop, tell you, and re-quote before continuing — you are never billed for a surprise.',
   },
   {
-    q: 'Do you charge for the first conversation?',
-    a: 'No. The first call is free and ends with an honest answer about whether the workflow is worth automating yet. Only the Automation Map, which produces documented deliverables, is paid.',
+    q: 'What happens after the 90 days of maintenance?',
+    a: 'Every build includes 90 days of fixes after handover at no extra cost: if something we built breaks, or an API you depend on changes underneath it, we fix it. After that you can take it in-house — you own the code and the runbooks — or move to an Operations Partner engagement from $1,500 a month. Either way the system is yours.',
   },
   {
-    q: 'What if you decide our workflow is not worth automating?',
-    a: 'We tell you, and we say why. Talking a company out of a build we could have sold is cheaper for us than delivering something that quietly fails to earn its cost.',
+    q: 'Do we get locked into your tools or accounts?',
+    a: 'No. Code, credentials, repositories and infrastructure are in your name from the first day, and handover includes runbooks and diagrams so another engineer could pick the system up without us. There is no contract on the ongoing retainer either — you can leave with 30 days notice. If we ever part ways, you keep a working system.',
   },
   {
-    q: 'Who owns the code and the accounts?',
-    a: 'You do, from the first day. Credentials, repositories and infrastructure are in your name, and handover includes runbooks and diagrams so another engineer could pick the system up without us.',
+    q: 'How do we talk to you day to day?',
+    a: 'A shared Slack or WhatsApp channel, directly with the engineer building your system. No ticket queue and no account manager relaying messages, because the person who scoped the work is the person writing the code.',
   },
 ];
 
@@ -59,20 +77,37 @@ const schema = [
     '@id': `${site.domain}/pricing/#catalog`,
     name: 'Workflow automation engagements',
     provider: { '@id': `${site.domain}/#organization` },
-    itemListElement: pricing.map((tier) => ({
-      '@type': 'Offer',
-      name: tier.name,
-      description: tier.summary,
-      priceCurrency: 'USD',
-      price: tier.priceValue,
-      priceSpecification: {
-        '@type': 'PriceSpecification',
-        priceCurrency: 'USD',
-        minPrice: tier.priceValue,
-        valueAddedTaxIncluded: false,
-      },
-      itemOffered: { '@type': 'Service', name: tier.name, description: tier.summary },
-    })),
+    itemListElement: pricing.map((tier) => {
+      const offer: Record<string, unknown> = {
+        '@type': 'Offer',
+        name: tier.name,
+        description: tier.summary,
+        itemOffered: { '@type': 'Service', name: tier.name, description: tier.summary },
+      };
+
+      /*
+        Only tiers with a published floor carry price data.
+
+        The First System is quoted after the Audit, so there is no honest number
+        to emit for it. Falling back to a placeholder would put a price in
+        structured data that appears nowhere on the page and that we have not
+        agreed to honour — which is precisely the mismatch that gets structured
+        data distrusted, and worse, could be quoted back at us by an answer
+        engine as if it were a quote.
+      */
+      if (tier.priceValue !== null) {
+        offer.priceCurrency = 'USD';
+        offer.price = tier.priceValue;
+        offer.priceSpecification = {
+          '@type': 'PriceSpecification',
+          priceCurrency: 'USD',
+          minPrice: tier.priceValue,
+          valueAddedTaxIncluded: false,
+        };
+      }
+
+      return offer;
+    }),
   },
   {
     '@type': 'FAQPage',
@@ -92,30 +127,70 @@ const schema = [
 
     <p class="eyebrow mt-8">Pricing</p>
     <h1 class="mt-5 max-w-3xl text-[2.4rem] leading-[1.05] md:text-[3.4rem]">
-      What this costs, before you ask.
+      Fixed scope. Fixed price. Agreed before we start.
     </h1>
     <p class="mt-7 max-w-2xl text-lg text-[var(--color-ink-2)]">
-      Fixed scope, fixed price, written down before we start. Most first projects
-      land between <strong class="font-medium text-[var(--color-ink)]">$6,000 and $14,000</strong>,
-      with 90 days of maintenance included after handover.
+      One price, set before we start — and it doesn’t move once we’ve agreed it.
+      No hourly billing, ever. Start with an{' '}
+      <strong class="font-medium text-[var(--color-ink)]">Audit from $500</strong>, credited in
+      full against your build.
+    </p>
+    <p class="mt-4 max-w-2xl text-lg text-[var(--color-ink-2)]">
+      We also won’t automate something that isn’t worth automating. If it’s not
+      worth it yet, we’ll just tell you.
     </p>
   </section>
 
   <section class="wrap pb-8">
-    <div class="reveal grid gap-px border-y border-[var(--color-line)] bg-[var(--color-line)] lg:grid-cols-3">
+    {/*
+      Discrete cards on a gap, not panels on a 1px grid.
+
+      The previous layout drew its dividers with `gap-px` over a tinted
+      background, which made three different commitments read as three cells of
+      one table — and made every height mismatch look like a bug. Real borders
+      and real space between them let each tier stand as its own object.
+    */}
+    <div class="reveal grid gap-5 lg:grid-cols-3">
       {
         pricing.map((tier, i) => (
-          <article data-stagger style={`--i:${i}`} class="flex flex-col bg-[var(--color-paper)] p-7 md:p-9">
+          <article
+            data-stagger
+            style={`--i:${i}`}
+            class="card h-full p-7 md:p-8"
+          >
             <p class="font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]">
               {String(i + 1).padStart(2, '0')} · {tier.duration}
             </p>
             <h2 class="mt-4 font-[var(--font-display)] text-2xl">{tier.name}</h2>
-            <p class="price mt-5">{tier.price}</p>
+            <p class={`price mt-5 ${tier.priceValue === null ? 'price-text' : ''}`}>{tier.price}</p>
             <p class="mt-2 font-[var(--font-mono)] text-xs uppercase tracking-[0.1em] text-[var(--color-ink-3)]">
               {tier.unit}
             </p>
-            <p class="mt-5 text-[0.95rem] text-[var(--color-ink-2)]">{tier.summary}</p>
-            <ul class="mt-6 space-y-2.5 border-t border-[var(--color-line)] pt-5">
+            {/*
+              Qualification before description. A reader identifies with a
+              symptom faster than they parse a list of deliverables, so this
+              line decides which of the three columns they read properly.
+            */}
+            <p class="mt-5 border-l-2 border-[var(--color-signal)] pl-3 text-[0.9rem] text-[var(--color-ink-2)]">
+              <span class="text-[var(--color-ink-3)]">Who this is for:</span> {tier.forWho}
+            </p>
+            <p class="mt-4 text-[0.95rem] text-[var(--color-ink-2)]">{tier.summary}</p>
+            {/*
+              The full list ships in the markup and is clamped to a fixed height
+              by script, matching the testimonial cards.
+
+              Clamping by height rather than by item count is what makes the
+              three columns level: the tiers have four, five and seven promises
+              of differing lengths, so cutting each to "the first four" still
+              left three different heights and a pool of dead space under the
+              shorter ones. A shared max-height ends every list on the same
+              line instead.
+
+              Clamping is applied by script, so with JavaScript unavailable the
+              complete list renders and no toggle appears. The text is in the
+              HTML either way, so nothing is hidden from a crawler.
+            */}
+            <ul data-includes class="tier__list mt-6 space-y-2.5 border-t border-[var(--color-line)] pt-5">
               {tier.includes.map((item) => (
                 <li class="flex gap-3 text-[0.92rem] text-[var(--color-ink-2)]">
                   <span class="font-[var(--font-mono)] text-[var(--color-signal)]" aria-hidden="true">
@@ -125,12 +200,28 @@ const schema = [
                 </li>
               ))}
             </ul>
-            <a
-              href="/contact/"
-              class={`btn mt-7 justify-center ${i === 0 ? 'btn-primary' : 'btn-ghost'}`}
-            >
-              {i === 0 ? 'Start with a Map' : 'Talk it through'}
-            </a>
+            <button type="button" data-more hidden aria-expanded="false" class="tier__more mt-3 self-start">
+              Read more
+            </button>
+            {/*
+              `mt-auto` pins the CTA to the bottom of the card so the three
+              buttons sit on one line. The gap above it is deliberately modest —
+              this is the slack that absorbs any residual height difference,
+              and a large value here is what turns a level row into three
+              columns of dead space.
+            */}
+            <div class="mt-auto pt-6">
+              <a
+                href="/contact/"
+                class={`btn w-full justify-center ${i === 0 ? 'btn-primary' : 'btn-ghost'}`}
+              >
+                {i === 0
+                  ? 'Start with an Audit'
+                  : i === 1
+                    ? 'Talk through your First System'
+                    : 'Talk about ongoing support'}
+              </a>
+            </div>
           </article>
         ))
       }
@@ -149,13 +240,13 @@ const schema = [
           <div class="border-t border-[var(--color-line)] pt-4">
             <h3 class="font-[var(--font-display)] text-xl">Scope is fixed in writing</h3>
             <p class="mt-2 text-[0.95rem] text-[var(--color-ink-2)]">
-              Agreed after the Map, before any building. Overruns are ours to absorb.
+              Agreed after the Audit, before any building. Overruns are ours to absorb.
             </p>
           </div>
           <div class="border-t border-[var(--color-line)] pt-4">
-            <h3 class="font-[var(--font-display)] text-xl">The Map is credited</h3>
+            <h3 class="font-[var(--font-display)] text-xl">The Audit is credited</h3>
             <p class="mt-2 text-[0.95rem] text-[var(--color-ink-2)]">
-              If you go ahead with the build, the $1,500 comes off the project fee.
+              If you go ahead with the build, the Audit fee comes off the project fee in full.
             </p>
           </div>
           <div class="border-t border-[var(--color-line)] pt-4">
@@ -170,6 +261,26 @@ const schema = [
               If a workflow isn’t worth automating yet, we say so before you spend.
             </p>
           </div>
+          {/*
+            These two moved here when the homepage's "founding clients" section
+            was merged into its pricing block. They are commitments about how
+            the money is honoured, so this is where they belonged anyway — and
+            keeping them on the deeper page means the merge cost the site no
+            content, only a duplicated heading.
+          */}
+          <div class="border-t border-[var(--color-line)] pt-4">
+            <h3 class="font-[var(--font-display)] text-xl">A senior engineer, start to finish</h3>
+            <p class="mt-2 text-[0.95rem] text-[var(--color-ink-2)]">
+              The person who scopes your build writes the code. No hand-off to a
+              junior, and no account manager in between.
+            </p>
+          </div>
+          <div class="border-t border-[var(--color-line)] pt-4">
+            <h3 class="font-[var(--font-display)] text-xl">90 days of maintenance</h3>
+            <p class="mt-2 text-[0.95rem] text-[var(--color-ink-2)]">
+              Included after handover. Breakages and API changes are ours, at no extra cost.
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -182,7 +293,11 @@ const schema = [
   -->
   <Testimonials eyebrow="Worth it, per the people who paid" heading="Signed, and checkable." />
 
-  <Faq items={faqs} title="Questions about cost" />
+  <Faq
+    items={faqs}
+    title="Questions about cost"
+    note="Everything here is something we commit to in writing before a build starts."
+  />
 
   <section class="border-t border-[var(--color-line)]">
     <div class="wrap py-20 text-center md:py-24">
@@ -190,7 +305,95 @@ const schema = [
       <p class="mx-auto mt-5 max-w-xl text-[var(--color-ink-2)]">
         The first conversation is free and ends with an honest answer.
       </p>
-      <a href="/contact/" class="btn btn-primary mt-8">Map my workflow</a>
+      <a href="/contact/" class="btn btn-primary mt-8">Start with an Audit</a>
     </div>
   </section>
 </Base>
+
+<style>
+  /*
+    Clamped by height, not by item count, so all three lists end on the same
+    line and the columns stay level. Applied by script, so the markup that
+    ships without JavaScript is the complete list.
+
+    The fade is a mask rather than a gradient overlay: it works on any
+    background, so the cards need no knowledge of the surface behind them.
+  */
+  .tier__list.is-clamped {
+    max-height: var(--tier-clamp, 12.5rem);
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+  }
+
+  /*
+    Matches the testimonial cards' "Read the full quote" control — the same
+    small underlined link in the signal colour. Two different toggle styles on
+    one page would read as two different components.
+  */
+  .tier__more {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-signal-ink);
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 1px;
+    cursor: pointer;
+    transition: opacity 0.18s ease;
+  }
+  .tier__more:hover {
+    opacity: 0.75;
+  }
+  .tier__more:focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 3px;
+  }
+</style>
+
+<script>
+  /*
+    Level the three pricing cards.
+
+    Each list is clamped to the same height and given a "Read more" control
+    only when something was actually cut off — a toggle on a list that already
+    fits is a small lie about how much is hidden.
+  */
+  function initTiers() {
+    document.querySelectorAll<HTMLElement>('[data-includes]').forEach((list) => {
+      const btn = list.parentElement?.querySelector<HTMLButtonElement>('[data-more]');
+      if (!btn) return;
+
+      /*
+        Bind once per element.
+
+        This runs on first load and again on every view transition, and the
+        document is not re-parsed between them — so without this guard the same
+        button collects a second listener, each click fires both, and the two
+        toggles cancel out. The control looks alive and does nothing.
+      */
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = 'true';
+
+      const full = list.scrollHeight;
+      list.classList.add('is-clamped');
+      if (list.clientHeight >= full - 2) {
+        list.classList.remove('is-clamped');
+        return;
+      }
+
+      btn.hidden = false;
+      btn.addEventListener('click', () => {
+        const open = list.classList.toggle('is-clamped') === false;
+        btn.setAttribute('aria-expanded', String(open));
+        btn.textContent = open ? 'Show less' : 'Read more';
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTiers);
+  } else {
+    initTiers();
+  }
+  // Re-bind after a view transition, or the second visit to this page is static.
+  document.addEventListener('astro:page-load', initTiers);
+</script>

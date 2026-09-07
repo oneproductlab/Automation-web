@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import WorkflowSystem from '../components/WorkflowSystem.astro';
-import { approach, site, pricing } from '../data/site';
+import { approach, site } from '../data/site';
 
 // A three-step engagement is genuinely a HowTo, and this is the shape answer
 // engines use to render step-by-step results for "how does X work" queries.
@@ -14,11 +14,14 @@ const schema = [
     description:
       'A Flowzora engagement runs in three steps: we map the workflow as it actually happens, build it in visible weekly increments, then hand over documentation and ownership.',
     totalTime: 'P5W',
-    estimatedCost: {
-      '@type': 'MonetaryAmount',
-      currency: 'USD',
-      value: pricing[1].priceValue,
-    },
+    /*
+      No `estimatedCost`.
+
+      It previously read the First System price, which is now quoted after the
+      Audit rather than published. The entry cost is stated on the pricing page
+      and in the Organization `priceRange`; asserting a cost for the engagement
+      here would be inventing a figure we have not committed to.
+    */
     step: approach.map((a, i) => ({
       '@type': 'HowToStep',
       position: i + 1,
