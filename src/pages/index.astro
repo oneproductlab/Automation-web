@@ -6,7 +6,6 @@ import ConnectedSystems from '../components/ConnectedSystems.astro';
 import WorkflowGallery from '../components/WorkflowGallery.astro';
 import Faq from '../components/Faq.astro';
 import Testimonials from '../components/Testimonials.astro';
-import BookCall from '../components/BookCall.astro';
 import { Image } from 'astro:assets';
 import founderPhoto from '../assets/images/niraj.jpg';
 import { services, faqs, site, founder, fitFor, pricing, engagementTerms, engagementNote, testimonials } from '../data/site';
@@ -608,14 +607,6 @@ const schema = [
             class="btn border-[var(--color-inverse-ink)] bg-[var(--color-inverse-ink)] text-[var(--color-slate)] transition-colors hover:border-[var(--color-signal-bright)] hover:bg-[var(--color-signal-bright)] hover:text-[var(--color-inverse-ink)]"
             >Book a free call</a
           >
-          {
-            site.calendly && (
-              <BookCall
-                label="Book a 30-min call"
-                class="[&>a]:border-[var(--color-inverse-line)] [&>a]:text-[var(--color-inverse-ink)] [&>button]:border-[var(--color-inverse-line)] [&>button]:text-[var(--color-inverse-ink)]"
-              />
-            )
-          }
           <a
             href={`mailto:${site.email}`}
             class="btn border-[var(--color-inverse-line)] text-[var(--color-inverse-ink)] transition-colors hover:bg-[var(--color-slate-2)]"

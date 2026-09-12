@@ -33,12 +33,8 @@ export const site = {
     'https://www.google.com/maps/place/Flowzora/data=!4m2!3m1!1s0x0:0xaef894a78951395f',
   twitter: 'https://x.com/oneproductlab',
   instagram: 'https://www.instagram.com/oneproductlab',
-  /*
-    Dedicated Calendly event type for this site — not the parent company's
-    general link, so inbound bookings can be attributed and measured.
-    Empty until created; the booking button falls back to the contact form.
-  */
-  calendly: '',
+  // Dedicated event for short discovery calls with the Flowzora team.
+  bookingUrl: 'https://cal.com/flowzora-team/15min',
   // The work is remote and the clients are global, so the schema says so.
   // A named country list here quietly tells search engines — and anyone
   // outside it — that we don't serve them.
