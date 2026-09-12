@@ -42,9 +42,34 @@ const faqs = [
     a: 'oneProductLab is the parent organization we operate under. Flowzora is the practice focused specifically on operations and workflow automation.',
   },
 ];
+
+/*
+  These questions were rendering with no structured data behind them.
+
+  "How big is the team?" is exactly the question an answer engine is asked
+  about a small consultancy, and the honest answer is a competitive advantage
+  here rather than something to hide — so it is worth making quotable rather
+  than leaving it to be inferred from a <details> element.
+*/
+const schema = [
+  {
+    '@type': 'FAQPage',
+    '@id': `${site.domain}/about/#faq`,
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
 ---
 
-<Base title="About Flowzora and its founder" description={description} ogRoute="about">
+<Base
+  title="About Flowzora and its founder"
+  description={description}
+  ogRoute="about"
+  schema={schema}
+>
   <section class="wrap pt-10 pb-12 md:pt-14">
     <Breadcrumbs trail={[]} current="About" />
 

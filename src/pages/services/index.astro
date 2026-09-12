@@ -7,6 +7,28 @@ import { services, site } from '../../data/site';
 const description =
   'Workflow automation services for growing teams: CRM and revenue operations, marketing lifecycle, back-office process automation, and systems integration.';
 
+/*
+  Declared above `schema` because the FAQPage node below is generated from it.
+  These questions were rendering on the page with no structured data behind
+  them, which is the one case where the markup matters most: an answer engine
+  quoting "what does a workflow automation consultant actually do" needs the
+  question and answer paired explicitly, not inferred from a <details> element.
+*/
+const faqs = [
+  {
+    q: 'What does a workflow automation consultant actually do?',
+    a: 'We map how work moves through your business today, then build the systems that carry it automatically — connecting the tools you already run, removing the manual steps between them, and handing over documentation so your team owns the result.',
+  },
+  {
+    q: 'Do we have to replace our existing tools?',
+    a: 'Almost never. Most operational problems are integration problems, not tooling problems, so we build around the stack you already pay for. We only recommend replacing something when it genuinely cannot do the job.',
+  },
+  {
+    q: 'Where do most companies start?',
+    a: 'With one workflow that visibly costs the team time — usually lead intake, onboarding or an approval chain. A single well-chosen system pays for itself and makes the next one easier to scope.',
+  },
+];
+
 const schema = [
   {
     '@type': 'CollectionPage',
@@ -24,20 +46,14 @@ const schema = [
       })),
     },
   },
-];
-
-const faqs = [
   {
-    q: 'What does a workflow automation consultant actually do?',
-    a: 'We map how work moves through your business today, then build the systems that carry it automatically — connecting the tools you already run, removing the manual steps between them, and handing over documentation so your team owns the result.',
-  },
-  {
-    q: 'Do we have to replace our existing tools?',
-    a: 'Almost never. Most operational problems are integration problems, not tooling problems, so we build around the stack you already pay for. We only recommend replacing something when it genuinely cannot do the job.',
-  },
-  {
-    q: 'Where do most companies start?',
-    a: 'With one workflow that visibly costs the team time — usually lead intake, onboarding or an approval chain. A single well-chosen system pays for itself and makes the next one easier to scope.',
+    '@type': 'FAQPage',
+    '@id': `${site.domain}/services/#faq`,
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
   },
 ];
 ---
