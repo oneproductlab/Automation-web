@@ -28,8 +28,14 @@ const { items, title = 'Common questions', eyebrow = 'FAQ', note } = Astro.props
   Slightly tighter top padding than a standalone section would take: this always
   follows a section that already ends in generous bottom padding, and stacking
   both reads as a dead gap rather than as breathing room.
+
+  The rule is on the section and the gutters are on an inner `wrap`, not both on
+  one element. Carrying `border-t` and `wrap` together inset the divider to the
+  content column, so this was the only boundary on the site whose rule stopped
+  short of the screen edges while every other one ran full-bleed.
 -->
-<section class="wrap border-t border-[var(--color-line)] py-14 md:py-16">
+<section class="border-t border-[var(--color-line)]">
+  <div class="wrap py-14 md:py-16">
   <div class="grid gap-10 md:grid-cols-[0.8fr_1.2fr]">
     {/*
       The heading column is short and the question list is long, which left a
@@ -65,6 +71,7 @@ const { items, title = 'Common questions', eyebrow = 'FAQ', note } = Astro.props
         ))
       }
     </div>
+  </div>
   </div>
 </section>
 

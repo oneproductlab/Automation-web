@@ -41,7 +41,16 @@ const {
     dark
       ? 'bg-[var(--color-slate)] text-[var(--color-inverse-ink)]'
       : plain
-        ? 'border-b border-[var(--color-line)]'
+        ? /*
+            No border of its own.
+
+            `plain` exists for the one placement where this sits between two
+            sections that already draw rules — the pricing band closes with a
+            border and the FAQ opens with one. Block borders do not collapse,
+            so adding another here stacked two hairlines into a 2px rule at
+            both ends, heavier than every other divider on the page.
+          */
+          ''
         : 'border-y border-[var(--color-line)] bg-[var(--color-paper-2)]'
   }
 >

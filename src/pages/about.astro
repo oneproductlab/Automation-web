@@ -172,7 +172,11 @@ const faqs = [
   -->
   <Testimonials heading="People who’ve worked with Niraj." eyebrow="References" />
 
-  <section class="border-t border-[var(--color-line)]">
+  {/*
+    No rule of its own: the tinted testimonials above close with one, and a
+    second here would stack into a 2px divider rather than collapse.
+  */}
+  <section>
     <div class="wrap py-20 text-center md:py-24">
       <h2 class="mx-auto max-w-2xl text-3xl md:text-4xl">Tell us what’s still done by hand.</h2>
       <a href="/contact/" class="btn btn-primary mt-8">Talk to Niraj</a>

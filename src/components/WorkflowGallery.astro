@@ -245,8 +245,20 @@ const canvases = [
     because the mask is what sells that — not the width.
   */}
   <div class="wrap pb-16 md:pb-20">
-    <div class="marquee">
-      <div class="marquee__track">
+    {/*
+      Focusable and labelled, because with the script active this is a real
+      scroll container. Keyboard users get arrow-key scrolling from the browser
+      for free once it can take focus, which is the same affordance the pointer
+      drag gives everyone else.
+    */}
+    <div
+      class="marquee"
+      data-marquee
+      tabindex="0"
+      role="region"
+      aria-label="Workflow patterns — scroll or drag to browse"
+    >
+      <div class="marquee__track" data-marquee-track>
         {
           canvases.map(({ items, clone }) => (
             <ul class="marquee__group" aria-hidden={clone ? 'true' : undefined}>
@@ -362,6 +374,34 @@ const canvases = [
   .marquee:hover .marquee__track,
   .marquee:focus-within .marquee__track {
     animation-play-state: paused;
+  }
+
+  /*
+    Driven state
+    ------------
+    With JavaScript the CSS animation is replaced by a real scroll container
+    whose offset is advanced frame by frame. The visible result is identical,
+    but the row can now be dragged, flicked, wheeled and arrow-keyed — a
+    visitor who misses a card no longer has to wait 46 seconds for it to come
+    back around. The class is added by script, so the animation above remains
+    the fallback when JavaScript never arrives.
+  */
+  .marquee.is-draggable {
+    overflow-x: auto;
+    cursor: grab;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .marquee.is-draggable::-webkit-scrollbar {
+    display: none;
+  }
+  .marquee.is-draggable .marquee__track {
+    animation: none;
+  }
+  .marquee.is-dragging {
+    cursor: grabbing;
+    /* A drag that selects the card text instead of moving the row feels broken. */
+    user-select: none;
   }
 
   .marquee__group {
@@ -540,3 +580,153 @@ const canvases = [
     }
   }
 </style>
+
+<script>
+  /*
+    Manual control over the workflow row.
+
+    The CSS marquee reads well but takes the row away from the reader: miss a
+    card and the only option is to wait a full lap. This upgrades it to a
+    genuine scroll container and advances the offset itself, so dragging,
+    flicking, trackpad-wheeling and arrow keys all work while the row still
+    drifts on its own when nobody is touching it.
+
+    Progressive enhancement on purpose — the class that switches behaviour is
+    added here, so with no JavaScript the CSS animation is what runs.
+
+    Rebound on every navigation: view transitions never re-parse the document,
+    so a listener wired on first load is gone from the second page onwards.
+  */
+  function initMarquee() {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    document.querySelectorAll<HTMLElement>('[data-marquee]').forEach((marquee) => {
+      if (marquee.dataset.marqueeReady === 'true') return;
+      marquee.dataset.marqueeReady = 'true';
+
+      const track = marquee.querySelector<HTMLElement>('[data-marquee-track]');
+      if (!track) return;
+
+      marquee.classList.add('is-draggable');
+
+      /*
+        The track holds the cards twice over, so scrolling half its width lands
+        on a pixel-identical frame. Wrapping there is invisible and gives an
+        endless row in both directions.
+      */
+      const half = () => track.scrollWidth / 2;
+
+      // Matches the 46s-per-lap of the CSS animation this replaces.
+      const speed = () => half() / 46;
+
+      let idleUntil = 0;
+      let last = 0;
+      let frame = 0;
+
+      /* Any deliberate interaction hands control over for a moment. */
+      const holdOff = (ms = 2200) => {
+        idleUntil = performance.now() + ms;
+      };
+
+      const wrap = () => {
+        const h = half();
+        if (h === 0) return;
+        if (marquee.scrollLeft >= h) marquee.scrollLeft -= h;
+        else if (marquee.scrollLeft <= 0) marquee.scrollLeft += h;
+      };
+
+      const tick = (now: number) => {
+        const dt = last ? Math.min(now - last, 100) : 0;
+        last = now;
+
+        const paused =
+          reduce ||
+          document.hidden ||
+          now < idleUntil ||
+          marquee.matches(':hover') ||
+          marquee.contains(document.activeElement);
+
+        if (!paused && dt) {
+          marquee.scrollLeft += (speed() * dt) / 1000;
+          wrap();
+        }
+
+        frame = requestAnimationFrame(tick);
+      };
+
+      // Start mid-loop so there is content to drag into on the first pull left.
+      marquee.scrollLeft = 1;
+      frame = requestAnimationFrame(tick);
+
+      marquee.addEventListener('wheel', holdOff, { passive: true });
+      marquee.addEventListener('touchstart', () => holdOff(), { passive: true });
+      marquee.addEventListener('scroll', wrap, { passive: true });
+
+      /* Pointer drag. */
+      let dragging = false;
+      let startX = 0;
+      let startScroll = 0;
+      let moved = 0;
+
+      marquee.addEventListener('pointerdown', (event) => {
+        // Left button only, and never steal a touch from the page's own scroll.
+        if (event.button !== 0 || event.pointerType === 'touch') return;
+
+        dragging = true;
+        moved = 0;
+        startX = event.clientX;
+        startScroll = marquee.scrollLeft;
+        marquee.classList.add('is-dragging');
+        marquee.setPointerCapture(event.pointerId);
+        holdOff(60000);
+      });
+
+      marquee.addEventListener('pointermove', (event) => {
+        if (!dragging) return;
+        const dx = event.clientX - startX;
+        moved = Math.max(moved, Math.abs(dx));
+        marquee.scrollLeft = startScroll - dx;
+        wrap();
+      });
+
+      const endDrag = (event: PointerEvent) => {
+        if (!dragging) return;
+        dragging = false;
+        marquee.classList.remove('is-dragging');
+        if (marquee.hasPointerCapture(event.pointerId)) {
+          marquee.releasePointerCapture(event.pointerId);
+        }
+        holdOff();
+      };
+
+      marquee.addEventListener('pointerup', endDrag);
+      marquee.addEventListener('pointercancel', endDrag);
+
+      /*
+        A drag that ends on a card would otherwise navigate. Anything past a
+        few pixels was a drag, not a click.
+      */
+      marquee.addEventListener(
+        'click',
+        (event) => {
+          if (moved > 6) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          moved = 0;
+        },
+        true
+      );
+
+      marquee.addEventListener('focusin', () => holdOff(4000));
+
+      /* Stop the loop when the document is replaced, so it cannot leak. */
+      document.addEventListener('astro:before-swap', () => cancelAnimationFrame(frame), {
+        once: true,
+      });
+    });
+  }
+
+  initMarquee();
+  document.addEventListener('astro:page-load', initMarquee);
+</script>

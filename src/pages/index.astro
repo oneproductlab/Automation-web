@@ -9,7 +9,7 @@ import Testimonials from '../components/Testimonials.astro';
 import BookCall from '../components/BookCall.astro';
 import { Image } from 'astro:assets';
 import founderPhoto from '../assets/images/niraj.jpg';
-import { services, approach, faqs, site, founder, fitFor, pricing, engagementTerms, engagementNote, testimonials } from '../data/site';
+import { services, faqs, site, founder, fitFor, pricing, engagementTerms, engagementNote, testimonials } from '../data/site';
 import { getWork } from '../lib/work';
 
 const work = await getWork();
@@ -120,7 +120,8 @@ const schema = [
     to live in its own full section is folded in here, because "is this my
     problem?" and "am I the right buyer?" are the same question asked twice.
   -->
-  <section class="wrap py-16 md:py-20">
+  <section class="border-y border-[var(--color-line)] bg-[var(--color-paper-2)]">
+    <div class="wrap py-16 md:py-20">
     {/*
       Near-even columns rather than 0.85/1.15.
 
@@ -130,6 +131,16 @@ const schema = [
       text column now gets roughly the same width as the diagram, which is
       enough for those lines to close up, and it also brings the two columns
       to a similar height so neither hangs below the other.
+
+      Text left, diagram right — the same way round as the hero above it.
+
+      Mirroring this section was tried as the fix for readers calling the two
+      screens repetitive, and it was worse: the eye has to restart on the right
+      after two sections of starting on the left, and the reversed row read as
+      a different template rather than a continuation. The repetition is
+      answered by the surface instead. This block now sits on the tinted paper
+      with a rule top and bottom, so it is plainly a second section rather than
+      more of the first, and the reading rhythm is left undisturbed.
     */}
     <div class="grid gap-12 lg:grid-cols-[1fr_1.05fr] lg:items-center lg:gap-14">
       <div>
@@ -212,6 +223,7 @@ const schema = [
       <div class="reveal">
         <BeforeAfter />
       </div>
+    </div>
     </div>
   </section>
 
@@ -450,94 +462,20 @@ const schema = [
     </div>
   </section>
 
-  <!-- How we work -->
-  <section class="wrap py-16 md:py-20">
-    <div class="max-w-xl">
-      <p class="eyebrow">How we work</p>
-      <!--
-        No count in the heading, for the same reason the services section
-        dropped "Six places": a number in the copy has to be kept in sync with
-        the array by hand, and goes stale the moment a step is added.
-      -->
-      <h2 class="mt-4 text-3xl md:text-4xl">You own what’s left behind.</h2>
-      <p class="mt-5 text-[var(--color-ink-2)]">
-        Every engagement runs the same way, and you can see where you are in it
-        at any point.
-      </p>
-    </div>
-    <!--
-      Two rows of three rather than one long row. Six across would set the
-      measure far too narrow to read; this keeps a comfortable line length and
-      still reads left-to-right as a sequence.
-    -->
-    <ol class="reveal mt-12 grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
-      {
-        approach.map((a, i) => (
-          <li
-            data-stagger
-            style={`--i:${i}`}
-            tabindex="0"
-            class="disclose-host group border-t-2 border-[var(--color-line-2)] pt-5 transition-colors hover:border-[var(--color-ink)] focus-visible:border-[var(--color-ink)]"
-          >
-            <p class="font-[var(--font-mono)] text-xs text-[var(--color-ink-3)]">
-              STEP {String(i + 1).padStart(2, '0')}
-            </p>
-            <h3 class="mt-2 font-[var(--font-display)] text-2xl transition-colors group-hover:text-[var(--color-signal-ink)]">
-              {a.step}
-            </h3>
-            {/*
-              Collapsed at rest. Six steps × a 20-word blurb was 120 words of
-              body copy sitting under a heading that already told the reader
-              what the step was.
-            */}
-            <div class="disclose">
-              <div>
-                <p class="mt-3 max-w-[34ch] text-[0.95rem] leading-relaxed text-[var(--color-ink-2)]">
-                  {a.short}
-                </p>
-              </div>
-            </div>
-          </li>
-        ))
-      }
-    </ol>
-    {/*
-      The founder, attached to the ownership claim rather than the hero.
+  <!--
+    "How we work" used to sit here: six steps, two rows, plus a founder byline.
 
-      This section promises you own what is left behind and that you can see
-      where you are at any point. Both promises rest on there being one person
-      who does the scoping and the building, so the card belongs here as the
-      evidence for that — in the hero it was a standalone boast a reader had no
-      reason to care about yet.
+    Removed deliberately. The homepage already earns the sale three other ways
+    — the work, the price, the testimonials — and a process breakdown is
+    something a reader wants *after* they are interested, not while they are
+    deciding whether to be. It is the whole subject of /approach/, which is
+    linked from the header on every page and from the closing block below, so
+    nothing is orphaned and no keyword is lost that the destination page does
+    not own more strongly.
 
-      Deliberately not next to the pricing terms below, which already promise a
-      senior engineer start to finish. Two versions of the same claim, a screen
-      apart, would read as padding.
-
-      Card and link share one row: stacking them left two 40px margins and a
-      24px rule between the steps and the byline, which read as the section
-      having ended twice.
-    */}
-    <div class="mt-10 flex flex-wrap items-center justify-between gap-x-8 gap-y-5 border-t border-[var(--color-line)] pt-6">
-      <div class="flex items-center gap-4">
-        <Image
-          src={founderPhoto}
-          alt=""
-          width={96}
-          height={96}
-          loading="lazy"
-          class="h-11 w-11 shrink-0 rounded-full border border-[var(--color-line)] object-cover"
-        />
-        <p class="max-w-sm text-[0.92rem] text-[var(--color-ink-2)]">
-          Every step above is run by{' '}
-          <strong class="font-medium text-[var(--color-ink)]">{founder.name}</strong>, who writes
-          the code as well as the proposal.{' '}
-          <a href="/about/" class="link-underline">About the agency</a>
-        </p>
-      </div>
-      <a href="/approach/" class="btn btn-ghost">How an engagement runs</a>
-    </div>
-  </section>
+    The founder moved to the closing block, where "who am I actually talking
+    to" is the live question rather than a claim bolted onto a process list.
+  -->
 
   <!--
     Pricing and risk reversal, on the homepage. These are the strongest arguments
@@ -664,31 +602,66 @@ const schema = [
             worth automating.
           </p>
         </div>
-        <div class="flex flex-col items-end gap-3 md:w-auto">
-          <div class="flex flex-wrap items-center gap-3 md:ml-4">
-            <a
-              href="/contact/"
-              class="btn border-[var(--color-inverse-ink)] bg-[var(--color-inverse-ink)] text-[var(--color-slate)] transition-colors hover:border-[var(--color-signal-bright)] hover:bg-[var(--color-signal-bright)] hover:text-[var(--color-inverse-ink)]"
-              >Book a free call</a
-            >
-            {
-              site.calendly && (
-                <BookCall
-                  label="Book a 30-min call"
-                  class="[&>a]:border-[var(--color-inverse-line)] [&>a]:text-[var(--color-inverse-ink)] [&>button]:border-[var(--color-inverse-line)] [&>button]:text-[var(--color-inverse-ink)]"
-                />
-              )
-            }
-            <a
-              href={`mailto:${site.email}`}
-              class="btn border-[var(--color-inverse-line)] text-[var(--color-inverse-ink)] transition-colors hover:bg-[var(--color-slate-2)]"
-              >Email us</a
-            >
-          </div>
-          <p class="font-[var(--font-mono)] text-xs text-[var(--color-inverse-ink-3)] text-right md:pr-4">
-            A real person replies within two hours.
-          </p>
+        <div class="flex flex-wrap items-center gap-3 md:ml-4">
+          <a
+            href="/contact/"
+            class="btn border-[var(--color-inverse-ink)] bg-[var(--color-inverse-ink)] text-[var(--color-slate)] transition-colors hover:border-[var(--color-signal-bright)] hover:bg-[var(--color-signal-bright)] hover:text-[var(--color-inverse-ink)]"
+            >Book a free call</a
+          >
+          {
+            site.calendly && (
+              <BookCall
+                label="Book a 30-min call"
+                class="[&>a]:border-[var(--color-inverse-line)] [&>a]:text-[var(--color-inverse-ink)] [&>button]:border-[var(--color-inverse-line)] [&>button]:text-[var(--color-inverse-ink)]"
+              />
+            )
+          }
+          <a
+            href={`mailto:${site.email}`}
+            class="btn border-[var(--color-inverse-line)] text-[var(--color-inverse-ink)] transition-colors hover:bg-[var(--color-slate-2)]"
+            >Email us</a
+          >
         </div>
+      </div>
+
+      {/*
+        The founder, at the point of contact.
+
+        "A real person replies within two hours" used to run as a standalone
+        line opposite the buttons, which asked the reader to take the word
+        "real" on trust. Naming and showing that person answers the question
+        the block actually raises — who am I about to email — and carries the
+        two internal links the removed process section used to hold.
+
+        Full width under both columns rather than inside the left one. Confined
+        to the text column it set a ~45-character measure and ran to three
+        cramped lines while the entire right half of the band sat empty below
+        the buttons. Across the full width it is two lines, and the rule above
+        it now reads as closing the section rather than dividing one column.
+      */}
+      <div
+        class="mt-10 flex items-center gap-4 border-t border-[var(--color-inverse-line)] pt-6"
+      >
+        <Image
+          src={founderPhoto}
+          alt=""
+          width={96}
+          height={96}
+          loading="lazy"
+          class="h-11 w-11 shrink-0 rounded-full border border-[var(--color-inverse-line)] object-cover"
+        />
+        <p class="max-w-3xl text-[0.92rem] leading-relaxed text-[var(--color-inverse-ink-2)]">
+          <strong class="font-medium text-[var(--color-inverse-ink)]">{founder.name}</strong>{' '}
+          reads every enquiry himself and replies within two hours. He writes the
+          code as well as the proposal —{' '}
+          <a href="/approach/" class="link-underline link-underline--inverse"
+            >how an engagement runs</a
+          >{' '}
+          and{' '}
+          <a href="/about/" class="link-underline link-underline--inverse"
+            >about the agency</a
+          >.
+        </p>
       </div>
     </div>
   </section>

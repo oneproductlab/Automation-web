@@ -742,6 +742,13 @@ export const faqs = [
   },
   {
     q: 'Where are your clients based?',
-    a: 'Everywhere. The work is remote and asynchronous by nature — we map workflows over a call, then build and hand over. We schedule calls to your time zone and keep overlapping hours with most of them. Pricing is quoted in USD.',
+    /*
+      "your time zone" is deliberate here and "your clients" in the question is
+      not the same "your". The question is the reader addressing the agency;
+      the answer addresses the reader back. Keeping both as "your" one line
+      apart made the referent ambiguous, so the answer names the reader
+      explicitly instead.
+    */
+    a: 'Everywhere. The work is remote and asynchronous by nature — we map workflows over a call, then build and hand over. Calls are scheduled to whichever time zone you are in, and we keep overlapping hours with most of them. Pricing is quoted in USD.',
   },
 ];

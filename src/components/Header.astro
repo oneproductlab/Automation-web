@@ -14,18 +14,22 @@ const isActive = (href: string) => path === href || (href !== '/' && path.starts
 
     <nav class="hidden md:flex items-center gap-6" aria-label="Primary">
       {
+        /*
+          Every item carries a resting hairline, not just the active one.
+
+          Bare mono text at 0.8rem with no underline and no colour difference
+          from body copy read as a row of labels rather than a row of links —
+          people reported not knowing the nav was clickable. The rule sits at
+          the same offset in all three states, so hover and current-page only
+          change its weight and colour and nothing shifts.
+        */
         nav.map((item) => (
           <a
             href={item.href}
-            class="inline-flex items-center py-2 font-[var(--font-mono)] text-[0.8rem] tracking-[0.03em] text-[var(--color-ink-2)] transition-colors hover:text-[var(--color-signal-ink)]"
-
+            class="nav-link"
             aria-current={isActive(item.href) ? 'page' : undefined}
           >
-
-            <span class={isActive(item.href) ? 'underline decoration-[var(--color-signal)] underline-offset-4' : ''}>
-
-              {item.label}
-            </span>
+            {item.label}
           </a>
         ))
       }
@@ -80,8 +84,7 @@ const isActive = (href: string) => path === href || (href !== '/' && path.starts
             nav.map((item) => (
               <a
                 href={item.href}
-                class="block px-3 py-2.5 font-[var(--font-mono)] text-[0.85rem] text-[var(--color-ink-2)] hover:bg-[var(--color-paper-2)]"
-
+                class="nav-link nav-link--stacked"
                 aria-current={isActive(item.href) ? 'page' : undefined}
               >
                 {item.label}
@@ -120,7 +123,17 @@ const isActive = (href: string) => path === href || (href !== '/' && path.starts
   }
 
   const storageKey = 'flowzora-theme';
-  const themeColor = document.querySelector('meta[name="theme-color"]');
+
+  function storedTheme(): string {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved === 'dark' || saved === 'light') return saved;
+    } catch {
+      // Private browsing or disabled storage falls through to the current DOM state.
+    }
+
+    return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+  }
 
   function updateThemeControls(theme: string) {
     const isDark = theme === 'dark';
@@ -132,21 +145,36 @@ const isActive = (href: string) => path === href || (href !== '/' && path.starts
       button.title = isDark ? 'Switch to light mode' : 'Switch to dark mode';
     });
 
-    if (themeColor) themeColor.setAttribute('content', isDark ? '#17150f' : '#f4f1ea');
+    // Re-queried every time: view transitions swap in a fresh <head>, so a
+    // reference captured on first load points at a discarded element.
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', isDark ? '#17150f' : '#f4f1ea');
   }
 
-  document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
-    button.addEventListener('click', () => {
-      const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-      updateThemeControls(nextTheme);
+  document.addEventListener('click', (event) => {
+    const button = (event.target as HTMLElement | null)?.closest('[data-theme-toggle]');
+    if (!button) return;
 
-      try {
-        localStorage.setItem(storageKey, nextTheme);
-      } catch {
-        // The theme still changes for this visit if storage is unavailable.
-      }
-    });
+    const nextTheme = storedTheme() === 'dark' ? 'light' : 'dark';
+
+    try {
+      localStorage.setItem(storageKey, nextTheme);
+    } catch {
+      // The theme still changes for this visit if storage is unavailable.
+    }
+
+    updateThemeControls(nextTheme);
   });
 
-  updateThemeControls(document.documentElement.dataset.theme || 'light');
+  /*
+    A view-transition swap resets the attributes on <html> to whatever the
+    incoming document shipped, which drops `data-theme` and silently returns
+    the page to light. The pre-paint script in the layout does not re-run
+    (identical inline scripts are not re-executed), so the theme is reapplied
+    here after every navigation.
+  */
+  document.addEventListener('astro:after-swap', () => updateThemeControls(storedTheme()));
+
+  updateThemeControls(storedTheme());
 </script>
