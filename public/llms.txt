@@ -11,12 +11,13 @@
   than no file at all.
 -->
 
-> Flowzora is a workflow automation agency working with small and mid-sized
-> businesses worldwide. We connect the tools a company already runs, remove the
-> manual steps between them, and hand over systems the client owns outright.
+> Flowzora is a workflow automation consultant working with small and mid-sized
+> businesses worldwide. We map the process first, connect the tools a company
+> already runs, remove the manual steps between them, and hand over systems the
+> client owns outright.
 
-Flowzora operates as a specialist agency under oneProductLab. It was founded by
-Niraj Kumar, a backend and AI engineer whose background is in production APIs,
+Flowzora operates as a specialist consultant under oneProductLab. It was founded
+by Niraj Kumar, a backend and AI engineer whose background is in production APIs,
 data platforms and applied machine learning, with earlier machine learning
 research work at C-DAC.
 
@@ -58,7 +59,7 @@ verbatim and linked to the profile that wrote them, with the relationship
 - [Pricing](https://flowzora.com/pricing/): published rates
 - [Work](https://flowzora.com/work/): automation systems shipped, honestly labeled
 - [Approach](https://flowzora.com/approach/): map, build, hand over
-- [About](https://flowzora.com/about/): the agency and its founder
+- [About](https://flowzora.com/about/): the practice and its founder
 - [Writing](https://flowzora.com/writing/): notes on operations and automation
 - [Contact](https://flowzora.com/contact/): start with one workflow
 - [Privacy](https://flowzora.com/privacy/): what we collect and how to delete it

@@ -2,15 +2,15 @@
 title: What workflow automation actually costs in 2026
 description: >-
   A straight breakdown of what businesses pay to automate a workflow — freelancer,
-  agency and in-house — and how to tell which one your problem needs.
+  specialist and in-house — and how to tell which one your problem needs.
 pubDate: 2026-08-24
-updatedDate: 2026-09-07
+updatedDate: 2026-09-13
 
 tags: [pricing, operations, buying]
 draft: false
 ---
 
-Most agencies won't tell you. So here are real numbers, and the reasoning behind
+Most firms won't tell you. So here are real numbers, and the reasoning behind
 them.
 
 **Short version:** a single automated workflow, built properly and handed over,
@@ -25,13 +25,13 @@ genuinely fine for a contained job: one integration, one script, one report. The
 risk is not skill, it is continuity. When the person moves on, so does the only
 copy of how the thing works.
 
-**A specialist automation agency — $6,000 to $25,000 per workflow, fixed price.** You are
+**A specialist automation consultant — $6,000 to $25,000 per workflow, fixed price.** You are
 paying for scoping, documentation and someone accountable when it breaks at 2am.
 Worth it when the workflow touches more than two systems or when being wrong has
 a cost. This is [the shape of engagement we run](/approach/): map the work first,
 build to a fixed scope, then hand it over.
 
-**A large consultancy — $50,000 and up.** Appropriate for enterprise compliance
+**A large consulting firm — $50,000 and up.** Appropriate for enterprise compliance
 and procurement requirements. For a 40-person company automating lead intake, it
 is the wrong shape of engagement.
 
@@ -77,7 +77,7 @@ to be harder than it looked, your invoice grows.
 Fixed price puts that risk on whoever wrote the estimate — which is the correct
 place for it, because they are the one who understood the problem well enough to
 quote it. The trade is that scoping has to happen first and properly, which is
-why serious agencies charge for the scoping phase rather than giving it away.
+why anyone serious charges for the scoping phase rather than giving it away.
 
 ## What should be in the price
 
@@ -88,8 +88,8 @@ Before you compare quotes, check they include the same things:
   is whether it fails safely.
 - **Documentation.** A diagram and a runbook, so a different engineer can pick it
   up.
-- **Ownership.** Code, credentials and infrastructure in your name — not in an
-  agency account you rent access to.
+- **Ownership.** Code, credentials and infrastructure in your name — not in a
+  vendor account you rent access to.
 
 A quote missing these is not cheaper. It has moved the cost somewhere you cannot
 see it yet.

@@ -26,7 +26,7 @@ const work = defineCollection({
     /*
       `source` is required, not optional.
 
-      Unsourced numbers are the single most common tell of a fabricated agency
+      Unsourced numbers are the single most common tell of a fabricated vendor
       case study, and sourced ones are what answer and generative engines
       actually quote. Making the field mandatory means a metric physically
       cannot ship without stating where it came from — the honesty policy is

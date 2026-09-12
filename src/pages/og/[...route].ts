@@ -37,7 +37,7 @@ const pages: Record<string, { title: string; description: string }> = {
   },
   about: {
     title: 'About Flowzora',
-    description: 'A workflow automation agency under oneProductLab.',
+    description: 'A workflow automation consultant under oneProductLab.',
   },
   writing: {
     title: 'Writing',

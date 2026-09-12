@@ -35,7 +35,7 @@ const {
     part that gets cut is always the end — which is why the ownership promise
     is last only after the differentiators have already landed.
   */
-  description = 'Flowzora is a workflow automation agency for SMBs. We connect tools like HubSpot, Salesforce and Shopify, remove manual steps, and hand over systems you own.',
+  description = 'Flowzora is a workflow automation consultant for SMBs. We map the workflow, connect tools like HubSpot, Salesforce and Shopify, and hand over a system you own.',
   path,
   ogType = 'website',
   ogRoute = 'default',
@@ -58,7 +58,7 @@ const orgId = `${site.domain}/#organization`;
 const founderId = `${site.domain}/#founder`;
 
 // One connected graph rather than several orphaned blobs: search and generative
-// engines resolve the agency, the person and the site as a single entity.
+// engines resolve the practice, the person and the site as a single entity.
 const graph = [
   {
     '@type': ['Organization', 'ProfessionalService'],
@@ -77,8 +77,17 @@ const graph = [
       one that resolves. They are genuine trading variations of the name, not
       invented aliases — an alternateName that nobody actually uses would be
       fabricated structured data.
+
+      "Flowzora Agency" is deliberately retained after the move to "consultant".
+      This list exists to catch the strings people already use for us, and the
+      site traded under that name — dropping it would discard accumulated
+      disambiguation while the old form is still what search has on file.
     */
-    alternateName: ['Flowzora Automation', 'Flowzora Workflow Automation', 'Flowzora Agency'],
+    alternateName: [
+      'Flowzora Automation',
+      'Flowzora Workflow Automation',
+      'Flowzora Agency',
+    ],
     description,
     url: site.domain,
     email: site.email,

@@ -34,11 +34,27 @@ function rateLimited(ip) {
 
 const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
 
+/*
+  Escapes submitted values before they are interpolated into the notification
+  email's HTML body.
+
+  The replacement map is written with explicit unicode escapes rather than
+  literal "&amp;" strings. An earlier version used the literal entities and was
+  silently decoded back to identity mappings ("&" -> "&"), which turned this
+  function into a no-op and let a submitted name inject arbitrary markup into
+  the email we open. Escapes cannot be mangled the same way.
+*/
 const escapeHtml = (value) =>
   String(value).replace(
     /[&<>"']/g,
     (char) =>
-      ({ '&': '&', '<': '<', '>': '>', '"': '"', "'": '&#39;' })[char]
+      ({
+        '&': '\u0026amp;',
+        '<': '\u0026lt;',
+        '>': '\u0026gt;',
+        '"': '\u0026quot;',
+        "'": '\u0026#39;',
+      })[char]
   );
 
 export default async function handler(req, res) {

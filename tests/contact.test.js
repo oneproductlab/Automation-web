@@ -116,7 +116,7 @@ describe('contact endpoint', () => {
     );
     const sent = JSON.parse(fetch.mock.calls[0][1].body);
     expect(sent.html).not.toContain('<script>');
-    expect(sent.html).toContain('<script>');
+    expect(sent.html).toContain('\u0026lt;script\u0026gt;');
   });
 
   it('rate limits repeated submissions from one address', async () => {

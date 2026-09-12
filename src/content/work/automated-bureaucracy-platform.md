@@ -18,7 +18,7 @@ before:
   - Any real functionality would mean starting over later
 intervention: >-
   Built and delivered a full-stack application at automatedbureaucracy.com,
-  designed as a foundation rather than a finished artefact — so the agency
+  designed as a foundation rather than a finished artifact — so the agency
   could add to it as the business took shape.
 result:
   - metric: Full stack

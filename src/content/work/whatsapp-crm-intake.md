@@ -1,5 +1,5 @@
 ---
-title: WhatsApp enquiries into a CRM, end to end
+title: WhatsApp inquiries into a CRM, end to end
 kind: internal-build
 sector: Sales operations
 order: 0
@@ -14,7 +14,7 @@ problem: >-
   records. Threads sit on one salesperson’s device, so nobody else can see them.
   When that person is on leave, the pipeline goes dark.
 before:
-  - Enquiry arrives as a WhatsApp message on a salesperson’s phone
+  - Inquiry arrives as a WhatsApp message on a salesperson’s phone
   - They read it and decide, informally, whether it is a real lead
   - They retype the name, number and request into the CRM
   - Follow-ups continue in WhatsApp, invisible to everyone else

@@ -24,7 +24,7 @@ interface Props {
   caption?: string;
 }
 
-const { caption = 'An enquiry, handled end to end' } = Astro.props;
+const { caption = 'An inquiry, handled end to end' } = Astro.props;
 
 /*
   `step` is the beat of the run each node belongs to, not its index — the two
@@ -33,7 +33,7 @@ const { caption = 'An enquiry, handled end to end' } = Astro.props;
   the diagram when a node is added.
 */
 const nodes = [
-  { id: 'n1', label: 'New enquiry', meta: 'form · email · chat', kind: 'input', step: 0, x: 12, y: 50 },
+  { id: 'n1', label: 'New inquiry', meta: 'form · email · chat', kind: 'input', step: 0, x: 12, y: 50 },
   { id: 'n2', label: 'Read & classify', meta: 'model + rules', kind: 'logic', step: 1, x: 37, y: 50 },
   { id: 'n3', label: 'Approve', meta: 'human in the loop', kind: 'human', step: 2, x: 62, y: 23.1 },
   { id: 'n4', label: 'CRM updated', meta: 'record created', kind: 'system', step: 2, x: 62, y: 76.9 },
@@ -60,7 +60,7 @@ const totalSteps = 4;
   <div class="fz-canvas__bar">
     <span class="fz-canvas__title">
       <span class="fz-canvas__dot" aria-hidden="true"></span>
-      Enquiry intake
+      inquiry intake
     </span>
     <span class="fz-canvas__status" data-status aria-hidden="true">Running</span>
   </div>

@@ -2,15 +2,25 @@ export const site = {
   name: 'Flowzora',
   // Short descriptor used in the logo lockup and footer.
   // Keyword-bearing on purpose: "workflow automation" is the term buyers search.
-  tagline: 'Workflow automation agency',
+  //
+  // "Consultant", not "agency": the category has to match how the work is
+  // actually done. The first step here is to diagnose — the paid Audit can end
+  // in "not worth it yet" — and a firm that tells a prospect not to buy is off
+  // model for an agency and exactly on model for a consultant. "Agency" also
+  // primes retainers, account managers and procurement, which is the wrong
+  // instinct for a buyer who is deciding alone.
+  //
+  // Singular, and never "consultancy": the site sells against large
+  // consultancies by name, and the work is led by one named person.
+  tagline: 'Workflow automation consultant',
   domain: 'https://flowzora.com',
   email: 'info@flowzora.com',
   parent: 'oneProductLab',
   parentUrl: 'https://www.linkedin.com/company/oneproductlab',
   // Flowzora's OWN LinkedIn Company Page — not the parent's. This is the single
   // most important external entity signal: it is the third party that confirms
-  // "Flowzora" the automation agency exists, so Google stops resolving the brand
-  // term to the similarly-named competitor. Feeds the footer icon and, via
+  // "Flowzora" the automation consultant exists, so Google stops resolving the
+  // brand term to the similarly-named competitor. Feeds the footer icon and, via
   // Base.astro, the Organization `sameAs`. The parent's page stays on parentUrl.
   linkedin: 'https://www.linkedin.com/company/flowzora',
   /*
@@ -43,7 +53,7 @@ export const site = {
 };
 
 /**
- * The single named human behind the agency.
+ * The single named human behind the work.
  * E-E-A-T and generative-engine citation both depend on a real, verifiable person —
  * every claim here must be independently checkable on the linked profile.
  */
@@ -213,7 +223,7 @@ export const engagementTerms = [
     // us it reads as a one-man band admitting its size rather than as a
     // guarantee. The thing they actually want promised is that the person who
     // understood the problem is the person who builds it — which is a claim
-    // about seniority and continuity, and survives the agency growing.
+    // about seniority and continuity, and survives the practice growing.
     title: 'A senior engineer, start to finish',
     // Trimmed to its siblings' length. The original spelled out both failure
     // modes it was ruling out — a junior and an account manager — which made
@@ -315,7 +325,7 @@ export const services = [
     faqs: [
       {
         q: 'Can you automate lead routing in our existing CRM?',
-        a: 'Yes. We build routing on top of the CRM you already run — HubSpot, Salesforce, Pipedrive or otherwise — rather than migrating you to a new one. Rules follow your real team structure, including territories, round-robin and specialist handoffs.',
+        a: 'Yes. We build routing on top of the CRM you already run — HubSpot, Salesforce, Pipedrive or otherwise — rather than migrating you to a new one. Rules follow your real team structure, including territories, round-robin and specialist hand-offs.',
       },
       {
         q: 'How do you stop duplicate records being created?',
@@ -477,7 +487,14 @@ export const services = [
     brief: 'Models only where a rule genuinely can’t do the job.',
     index: '06',
     title: 'AI agents & assisted workflows',
-    seoTitle: 'AI automation agency & AI agent development',
+    seoTitle: 'AI automation consultant & AI agent development',
+    /*
+      The keyword keeps "agency" even though the site no longer calls itself
+      one. This field is what a buyer types, not what we call ourselves — and
+      someone searching "ai automation agency" is looking for exactly this
+      service. Changing it to match our own label would be optimising the page
+      for our vocabulary instead of theirs.
+    */
     keyword: 'ai automation agency',
     summary:
       'AI used where it genuinely earns its place, with rules, review and traceability around it. Models handle judgment; rules handle anything you can write down.',
@@ -516,7 +533,7 @@ export const services = [
 // Every step here corresponds to something already promised elsewhere on the
 // site: "Scope" is the fixed-price commitment from the pricing section, and
 // "Keep it running" is the Operations Partner tier. Steps invented to pad the
-// list out would be the kind of process theatre this agency sells against.
+// list out would be the kind of process theatre this site sells against.
 export const approach = [
   {
     step: 'Map',
@@ -641,7 +658,7 @@ export const pricing = [
  * Workflow patterns, for the homepage gallery.
  *
  * These are shapes of work we build, not claims of work delivered. That
- * distinction is the whole reason this can exist on a young agency's site:
+ * distinction is the whole reason this can exist on a young practice's site:
  * the `work` collection carries evidence and is labelled "client" or
  * "internal-build", while this carries range. Nothing here names a customer or
  * asserts an outcome.
@@ -740,7 +757,7 @@ export const faqs = [
     q: 'Where are your clients based?',
     /*
       "your time zone" is deliberate here and "your clients" in the question is
-      not the same "your". The question is the reader addressing the agency;
+      not the same "your". The question is the reader addressing us;
       the answer addresses the reader back. Keeping both as "your" one line
       apart made the referent ambiguous, so the answer names the reader
       explicitly instead.

@@ -26,7 +26,7 @@ const principles = [
   },
 ];
 
-const description = `${site.name} is a workflow automation agency under ${site.parent}, founded by ${founder.name}. We build automated systems teams can see, trust and own.`;
+const description = `${site.name} is a workflow automation consultant under ${site.parent}, founded by ${founder.name}. We map the process first, then build systems you own and understand.`;
 
 const faqs = [
   {
@@ -39,27 +39,27 @@ const faqs = [
   },
   {
     q: 'What is oneProductLab?',
-    a: 'oneProductLab is the parent organization Flowzora operates under. Flowzora is the agency focused specifically on operations and workflow automation.',
+    a: 'oneProductLab is the parent organization we operate under. Flowzora is the practice focused specifically on operations and workflow automation.',
   },
 ];
 ---
 
-<Base title="About the agency and its founder" description={description} ogRoute="about">
+<Base title="About Flowzora and its founder" description={description} ogRoute="about">
   <section class="wrap pt-10 pb-12 md:pt-14">
     <Breadcrumbs trail={[]} current="About" />
 
     <p class="eyebrow mt-8">About</p>
     <h1 class="mt-5 max-w-3xl text-[2.4rem] leading-[1.05] md:text-[3.4rem]">
-      An automation agency that builds the systems businesses run on.
+      An automation consultant who builds the systems businesses run on.
     </h1>
     <p class="mt-7 max-w-2xl text-lg text-[var(--color-ink-2)]">
-      {site.name} is a workflow automation agency under {site.parent}. We work with
+      {site.name} is a workflow automation consultant under {site.parent}. We work with
       startups, SMBs and growing teams who’ve outgrown manual process but don’t
       want another rigid platform to fight against.
     </p>
   </section>
 
-  <!-- The founder entity. A named, checkable person is what makes an agency
+  <!-- The founder entity. A named, checkable person is what makes a consultant
        credible to buyers and citable by search and answer engines. -->
   <section class="border-y border-[var(--color-line)] bg-[var(--color-paper-2)]">
     <div class="wrap py-14 md:py-20">
@@ -137,7 +137,7 @@ const faqs = [
     </div>
   </section>
 
-  <Faq items={faqs} title="Questions about the agency" />
+  <Faq items={faqs} title="Questions about the practice" />
 
   <section class="wrap py-14 md:py-16">
     <div class="grid gap-6 border-t border-[var(--color-line)] pt-8 sm:grid-cols-3">
